@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect x="1" y="1" width="62" height="62" rx="9" fill="#F4EBD0" stroke="#2B2118" stroke-width="2"/>
+  <rect x="7" y="7" width="50" height="50" rx="5" fill="none" stroke="#E8D8B5" stroke-width="2"/>
+  <g transform="rotate(-4 32 32)">
+    <rect x="16" y="16" width="32" height="32" rx="2" fill="none" stroke="#B4482E" stroke-width="2.6"/>
+    <rect x="18.5" y="18.5" width="27" height="27" rx="1" fill="none" stroke="#B4482E" stroke-opacity=".18" stroke-width="1.5"/>
+    <text x="32" y="32" text-anchor="middle" dominant-baseline="central"
+          font-family="'Yuji Syuku','Yu Mincho','Yu Gothic','MS Gothic',serif"
+          font-size="26" font-weight="700" fill="#B4482E">忍</text>
+  </g>
+</svg>

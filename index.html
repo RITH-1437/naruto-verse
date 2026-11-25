@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shinobi Chronicles — The Naruto-Verse Lineage &amp; Bijuu Scroll</title>
+  <meta name="description" content="An interactive parchment scroll of the Naruto-verse: lineage, reincarnation, and the Nine-Tailed Beasts from Kaguya to Boruto." />
+
+  <!-- Favicon: the red 忍 seal from the navbar -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="theme-color" content="#F4EBD0" />
+
+  <!-- Fonts: brush display + clean readable body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Shippori+Mincho:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS (utilities layered with the custom parchment theme in styles.css) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+
+    <!-- ===================== HEADER ===================== -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="seal" aria-hidden="true"><span>忍</span></div>
+        <div class="header-titles">
+          <h1>Shinobi <em>Chronicles</em></h1>
+          <p>The Naruto-Verse Lineage &amp; Bijuu Scroll</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="era-ribbon">Kaguya &nbsp;·&nbsp; Warring States &nbsp;·&nbsp; Naruto &nbsp;·&nbsp; Shippuden &nbsp;·&nbsp; Boruto</span>
+      </div>
+    </header>
+
+    <!-- ===================== TOOLBAR ===================== -->
+    <section class="toolbar" aria-label="Controls">
+      <div class="tool-row tool-row-primary">
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="search" type="search" autocomplete="off"
+                 placeholder="Search name, clan, jutsu, Bijuu…" aria-label="Search the chronicles" />
+          <button id="search-clear" class="mini-clear" title="Clear search" aria-label="Clear search">×</button>
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+
+        <div class="tool-group" role="group" aria-label="Era filter">
+          <span class="tool-label">Era</span>
+          <div id="era-filters" class="chip-row"></div>
+        </div>
+
+        <div class="tool-group">
+          <label class="tool-label" for="clan-filter">Clan / Group</label>
+          <select id="clan-filter" class="ink-select" aria-label="Filter by clan"></select>
+        </div>
+      </div>
+
+      <div class="tool-row tool-row-secondary">
+        <label class="switch" title="Show the glowing dashed rebirth lines">
+          <input type="checkbox" id="toggle-reinc" checked />
+          <span class="switch-track"><span class="switch-knob"></span></span>
+          <span class="switch-text">Reincarnation Lines</span>
+        </label>
+        <label class="switch" title="Draw chakra threads from each Bijuu to its hosts">
+          <input type="checkbox" id="toggle-bijuu" />
+          <span class="switch-track"><span class="switch-knob"></span></span>
+          <span class="switch-text">Bijuu Links</span>
+        </label>
+        <label class="switch" title="Show master/apprentice connections">
+          <input type="checkbox" id="toggle-sensei" />
+          <span class="switch-track"><span class="switch-knob"></span></span>
+          <span class="switch-text">Sensei Links</span>
+        </label>
+        <div class="spacer"></div>
+        <button id="btn-weapons" class="ink-btn"> ⚔ Weapons</button>
+        <button id="btn-bijuu" class="ink-btn accent"> Bijuu Scroll</button>
+        <button id="btn-reset" class="ink-btn"> Reset View</button>
+      </div>
+    </section>
+
+    <!-- ===================== CANVAS ===================== -->
+    <main class="canvas-wrap" id="canvas-wrap">
+      <svg id="graph" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Interactive Naruto-verse family tree">
+        <defs>
+          <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 L 2.5 5 z" fill="#3A2C1E" />
+          </marker>
+          <marker id="arrow-bijuu" viewBox="0 0 10 10" refX="8" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 L 2.5 5 z" fill="#D9603C" />
+          </marker>
+          <filter id="glow-gold" x="-70%" y="-70%" width="240%" height="240%">
+            <feGaussianBlur stdDeviation="7" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="glow-red" x="-90%" y="-90%" width="280%" height="280%">
+            <feGaussianBlur stdDeviation="5" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="ink-soft" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.1" />
+          </filter>
+          <radialGradient id="portrait-base">
+            <stop offset="0%" stop-color="#FBF4E2" /><stop offset="100%" stop-color="#E4D3AC" />
+          </radialGradient>
+          <linearGradient id="scroll-fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#E8D8B5" stop-opacity="0" /><stop offset="1" stop-color="#E8D8B5" stop-opacity="1" />
+          </linearGradient>
+        </defs>
+
+        <!-- Everything inside viewport is panned / zoomed -->
+        <g id="viewport">
+          <g id="layer-bijuu-links" class="layer"></g>
+          <g id="layer-sensei" class="layer"></g>
+          <g id="layer-team" class="layer"></g>
+          <g id="layer-reinc" class="layer"></g>
+          <g id="layer-spouse" class="layer"></g>
+          <g id="layer-parent" class="layer"></g>
+          <g id="layer-bijuu" class="layer"></g>
+          <g id="layer-nodes" class="layer"></g>
+        </g>
+      </svg>
+
+      <!-- floating legends / controls -->
+      <div class="legend floating-panel">
+        <div class="legend-title">Reading the Scroll</div>
+        <div class="legend-item"><span class="legend-line solid"></span> Bloodline / Parent → Child</div>
+        <div class="legend-item"><span class="legend-line bracket"></span> Marriage / Partner</div>
+        <div class="legend-item"><span class="legend-line reinc"></span> Reincarnation (glowing)</div>
+        <div class="legend-item"><span class="legend-line dotted"></span> Sensei → Student</div>
+        <div class="legend-item"><span class="legend-line team-line"></span> Team / Comrades</div>
+        <div class="legend-item"><span class="legend-line bijuu-line"></span> Bijuu → Jinchūriki</div>
+      </div>
+
+      <div class="zoom-controls floating-panel">
+        <button id="zoom-in" aria-label="Zoom in">＋</button>
+        <button id="zoom-out" aria-label="Zoom out">－</button>
+        <button id="zoom-fit" aria-label="Fit whole scroll" title="Fit whole scroll">⤢</button>
+      </div>
+
+      <div id="canvas-hint" class="canvas-hint">Drag to pan &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click a portrait to open its chronicle</div>
+      <div id="status-pill" class="status-pill" hidden></div>
+    </main>
+
+    <!-- ===================== CHARACTER DRAWER ===================== -->
+    <aside id="drawer" class="drawer" aria-label="Character profile" aria-hidden="true">
+      <div class="drawer-head">
+        <div class="drawer-seal">忍</div>
+        <button id="drawer-close" class="drawer-close" aria-label="Close profile">×</button>
+      </div>
+      <div id="drawer-body" class="drawer-body"></div>
+    </aside>
+
+    <!-- ===================== BIJUU DRAWER ===================== -->
+    <aside id="bijuu-drawer" class="drawer bijuu-drawer" aria-label="Tailed Beasts" aria-hidden="true">
+      <div class="drawer-head">
+        <div class="drawer-seal">尾</div>
+        <button id="bijuu-close" class="drawer-close" aria-label="Close Bijuu scroll">×</button>
+      </div>
+      <div class="drawer-body">
+        <h2 class="drawer-kicker">The Nine &amp; the Primordial</h2>
+        <p class="drawer-intro">Ten chakra spirits split from the Ten-Tails. Open one to read its chronicle and trace its hosts across the ages.</p>
+        <div id="bijuu-list" class="bijuu-list"></div>
+        <div id="bijuu-detail" class="bijuu-detail" hidden></div>
+      </div>
+    </aside>
+
+    <!-- ===================== WEAPONS DRAWER ===================== -->
+    <aside id="weapon-drawer" class="drawer weapon-drawer" aria-label="Special weapons" aria-hidden="true">
+      <div class="drawer-head">
+        <div class="drawer-seal">刀</div>
+        <button id="weapon-close" class="drawer-close" aria-label="Close weapons scroll">×</button>
+      </div>
+      <div class="drawer-body">
+        <h2 class="drawer-kicker">Legendary Weapons &amp; Ninja Tools</h2>
+        <p class="drawer-intro">Blades, fans and tools carried by the shinobi on this scroll. Open one to read its lore and meet its wielders.</p>
+        <div id="weapon-list" class="bijuu-list"></div>
+        <div id="weapon-detail" class="bijuu-detail" hidden></div>
+      </div>
+    </aside>
+
+    <div id="scrim" class="scrim" hidden></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="preview.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
