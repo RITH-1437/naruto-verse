@@ -656,3 +656,8 @@ span.result-avatar.weapon-glyph { font-size: 14px; border-color: #5A5A66; }
   .switch-text { font-size: 10px; }
   .drawer { width: 100vw; }
 }
+
+/* ------------------------------------------------- link back to the home page */
+.header-right { display: flex; align-items: center; gap: 14px; }
+a.ink-btn.home-link { text-decoration: none; white-space: nowrap; }
+@media (max-width: 620px) { .header-right .era-ribbon { display: none; } }

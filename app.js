@@ -956,6 +956,18 @@
     applyVisibility();
     fitView();
     setTimeout(() => { els.hint.style.transition = "opacity .5s"; }, 100);
+    openFromUrl();
+  }
+
+  /* Deep links from the home page: scroll.html?focus=<id> | ?bijuu=<id> | ?weapon=<id> */
+  function openFromUrl() {
+    const q = new URLSearchParams(location.search);
+    const id = q.get("focus"), b = q.get("bijuu"), w = q.get("weapon");
+    setTimeout(() => {
+      if (id && byId(id)) { focusNode(id); openCharacter(id, false); }
+      else if (b && bijuuById(b)) openBijuu(b, true);
+      else if (w && weaponById(w)) { showWeaponDrawer(); openWeapon(w); }
+    }, 350);
   }
 
   init();

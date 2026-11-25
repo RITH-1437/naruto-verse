@@ -11,7 +11,7 @@ all with artwork. Zetsu appears as one combined character (both halves in a sing
 
 No build step, no dependencies, no backend.
 
-- Double-click `index.html`, **or**
+- Double-click `index.html` (the website home), **or**
 - In VS Code, use **Live Server** (this folder's `.vscode/settings.json` uses port `5501`).
 
 Tailwind CSS and the Google Fonts are loaded from CDNs; every layout-critical style is
@@ -21,7 +21,9 @@ also defined in `styles.css`, so the scroll still works if you are offline.
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | Page shell: header, toolbar, SVG canvas, legends, all three drawers |
+| `index.html` | Website home: hero, featured link to the scroll, paginated card archive (Shinobi / Tailed Beasts / Weapons) |
+| `home.css` / `home.js` | Home layout, filters, search, pagination; cards open the same full-screen preview |
+| `scroll.html` | The interactive Lineage Scroll: header, toolbar, SVG canvas, legends, all three drawers |
 | `styles.css` | Parchment/ink theme, typography, controls, drawer, animations |
 | `data.js` | **All** characters, Bijuu, eras, clans, natures and relationships |
 | `preview.js` | Full-screen animated character preview (summon, chakra aura, jutsu effects) |
@@ -31,7 +33,15 @@ also defined in `styles.css`, so the scroll still works if you are offline.
 | `app.js` | SVG renderer, pan/zoom, filters, search, drawers, camera animation |
 | `favicon.svg` / `favicon.ico` | The navbar's red 忍 seal as the site icon (raster assets regenerated with `python make_favicon.py`) |
 
-## Controls
+## Home page
+
+- A 4-column card grid (3 on tablets, 2 on phones) with pagination (8 / 12 / 16 / 24 per page; arrow keys flip pages).
+- Tabs for **Shinobi**, **Tailed Beasts** and **Weapons**; search, era chips, clan/group filter and sort.
+- **Click a card** to open the full-screen animated preview. **On the scroll ↗** (or **Read Chronicle** in the
+  preview) opens `scroll.html` focused on that entry: `scroll.html?focus=<id>`, `?bijuu=<id>`, `?weapon=<id>`.
+- The tab and page are kept in the URL hash, e.g. `index.html#bijuu/2`.
+
+## Controls (Lineage Scroll)
 
 - **Drag** the canvas to pan, **scroll** to zoom, `+` / `-` to zoom, `0` to fit.
 - **Reset View** clears search and frames the entire verse.
