@@ -6,18 +6,23 @@
   <title>Shinobi Chronicles — Naruto-Verse Character Archive</title>
   <meta name="description" content="Browse every shinobi, Tailed Beast and legendary weapon of the Naruto-verse, then open the interactive Lineage Scroll." />
 
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="icon" href="favicon.ico" sizes="any" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
+  <link rel="icon" href="assets/icons/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
   <meta name="theme-color" content="#F4EBD0" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Shinobi Chronicles — Naruto-Verse Character Archive" />
+  <meta property="og:description" content="Browse every shinobi, Tailed Beast and legendary weapon, summon them full screen, and unroll the interactive Lineage Scroll." />
+  <meta property="og:image" content="assets/icons/apple-touch-icon.png" />
+  <meta name="twitter:card" content="summary" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Shippori+Mincho:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
 
   <!-- styles.css carries the theme tokens + full-screen preview; home.css the website layout -->
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="home.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/home.css" />
 </head>
 <body class="site">
 
@@ -50,6 +55,7 @@
           <div class="hero-cta">
             <a class="ink-btn accent big" href="#archive">Browse the Shinobi</a>
             <a class="ink-btn big" href="scroll.html">Open the Lineage Scroll</a>
+            <button type="button" class="ink-btn big" id="surprise" title="Summon a random shinobi">🎲 Surprise me</button>
           </div>
           <dl class="hero-stats" id="hero-stats"></dl>
         </div>
@@ -114,7 +120,7 @@
 
         <div class="result-bar">
           <span id="result-count"></span>
-          <span class="result-hint">Click a card for the full-screen animated preview</span>
+          <span class="result-hint">Click a card to summon it · <kbd>←</kbd> <kbd>→</kbd> browse · <kbd>/</kbd> search</span>
         </div>
 
         <div class="card-grid" id="grid" aria-live="polite"></div>
@@ -125,6 +131,10 @@
     </section>
   </main>
 
+  <button type="button" class="to-top" id="to-top" aria-label="Back to top" hidden>↑</button>
+
+  <noscript><p class="noscript">Shinobi Chronicles needs JavaScript to show the archive.</p></noscript>
+
   <footer class="site-foot">
     <div class="site-wrap foot-inner">
       <span><span class="foot-seal">忍</span> Shinobi Chronicles — a fan-made Naruto-verse archive.</span>
@@ -132,8 +142,9 @@
     </div>
   </footer>
 
-  <script src="data.js"></script>
-  <script src="preview.js"></script>
-  <script src="home.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/media-index.js"></script>
+  <script src="js/preview.js"></script>
+  <script src="js/home.js"></script>
 </body>
 </html>

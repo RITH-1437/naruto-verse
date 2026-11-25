@@ -14,32 +14,61 @@ No build step, no dependencies, no backend.
 - Double-click `index.html` (the website home), **or**
 - In VS Code, use **Live Server** (this folder's `.vscode/settings.json` uses port `5501`).
 
-Tailwind CSS and the Google Fonts are loaded from CDNs; every layout-critical style is
-also defined in `styles.css`, so the scroll still works if you are offline.
+Only the Google Fonts load from a CDN; everything else is local, so both pages work offline.
 
-## Files
+## Project structure
 
-| File | Purpose |
-| --- | --- |
-| `index.html` | Website home: hero, featured link to the scroll, paginated card archive (Shinobi / Tailed Beasts / Weapons) |
-| `home.css` / `home.js` | Home layout, filters, search, pagination; cards open the same full-screen preview |
-| `scroll.html` | The interactive Lineage Scroll: header, toolbar, SVG canvas, legends, all three drawers |
-| `styles.css` | Parchment/ink theme, typography, controls, drawer, animations |
-| `data.js` | **All** characters, Bijuu, eras, clans, natures and relationships |
-| `preview.js` | Full-screen animated character preview (summon, chakra aura, jutsu effects) |
-| `characters/` | Character artwork, normally named after the character `id` (see `characters/README.md`) |
-| `videos/` | Optional character clips (`videos/<id>.mp4` or `.webm`); a clip plays instead of the image |
-| `weapons/` | Optional weapon pictures (`weapons/<id>.png`); weapons themselves are listed in `WORLD.weapons` in `data.js` |
-| `app.js` | SVG renderer, pan/zoom, filters, search, drawers, camera animation |
-| `favicon.svg` / `favicon.ico` | The navbar's red 忍 seal as the site icon (raster assets regenerated with `python make_favicon.py`) |
+```text
+naruto-verse/
+├── index.html              Website home: hero, scroll feature, paginated card archive
+├── scroll.html             Interactive Lineage Scroll (SVG family tree, drawers)
+├── css/
+│   ├── styles.css          Shared parchment/ink theme, scroll layout, full-screen preview
+│   └── home.css            Home page layout: nav, hero, card grid, pagination
+├── js/
+│   ├── data.js             All characters, Bijuu, weapons, eras, clans and relationships
+│   ├── media-index.js      GENERATED list of every file in assets/ (see "Adding media")
+│   ├── preview.js          Full-screen animated preview + media discovery (shared)
+│   ├── home.js             Home archive: tabs, filters, search, pagination
+│   └── scroll.js           Scroll renderer: pan/zoom, links, filters, drawers, deep links
+├── assets/
+│   ├── characters/         Artwork, one WebP per id (assets/characters/<id>.webp)
+│   ├── weapons/            Weapon pictures (assets/weapons/<id>.webp)
+│   ├── videos/             Clips: <id>/<id>.mp4 intro, <id>/<jutsu-word>.mp4 skills, bijuu/<tails>.mp4
+│   └── icons/              Favicons (favicon.svg is the source)
+└── tools/
+    ├── build_media_index.py  Rebuilds js/media-index.js: python tools/build_media_index.py
+    └── make_favicon.py       Regenerates the raster icons: python tools/make_favicon.py
+```
+
+Media is found by convention: every file is named after its `id` in `js/data.js`
+(lowercase, no spaces), so most entries need no `image` or `video` field.
+
+### Adding media
+
+After adding, renaming or deleting anything in `assets/`, run:
+
+```sh
+python tools/build_media_index.py
+```
+
+The page only requests files listed in `js/media-index.js`, so the browser never asks for
+files that don't exist (no 404s in the console, faster previews). **A new file stays invisible
+until you rebuild the index.** Delete `js/media-index.js` to fall back to probing every path.
 
 ## Home page
 
-- A 4-column card grid (3 on tablets, 2 on phones) with pagination (8 / 12 / 16 / 24 per page; arrow keys flip pages).
+- A 4-column card grid (3 on tablets, 2 on phones) with pagination (8 / 12 / 16 / 24 per page).
+- Cards show a **▶ clips** badge when the character has video clips, and load their artwork lazily.
 - Tabs for **Shinobi**, **Tailed Beasts** and **Weapons**; search, era chips, clan/group filter and sort.
-- **Click a card** to open the full-screen animated preview. **On the scroll ↗** (or **Read Chronicle** in the
-  preview) opens `scroll.html` focused on that entry: `scroll.html?focus=<id>`, `?bijuu=<id>`, `?weapon=<id>`.
-- The tab and page are kept in the URL hash, e.g. `index.html#bijuu/2`.
+- **Click a card** to open the full-screen animated preview. Inside it, **‹ ›** or the arrow keys browse
+  the current results (the grid follows to the right page), and **Read Chronicle** opens `scroll.html`
+  focused on that entry: `scroll.html?focus=<id>`, `?bijuu=<id>`, `?weapon=<id>`.
+- **🎲 Surprise me** summons a random shinobi from the current filters.
+- Clips play **with sound** by default; the preview's Sound button turns it off (remembered per browser).
+  If the browser blocks audible autoplay, the clip plays muted and the next tap or key press turns sound on.
+- Keys: `/` search, `Esc` clears search, `←` / `→` flip pages (or browse inside the preview).
+- The tab and page are kept in the URL hash, e.g. `index.html#bijuu/2`; the browser Back button works.
 
 ## Controls (Lineage Scroll)
 
@@ -51,26 +80,25 @@ also defined in `styles.css`, so the scroll still works if you are offline.
 - **Sensei Links** — dotted master/apprentice connections.
 - **Team / Comrades** — dashed violet links for canon partnerships (Team 7, Hebi/Taka, Akatsuki pairs, Hyūga teams). Shown in every member's profile.
 - **⚔ Weapons** — the scroll of special weapons (Samehada, Kusanagi, Totsuka Blade…); each opens its lore and wielders. Weapons also appear in profiles, search and the full-screen preview.
-- **Era / Clan filters** — the Clan selector also has an **Akatsuki (group)** option that highlights the organisation's eleven members while keeping their real clan badges intact. Add other groups in `WORLD.groups` in `data.js`.
+- **Era / Clan filters** — the Clan selector also has an **Akatsuki (group)** option that highlights the organisation's eleven members while keeping their real clan badges intact. Add other groups in `WORLD.groups` in `js/data.js`.
 - Instant search by name, clan, group, jutsu or Bijuu. Search ignores accents, so `jugo` finds **Jūgo** and `choji` finds **Chōji**.
 
 ## Bijuu intro videos
 
 Each Tailed Beast plays a short intro clip when you open its full-screen preview, then
-fades into its portrait. Drop one file per beast in `videos/TAIL-BEAST/` named after its
-tail count — `1.mp4` … `10.mp4` (WebM also works) — or set `video: "path/to/clip.mp4"`
-on the beast in `data.js`. An explicit `video` field takes priority.
-The Ten-Tails clip (`10.mp4`) is already wired up.
+fades into its portrait. Clips live in `assets/videos/bijuu/`, named after the tail
+count — `1.mp4` … `10.mp4` (WebM also works) — or set `video: "path/to/clip.mp4"`
+on the beast in `js/data.js`. An explicit `video` field takes priority.
 
 ## Add a character
 
-1. Add an object to `WORLD.characters` in `data.js` with `id`, `name`, `clan`,
+1. Add an object to `WORLD.characters` in `js/data.js` with `id`, `name`, `clan`,
    `era`, `title`, `aura`, `x`, `y`, `bio` and `jutsu`.
 2. Add relationship entries to `WORLD.links` (`parent`, `spouse`, `reinc`, `sensei`, `team`).
    `team` links use `a`/`b` and appear as **Team / Comrades** chips on both profiles.
-3. Add artwork as `characters/<id>.png` (or `.webp` / `.jpg`). If the filename cannot match
-   the id (e.g. `jugo.png` for `juugo`), set `image: "characters/jugo.png"` on the character.
-   The same rule applies to `weapons/<id>.png` and the `image` field on weapons.
+3. Add artwork as `assets/characters/<id>.webp` (PNG / JPG also work; keep it under ~1400px).
+   Skill clips go in `assets/videos/<id>/`, named after a word of the jutsu (see
+   `assets/characters/README.md`). Weapons use `assets/weapons/<id>.png`.
 4. If the character is a Jinchūriki, add their `id` to the beast's `jinchuriki` array.
 
 The renderer, search, filters and relationship chips pick it up automatically.
