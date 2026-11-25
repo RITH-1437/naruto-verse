@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SHINOBI CHRONICLES — WORLD DATA
+   SHINOBI CHRONICLES: WORLD DATA
    --------------------------------------------------------------------------
    Everything the app renders lives here. Add a character by adding one object
    to CHARACTERS and (optionally) links to LINKS / BIJUU.jinchuriki.

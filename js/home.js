@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SHINOBI CHRONICLES — website home: paginated card archive
+   SHINOBI CHRONICLES: website home: paginated card archive
    Cards open the same full-screen animated preview as the Lineage Scroll
    (preview.js). "Read Chronicle" / "On the scroll" deep-link into scroll.html.
    ========================================================================== */

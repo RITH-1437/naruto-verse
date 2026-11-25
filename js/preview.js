@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SHINOBI CHRONICLES — full-screen animated character preview
+   SHINOBI CHRONICLES: full-screen animated character preview
    --------------------------------------------------------------------------
    Clicking a portrait opens a centred, full-screen stage for that character:
    a summoning entrance, an idle chakra aura and per-nature jutsu effects.
@@ -75,7 +75,7 @@
     for (const src of list) { if (!known(src)) continue; const r = await probe(src); if (r) return r; }
     return null;
   }
-  /* Still image only (no video probing) — used for portraits on the tree,
+  /* Still image only (no video probing), used for portraits on the tree,
      relationship chips and search results. */
   const imageCache = new Map();
   function findImage(c, folder = "characters") {

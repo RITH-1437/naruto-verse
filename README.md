@@ -1,8 +1,8 @@
-# Shinobi Chronicles — The Naruto-Verse Lineage & Bijuu Scroll
+# Shinobi Chronicles: The Naruto-Verse Lineage & Bijuu Scroll
 
 A complete, static, interactive parchment scroll of the Narutoverse: bloodlines,
 marriages, reincarnation chains, sensei/student and team bonds, legendary weapons,
-and the nine Tailed Beasts — from Kaguya through Naruto and Shippuden to Boruto.
+and the nine Tailed Beasts, from Kaguya through Naruto and Shippuden to Boruto.
 
 Currently covers **98 characters**, **10 Bijuu**, **17 weapons** and **119 relationships**,
 all with artwork. Zetsu appears as one combined character (both halves in a single profile).
@@ -75,19 +75,19 @@ until you rebuild the index.** Delete `js/media-index.js` to fall back to probin
 - **Drag** the canvas to pan, **scroll** to zoom, `+` / `-` to zoom, `0` to fit.
 - **Reset View** clears search and frames the entire verse.
 - **Click a portrait** to open its full-screen animated preview, centred on the page: the character is summoned in a smoke puff with their chakra aura, and **Perform Jutsu** (or any jutsu chip) plays an effect for that chakra nature. **Read Chronicle** opens the profile; relationship chips pan to and open that person. `Esc` closes the preview.
-- **Reincarnation Lines** — glowing dashed Indra→Madara→Sasuke and Ashura→Hashirama→Naruto chains.
-- **Bijuu Links** — reveals the spirit realm and red/orange chakra threads to every host.
-- **Sensei Links** — dotted master/apprentice connections.
-- **Team / Comrades** — dashed violet links for canon partnerships (Team 7, Hebi/Taka, Akatsuki pairs, Hyūga teams). Shown in every member's profile.
-- **⚔ Weapons** — the scroll of special weapons (Samehada, Kusanagi, Totsuka Blade…); each opens its lore and wielders. Weapons also appear in profiles, search and the full-screen preview.
-- **Era / Clan filters** — the Clan selector also has an **Akatsuki (group)** option that highlights the organisation's eleven members while keeping their real clan badges intact. Add other groups in `WORLD.groups` in `js/data.js`.
+- **Reincarnation Lines**: glowing dashed Indra→Madara→Sasuke and Ashura→Hashirama→Naruto chains.
+- **Bijuu Links**: reveals the spirit realm and red/orange chakra threads to every host.
+- **Sensei Links**: dotted master/apprentice connections.
+- **Team / Comrades**: dashed violet links for canon partnerships (Team 7, Hebi/Taka, Akatsuki pairs, Hyūga teams). Shown in every member's profile.
+- **⚔ Weapons**: the scroll of special weapons (Samehada, Kusanagi, Totsuka Blade…); each opens its lore and wielders. Weapons also appear in profiles, search and the full-screen preview.
+- **Era / Clan filters**: the Clan selector also has an **Akatsuki (group)** option that highlights the organisation's eleven members while keeping their real clan badges intact. Add other groups in `WORLD.groups` in `js/data.js`.
 - Instant search by name, clan, group, jutsu or Bijuu. Search ignores accents, so `jugo` finds **Jūgo** and `choji` finds **Chōji**.
 
 ## Bijuu intro videos
 
 Each Tailed Beast plays a short intro clip when you open its full-screen preview, then
 fades into its portrait. Clips live in `assets/videos/bijuu/`, named after the tail
-count — `1.mp4` … `10.mp4` (WebM also works) — or set `video: "path/to/clip.mp4"`
+count: `1.mp4` … `10.mp4` (WebM also works). Or set `video: "path/to/clip.mp4"`
 on the beast in `js/data.js`. An explicit `video` field takes priority.
 
 ## Add a character

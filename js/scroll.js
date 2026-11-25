@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SHINOBI CHRONICLES — Lineage Scroll (scroll.html)
+   SHINOBI CHRONICLES: Lineage Scroll (scroll.html)
    Pure static SVG renderer with pan / zoom, filters, graph links and drawers.
    ========================================================================== */
 
@@ -106,9 +106,9 @@
         grid).textContent = `GEN ${g}`;
     });
     el("text", { class: "band-label", x: centerX, y: 1785 }, grid)
-      .textContent = "—  THE SPIRIT REALM · TIED BEASTS  —";
+      .textContent = "THE SPIRIT REALM · TIED BEASTS";
     el("text", { class: "band-label", x: centerX, y: 1630 - 42 }, grid)
-      .textContent = "—  JINCHŪRIKI THROUGH THE AGES  —";
+      .textContent = "JINCHŪRIKI THROUGH THE AGES";
   }
 
   /* --------------------------------------------------------------- node draw */
@@ -843,7 +843,7 @@
       if (trace) {
         if (!state.bijuu) { state.bijuu = true; els.bijuuToggle.checked = true; applyVisibility(); }
         focusNode(trace.dataset.trace, RB, 1.1);
-        status("Chakra threads revealed — drag to explore the hosts.");
+        status("Chakra threads revealed. Drag to explore the hosts.");
         return;
       }
       const result = e.target.closest(".search-result");
