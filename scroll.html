@@ -60,17 +60,21 @@
       </div>
 
       <div class="tool-row tool-row-secondary">
-        <label class="switch" title="Show the glowing dashed rebirth lines">
+        <div class="view-seg" id="view-seg" role="radiogroup" aria-label="View">
+          <button type="button" role="radio" aria-checked="true" data-view="flow">Flow</button>
+          <button type="button" role="radio" aria-checked="false" data-view="scroll">Full scroll</button>
+        </div>
+        <label class="switch scroll-only" title="Show the glowing dashed rebirth lines">
           <input type="checkbox" id="toggle-reinc" checked />
           <span class="switch-track"><span class="switch-knob"></span></span>
           <span class="switch-text">Reincarnation Lines</span>
         </label>
-        <label class="switch" title="Draw chakra threads from each Bijuu to its hosts">
+        <label class="switch scroll-only" title="Draw chakra threads from each Bijuu to its hosts">
           <input type="checkbox" id="toggle-bijuu" />
           <span class="switch-track"><span class="switch-knob"></span></span>
           <span class="switch-text">Bijuu Links</span>
         </label>
-        <label class="switch" title="Show master/apprentice connections">
+        <label class="switch scroll-only" title="Show master/apprentice connections">
           <input type="checkbox" id="toggle-sensei" />
           <span class="switch-track"><span class="switch-knob"></span></span>
           <span class="switch-text">Sensei Links</span>
@@ -78,7 +82,7 @@
         <div class="spacer"></div>
         <button id="btn-weapons" class="ink-btn"> ⚔ Weapons</button>
         <button id="btn-bijuu" class="ink-btn accent"> Bijuu Scroll</button>
-        <button id="btn-reset" class="ink-btn"> Reset View</button>
+        <button id="btn-reset" class="ink-btn scroll-only"> Reset View</button>
       </div>
     </section>
 
@@ -145,6 +149,26 @@
 
       <div id="canvas-hint" class="canvas-hint">Drag to pan &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click a portrait to open its chronicle</div>
       <div id="status-pill" class="status-pill" hidden></div>
+
+      <!-- relationship flow (default view) -->
+      <div id="flow-view" class="flow-view" hidden>
+        <div class="flow-layout">
+          <aside class="flow-side" aria-label="Choose who to centre">
+            <p class="flow-side-title">Shinobi <small>Era and clan filters apply</small></p>
+            <div class="flow-list" id="flow-list"></div>
+          </aside>
+          <div class="flow-main">
+            <nav class="flow-trail" id="flow-trail" aria-label="Recently viewed"></nav>
+            <div class="chip-row flow-groups" id="flow-groups" aria-label="Relationship kinds"></div>
+            <div class="flow" id="flow-stage" aria-live="polite">
+              <svg class="flow-lines" id="flow-lines" aria-hidden="true"></svg>
+              <div class="flow-col" id="flow-left"></div>
+              <div class="flow-centre" id="flow-centre"></div>
+              <div class="flow-col" id="flow-right"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- ===================== CHARACTER DRAWER ===================== -->

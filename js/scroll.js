@@ -672,6 +672,8 @@
 
   function pickResult(type, id) {
     if (type === "weapon") { openWeapon(id); els.searchResults.hidden = true; return; }
+    if (flow.on && type === "char") { flowFocus(id); els.searchResults.hidden = true; return; }
+    if (flow.on) { openBijuu(id); els.searchResults.hidden = true; return; }
     focusNode(id, type === "bijuu" ? 1.2 : 1.55);
     if (type === "bijuu") openBijuu(id); else openCharacter(id);
     els.searchResults.hidden = true;
@@ -826,7 +828,7 @@
 
     document.addEventListener("click", (e) => {
       const go = e.target.closest("[data-go]");
-      if (go) { focusNode(go.dataset.go); openCharacter(go.dataset.go); return; }
+      if (go) { if (flow.on) flowFocus(go.dataset.go); else focusNode(go.dataset.go); openCharacter(go.dataset.go); return; }
       const wg = e.target.closest("[data-weapon-go]");
       if (wg) { openWeapon(wg.dataset.weaponGo); previewWeapon(wg.dataset.weaponGo); return; }
       const wc = e.target.closest(".weapon-card[data-weapon]");
@@ -939,6 +941,7 @@
         if (!src) return;
         portraits.set(c.id, src);
         applyPortrait(c, src);
+        if (flow.on && fl.view) { clearTimeout(flow.pic); flow.pic = setTimeout(() => { flowDraw(); flowList(); }, 250); }
         if (state.selected === c.id && !els.drawerBody.querySelector(".drawer-avatar")) openCharacter(c.id, false);
       });
     });
@@ -958,7 +961,146 @@
     applyVisibility();
     fitView();
     setTimeout(() => { els.hint.style.transition = "opacity .5s"; }, 100);
+    flowInit();
     openFromUrl();
+  }
+
+  /* ------------------------------------------------- relationship flow view
+     One shinobi in a centre card; their connections grouped into labelled
+     boxes (family on the left, teachers, team, rebirth and Bijuu on the
+     right) with curved ink lines to every name. Click a name to re-centre.
+     The full Lineage Scroll stays one click away ("Full scroll"). */
+  const FLOW_GROUPS = [
+    { key: "parents", label: "Parents", side: "left", color: "#2B2118" },
+    { key: "spouse", label: "Spouse", side: "left", color: "#9A5B2E" },
+    { key: "siblings", label: "Siblings", side: "left", color: "#5A4A38" },
+    { key: "children", label: "Children", side: "left", color: "#C9922B" },
+    { key: "sensei", label: "Teachers", side: "right", color: "#3E86A0" },
+    { key: "students", label: "Students", side: "right", color: "#4C7A55" },
+    { key: "team", label: "Team & comrades", side: "right", color: "#6B6088" },
+    { key: "reinc", label: "Reincarnation", side: "right", color: "#7B3B6B" },
+    { key: "bijuu", label: "Tailed Beasts", side: "right", color: "#B4482E" }
+  ];
+  const flow = { on: true, focus: null, trail: [], off: new Set() };
+  const fl = {};
+
+  function flowConnections(id) {
+    const rel = relations(id), c = byId(id);
+    const beasts = new Set([...(c.bijuu || []).filter((b) => bijuuById(b)), ...WORLD.bijuu.filter((b) => b.jinchuriki.includes(id)).map((b) => b.id)]);
+    return FLOW_GROUPS.map((g) => ({ ...g, ids: g.key === "bijuu" ? [...beasts] : (rel[g.key] || []).filter((x) => byId(x)) }))
+      .filter((g) => g.ids.length);
+  }
+  const flowDegree = (id) => new Set(flowConnections(id).flatMap((g) => g.ids)).size;
+
+  function flowAvatar(c, cls) {
+    const pic = portraits.get(c.id);
+    return `<span class="${cls}" style="--c:${auraColor(c)}">${pic ? `<img src="${escapeHtml(pic)}" alt="" loading="lazy">` : escapeHtml(initials(c.name))}</span>`;
+  }
+  function flowBeastAvatar(b, cls) {
+    const pic = portraits.get("bijuu:" + b.id);
+    return `<span class="${cls}" style="--c:${b.color}">${pic ? `<img src="${escapeHtml(pic)}" alt="" loading="lazy">` : b.tails}</span>`;
+  }
+  function flowRow(g, id) {
+    if (g.key === "bijuu") {
+      const b = bijuuById(id);
+      return `<div class="fr" data-row="${b.id}"><button type="button" class="fr-go" data-bijuu-go="${b.id}" title="Open ${escapeHtml(b.name)}'s scroll">${flowBeastAvatar(b, "fr-av")}<span><b>${escapeHtml(b.name)}</b><small>${b.tails}-tailed beast · ${escapeHtml(b.nature)}</small></span></button></div>`;
+    }
+    const c = byId(id);
+    return `<div class="fr" data-row="${c.id}"><button type="button" class="fr-go" data-flow-go="${c.id}" title="Put ${escapeHtml(c.name)} in the centre">${flowAvatar(c, "fr-av")}<span><b>${escapeHtml(c.name)}</b><small>${escapeHtml(c.title || c.clan)}</small></span></button>
+      <button type="button" class="fr-open" data-flow-open="${c.id}" aria-label="Open ${escapeHtml(c.name)}'s chronicle" title="Open chronicle">↗</button></div>`;
+  }
+
+  function flowDraw() {
+    const c = byId(flow.focus), all = flowConnections(flow.focus), groups = all.filter((g) => !flow.off.has(g.key));
+    const people = new Set(all.flatMap((g) => g.ids)).size;
+    const box = (g, i) => `<section class="fg" style="--c:${g.color};--i:${i}"><h3><i class="sw"></i>${escapeHtml(g.label)}<span>${g.ids.length}</span></h3>${g.ids.map((id) => flowRow(g, id)).join("")}</section>`;
+    const side = (s, none) => groups.filter((g) => g.side === s).map(box).join("") || `<p class="flow-none">${none}${flow.off.size ? " with these filters" : " on the scroll"}.</p>`;
+    fl.left.innerHTML = side("left", "No family recorded");
+    fl.right.innerHTML = side("right", "No teachers, team or Bijuu recorded");
+    const eras = c.era.map((e) => (WORLD.eras.find((x) => x.id === e) || { label: e }).label).join(" · ");
+    fl.centre.innerHTML = `<div class="fc" style="--c:${auraColor(c)}">${flowAvatar(c, "fc-av")}
+      <p class="fc-clan">${escapeHtml(c.clan)}</p><h2>${escapeHtml(c.name)}</h2>${c.jp ? `<p class="fc-jp">${escapeHtml(c.jp)}</p>` : ""}
+      <p class="fc-title">${escapeHtml(c.title || "")}</p><p class="fc-era">${escapeHtml(eras)}</p>
+      <p class="fc-count"><b>${people}</b> connection${people === 1 ? "" : "s"}</p>
+      <button type="button" class="ink-btn accent" data-flow-open="${c.id}">Open chronicle</button></div>`;
+    fl.groups.innerHTML = all.map((g) => `<button type="button" class="chip flow-chip${flow.off.has(g.key) ? "" : " active"}" data-flow-group="${g.key}" aria-pressed="${!flow.off.has(g.key)}" style="--c:${g.color}"><i class="sw"></i>${escapeHtml(g.label)} <small>${g.ids.length}</small></button>`).join("");
+    fl.trail.innerHTML = flow.trail.length > 1
+      ? "<span>Path:</span>" + flow.trail.map((id, i) => `${i ? '<span aria-hidden="true">›</span>' : ""}<button type="button" data-flow-go="${id}"${id === flow.focus ? ' aria-current="true"' : ""}>${escapeHtml(byId(id).name)}</button>`).join("")
+      : "<span>Click any name to put them in the centre.</span>";
+    fl.stage.classList.remove("enter"); void fl.stage.offsetWidth; fl.stage.classList.add("enter");
+    requestAnimationFrame(flowLines);
+  }
+  function flowLines() {
+    const card = fl.centre.querySelector(".fc");
+    if (!flow.on || !card || getComputedStyle(fl.svg).display === "none") { fl.svg.innerHTML = ""; return; }
+    const b = fl.stage.getBoundingClientRect(), cr = card.getBoundingClientRect();
+    fl.svg.setAttribute("viewBox", `0 0 ${b.width} ${b.height}`);
+    fl.svg.innerHTML = [...fl.stage.querySelectorAll(".fr")].map((row) => {
+      const r = row.getBoundingClientRect(), left = !!row.closest("#flow-left"), col = row.closest(".fg").style.getPropertyValue("--c");
+      const sx = (left ? cr.left : cr.right) - b.left, sy = cr.top + cr.height / 2 - b.top;
+      const ex = (left ? r.right : r.left) - b.left, ey = r.top + r.height / 2 - b.top, mx = (sx + ex) / 2;
+      return `<path class="fl" data-for="${row.dataset.row}" d="M${sx.toFixed(1)} ${sy.toFixed(1)}C${mx.toFixed(1)} ${sy.toFixed(1)} ${mx.toFixed(1)} ${ey.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}" style="stroke:${col}"/>`;
+    }).join("");
+  }
+  function flowList() {
+    const list = WORLD.characters.filter((c) => (state.era === "all" || c.era.includes(state.era)) && clanMatch(c));
+    const clans = [...new Set(list.map((c) => c.clan))].sort((a, b) => a.localeCompare(b));
+    fl.list.innerHTML = clans.map((k) => {
+      const l = list.filter((c) => c.clan === k).sort((a, b) => a.name.localeCompare(b.name));
+      return `<h3>${escapeHtml(k)} <span>${l.length}</span></h3>` + l.map((c) => `<button type="button" class="fl-item" data-flow-go="${c.id}"${c.id === flow.focus ? ' aria-current="true"' : ""}>${flowAvatar(c, "fl-av")}<span class="fl-name">${escapeHtml(c.name)}</span><small>${flowDegree(c.id)}</small></button>`).join("");
+    }).join("") || '<p class="flow-none">No one in this era and clan.</p>';
+    const cur = fl.list.querySelector("[aria-current]");
+    if (cur) fl.list.scrollTop = cur.offsetTop - fl.list.offsetTop - fl.list.clientHeight / 2;
+  }
+  function flowFocus(id, { push = true } = {}) {
+    if (!byId(id)) return;
+    flow.focus = id;
+    if (push) { flow.trail = flow.trail.filter((x) => x !== id); flow.trail.push(id); flow.trail = flow.trail.slice(-6); }
+    flowDraw(); flowList();
+    try { const u = new URL(location.href); u.searchParams.set("focus", id); history.replaceState(null, "", u.pathname + u.search); } catch (_) { /* cosmetic */ }
+  }
+  function setView(v) {
+    flow.on = v === "flow";
+    $("app").classList.toggle("flow-mode", flow.on);
+    fl.view.hidden = !flow.on;
+    document.querySelectorAll("#view-seg [data-view]").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.view === v)));
+    try { localStorage.setItem("shinobi-view", v); } catch (_) { /* private mode */ }
+    if (flow.on) { flowFocus(flow.focus || state.selected || "naruto", { push: !flow.trail.length }); }
+    else {
+      fitView();
+      if (flow.focus && flow.trail.length) setTimeout(() => focusNode(flow.focus), 60);
+      try { const u = new URL(location.href); u.searchParams.delete("focus"); history.replaceState(null, "", u.pathname + u.search); } catch (_) { /* cosmetic */ }
+    }
+  }
+  function flowInit() {
+    ["view", "stage", "left", "right", "centre", "list", "groups", "trail"].forEach((k) => { fl[k] = $("flow-" + k); });
+    fl.svg = $("flow-lines");
+    $("view-seg").addEventListener("click", (e) => { const b = e.target.closest("[data-view]"); if (b) setView(b.dataset.view); });
+    fl.view.addEventListener("click", (e) => {
+      const go = e.target.closest("[data-flow-go]");
+      if (go) { flowFocus(go.dataset.flowGo); if (!go.closest("#flow-list")) fl.view.scrollTo({ top: 0, behavior: "smooth" }); return; }
+      const op = e.target.closest("[data-flow-open]");
+      if (op) { openCharacter(op.dataset.flowOpen); return; }
+      const gr = e.target.closest("[data-flow-group]");
+      if (gr) { const k = gr.dataset.flowGroup; flow.off.has(k) ? flow.off.delete(k) : flow.off.add(k); flowDraw(); }
+    });
+    const hot = (id) => {
+      fl.stage.classList.toggle("hot", !!id);
+      fl.stage.querySelectorAll(".fr").forEach((x) => x.classList.toggle("on", x.dataset.row === id));
+      fl.svg.querySelectorAll(".fl").forEach((x) => x.classList.toggle("on", x.dataset.for === id));
+    };
+    fl.stage.addEventListener("mouseover", (e) => { const r = e.target.closest(".fr"); hot(r ? r.dataset.row : null); });
+    fl.stage.addEventListener("mouseleave", () => hot(null));
+    els.eraFilters.addEventListener("click", () => flow.on && flowList());
+    els.clanFilter.addEventListener("change", () => flow.on && flowList());
+    if ("ResizeObserver" in window) new ResizeObserver(() => requestAnimationFrame(flowLines)).observe(fl.stage);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => flow.on && flowLines());
+    const q = new URLSearchParams(location.search);
+    let v = q.get("view");
+    if (!v) { try { v = localStorage.getItem("shinobi-view"); } catch (_) { v = null; } }
+    if (q.get("bijuu") || q.get("weapon")) v = v || "scroll";
+    flow.focus = byId(q.get("focus")) ? q.get("focus") : "naruto";
+    setView(v === "scroll" ? "scroll" : "flow");
   }
 
   /* Deep links from the home page: scroll.html?focus=<id> | ?bijuu=<id> | ?weapon=<id> */
@@ -966,6 +1108,7 @@
     const q = new URLSearchParams(location.search);
     const id = q.get("focus"), b = q.get("bijuu"), w = q.get("weapon");
     setTimeout(() => {
+      if (id && byId(id) && flow.on) return; // the flow already centres on it
       if (id && byId(id)) { focusNode(id); openCharacter(id, false); }
       else if (b && bijuuById(b)) openBijuu(b, true);
       else if (w && weaponById(w)) { showWeaponDrawer(); openWeapon(w); }
