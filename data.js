@@ -96,21 +96,21 @@ const WORLD = {
     {
       id: "moon_main", name: "Moon Main Branch", jp: "月の本家", clan: "Ōtsutsuki",
       era: ["origin"], title: "Ōtsutsuki of the Moon", aura: "cyan", gen: 2, x: 1750, y: 490,
-      image: "characters/moon main.png",
+      image: "characters/moon main.webp",
       bio: "The principal hereditary line of Hamura's clan, guardians of the moon realm and the Tenseigen.",
       jutsu: [["Tenseigen Chakra", "All", "Kekkei Mōra"]], bijuu: []
     },
     {
       id: "moon_side", name: "Moon Side Branch", jp: "月の分家", clan: "Ōtsutsuki",
       era: ["origin"], title: "Ōtsutsuki cadet line", aura: "cyan", gen: 2, x: 2000, y: 490,
-      image: "characters/moon side.png",
+      image: "characters/moon side.webp",
       bio: "The cadet branch of Hamura's line. From this line would eventually emerge Toneri.",
       jutsu: [["Byakugan-derived techniques", "All", "Kekkei Genkai"]], bijuu: []
     },
     {
       id: "hyuga_elder", name: "Hyūga Progenitor", jp: "日向の祖", clan: "Hyūga",
       era: ["origin"], title: "Founder of the Hyūga", aura: "cyan", gen: 2, x: 2350, y: 490,
-      image: "characters/hyuga.png",
+      image: "characters/hyuga.webp",
       bio: "Ancestor of the Hyūga clan bearers of the Byakugan, descended from the Ōtsutsuki moon line.",
       jutsu: [["Byakugan", "All", "Kekkei Genkai"], ["Gentle Fist", "All", "Taijutsu"]], bijuu: []
     },
@@ -123,7 +123,7 @@ const WORLD = {
     {
       id: "butsuma", name: "Butsuma Senju", jp: "千手 仏間", clan: "Senju",
       era: ["origin"], title: "Senju patriarch", aura: "none", gen: 3, x: 1220, y: 680,
-      image: "characters/batsuma.png",
+      image: "characters/batsuma.webp",
       bio: "Leader of the Senju clan in the Warring States era; father of Hashirama, Tobirama and Itama.",
       jutsu: [["Senju Taijutsu", "All", "Taijutsu"]], bijuu: []
     },
@@ -148,14 +148,14 @@ const WORLD = {
     {
       id: "izuna", name: "Izuna Uchiha", jp: "うちは イズナ", clan: "Uchiha",
       era: ["origin"], title: "Madara's brother", aura: "none", gen: 4, x: 360, y: 870,
-      image: "characters/izsuna.png",
+      image: "characters/izsuna.webp",
       bio: "Madara's beloved younger brother and equal in battle. His death drove Madara away from Konoha.",
       jutsu: [["Sharingan", "All", "Kekkei Genkai"]], bijuu: []
     },
     {
       id: "kagami", name: "Kagami Uchiha", jp: "うちは カガミ", clan: "Uchiha",
       era: ["origin"], title: "Uchiha elder", aura: "none", gen: 4, x: 560, y: 870,
-      image: "characters/kamagi.png",
+      image: "characters/kamagi.webp",
       bio: "An Uchiha contemporary of Hashirama and ancestor of Shisui and Fugaku's line.",
       jutsu: [["Fire Release: Blaze Impression", "Fire", "Ninjutsu"]], bijuu: []
     },
@@ -443,7 +443,7 @@ const WORLD = {
     {
       id: "juugo", name: "Jūgo", jp: "重吾", clan: "Other",
       era: ["naruto", "shippuden"], title: "Hebi brute · Natural energy host", aura: "none", gen: 6, x: 4400, y: 1250,
-      image: "characters/jugo.png",
+      image: "characters/jugo.webp",
       bio: "A fugitive whose body absorbed natural energy uncontrollably, driving him into violent rages. Orochimaru's experiments gave him a curse seal; he found calm as Sasuke's comrade.",
       jutsu: [["Curse Mark Transformation", "Yin-Yang", "Kekkei Genkai"], ["Natural Energy Absorption", "Sage", "Senjutsu"], ["Super Strength", "All", "Taijutsu"]], bijuu: []
     },
@@ -502,7 +502,7 @@ const WORLD = {
     {
       id: "a_raikage", name: "A (Fourth Raikage)", jp: "四代目雷影 エー", clan: "Other",
       era: ["shippuden", "boruto"], title: "Fourth Raikage", aura: "none", gen: 5, x: 1400, y: 1060,
-      image: "characters/a.png",
+      image: "characters/a.webp",
       bio: "The hot-tempered leader of the Hidden Cloud and Killer B's sworn brother. His Lightning Release Armour makes him one of the fastest shinobi alive.",
       jutsu: [["Lightning Release Armour", "Lightning", "Ninjutsu"], ["Lightning Release: Liger Bomb", "Lightning", "Taijutsu"], ["Hell Stab", "Lightning", "Ninjutsu"]], bijuu: []
     },
@@ -522,7 +522,7 @@ const WORLD = {
     {
       id: "guy", name: "Might Guy", jp: "マイト・ガイ", clan: "Other",
       era: ["naruto", "shippuden", "boruto"], title: "Leader of Team Guy · Blue Beast", aura: "none", gen: 5, x: 1275, y: 1060,
-      image: "characters/might.png",
+      image: "characters/might.webp",
       bio: "Kakashi's self-declared eternal rival and the Leaf's greatest taijutsu master. He opened all Eight Gates against Madara and passed his way of hard work to Rock Lee.",
       jutsu: [["Dynamic Entry", "All", "Taijutsu"], ["Morning Peacock", "Fire", "Taijutsu"], ["Night Guy", "All", "Taijutsu"]], bijuu: []
     },
@@ -589,14 +589,14 @@ const WORLD = {
     {
       id: "metal_lee", name: "Metal Lee", jp: "メタル・リー", clan: "Other",
       era: ["boruto"], title: "Taijutsu Hopeful", aura: "none", gen: 7, x: 1620, y: 1440,
-      image: "characters/metal.png",
+      image: "characters/metal.webp",
       bio: "Rock Lee's son, who trains in taijutsu like his father but freezes up under pressure.",
       jutsu: [["Leaf Hurricane", "All", "Taijutsu"], ["Eight Gates", "All", "Taijutsu"]], bijuu: []
     },
     {
       id: "chocho", name: "Chōchō Akimichi", jp: "秋道 チョウチョウ", clan: "Other",
       era: ["boruto"], title: "Team 10 (new) · Butterfly", aura: "none", gen: 7, x: 2140, y: 1440,
-      image: "characters/choco.png",
+      image: "characters/choco.webp",
       bio: "Daughter of Chōji and Karui. Confident and food-loving, she uses the Akimichi body-expansion techniques.",
       jutsu: [["Partial Expansion", "All", "Hiden"], ["Butterfly Mode", "Yin-Yang", "Hiden"]], bijuu: []
     },
@@ -659,7 +659,7 @@ const WORLD = {
     {
       id: "yugito", name: "Yugito Nii", jp: "二位 ユギト", clan: "Other",
       era: ["shippuden"], title: "2-tails Jinchūriki", aura: "none", gen: 8, x: 400, y: 1630,
-      image: "characters/Yugito.png",
+      image: "characters/Yugito.webp",
       bio: "Jinchūriki of Matatabi and a ninja of Kumogakure, captured by Akatsuki.",
       jutsu: [["Matatabi's Chakra", "Fire", "Bijuu"], ["Tailed Beast Ball", "All", "Bijuu"]], bijuu: ["matatabi"], compact: true
     },
@@ -678,7 +678,7 @@ const WORLD = {
     {
       id: "han", name: "Han", jp: "ハン", clan: "Other",
       era: ["shippuden"], title: "5-tails host", aura: "none", gen: 8, x: 1300, y: 1630,
-      image: "characters/Han.png",
+      image: "characters/Han.webp",
       bio: "Elder brother of the Kazekage and host of Kokuo, the Five-Tails, who commanded the twin chakra natures of fire and water.",
       jutsu: [["Steam Release", "Water", "Kekkei Genkai"], ["Kokuo's Chakra", "Water", "Bijuu"]], bijuu: ["kokuo"], compact: true
     },
@@ -708,7 +708,7 @@ const WORLD = {
       abilities: ["Water Release", "Shell Defence", "Tailed Beast Ball"],
       jinchuriki: ["rin", "yagura"], lore: "A three-tailed turtle spirit dwelling in the lakes of the Land of Water." },
     { id: "songoku", name: "Son Goku", jp: "四尾 孫悟空", tails: 4, nature: "Earth / Lava", x: 1080, y: 1850, color: "#8A6A46",
-      image: "characters/son.png",
+      image: "characters/son.webp",
       abilities: ["Lava Release", "Earth Release", "Tailed Beast Ball"],
       jinchuriki: ["roshi"], lore: "A hot-tempered ape spirit whose lava burns hotter than any ordinary flame." },
     { id: "kokuo", name: "Kokuo", jp: "五尾 穆王", tails: 5, nature: "Water / Fire", x: 1340, y: 1850, color: "#7B8C9B",
@@ -724,7 +724,7 @@ const WORLD = {
       abilities: ["Ink Manipulation", "Tentacle Arms", "Tailed Beast Ball", "Lava Release"],
       jinchuriki: ["killer_b"], lore: "An eight-tailed octopus-cow spirit bound to the rapper of Cloud Village." },
     { id: "kurama", name: "Kurama", jp: "九尾 九喇嘛", tails: 9, nature: "Wind / Chakra", x: 2380, y: 1850, color: "#C9922B",
-      image: "characters/kurama.png",
+      image: "characters/kurama.webp",
       abilities: ["Tailed Beast Ball", "Chakra Cloak", "Wind Release", "Bijuu Bomb barrage"],
       jinchuriki: ["mito", "kushina", "naruto", "himawari"], lore: "The nine-tailed fox, once feared as the most destructive of the Bijuu, now Naruto's closest ally." },
     { id: "juubi", name: "Ten-Tails (Jūbi)", jp: "十尾", tails: 10, nature: "All Chakra", x: 2640, y: 1850, color: "#9B4C6E",

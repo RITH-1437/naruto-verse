@@ -8,10 +8,10 @@ characters/sasuke.webp
 characters/kakashi.jpg
 ```
 
-Supported: `.png`, `.webp`, `.jpg`, `.jpeg`, `.gif` (checked in that order).
+Supported: `.webp`, `.png`, `.jpg`, `.jpeg`, `.gif` (checked in that order). WebP is preferred: keep files under ~1400px and ~500 KB.
 You can also point a character at any path with `image: "path/to/file.png"` in `data.js`.
 This is required when the filename differs from the id — e.g. **Jūgo** has
-`image: "characters/jugo.png"` because his id is `juugo`. The same applies to
+`image: "characters/jugo.webp"` because his id is `juugo`. The same applies to
 `weapons/` (e.g. Temari's fan uses `weapons/war-fan.png`).
 
 Tips

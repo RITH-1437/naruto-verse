@@ -29,7 +29,7 @@
   "use strict";
 
   const INK = "#2B2118";
-  const EXTS = ["png", "webp", "jpg", "jpeg", "gif"];
+  const EXTS = ["webp", "png", "jpg", "jpeg", "gif"];
   const VIDEO_EXTS = ["mp4", "webm"];
   const NATURE_FX = {
     Weapon: "slash", Fire: "fire", Wind: "wind", Water: "water", Lightning: "lightning", Earth: "earth",
