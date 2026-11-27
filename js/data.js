@@ -31,7 +31,8 @@ const WORLD = {
     { id: "Hyūga", label: "Hyūga" },
     { id: "Other", label: "Other / None" },
     { id: "Akatsuki", label: "Akatsuki (group)" },
-    { id: "Land of Waves", label: "Land of Waves (arc)" }
+    { id: "Land of Waves", label: "Land of Waves (arc)" },
+    { id: "Kage", label: "Kage (group)" }
   ],
 
   /* Organisations that behave like an extra clan filter. Members keep their
@@ -39,7 +40,10 @@ const WORLD = {
   groups: {
     Akatsuki: ["nagato", "konan", "yahiko", "obito", "itachi", "kisame",
       "sasori", "deidara", "hidan", "kakuzu", "zetsu", "orochimaru"],
-    "Land of Waves": ["zabuza", "haku", "gozu", "meizu", "gato", "tazuna"]
+    "Land of Waves": ["zabuza", "haku", "gozu", "meizu", "gato", "tazuna"],
+    Kage: ["hashirama", "tobirama", "hiruzen", "minato", "tsunade", "kakashi", "naruto",
+      "third_kazekage", "rasa", "gaara", "third_raikage", "a_raikage", "darui",
+      "yagura", "mei", "chojuro", "mu", "onoki", "kurotsuchi"]
   },
 
   auraColors: {
@@ -506,6 +510,61 @@ const WORLD = {
       bio: "The long-lived leader of the Hidden Stone, who once fought Madara. He can float in the air and uses Dust Release, which breaks matter down to atoms.",
       jutsu: [["Dust Release: Detachment of the Primitive World", "All", "Kekkei Tōta"], ["Earth Release: Light Weight Rock", "Earth", "Ninjutsu"], ["Flight", "Earth", "Ninjutsu"]], bijuu: []
     },
+    /* ---- Kage and wielders of other villages ---- */
+    {
+      id: "mu", name: "Mū", jp: "無", clan: "Other",
+      era: ["origin", "shippuden"], title: "Second Tsuchikage", aura: "none", gen: 2, x: 900, y: 490,
+      bio: "The Second Tsuchikage of the Hidden Stone and Ōnoki's teacher, called \"The Non-Appearing\". He could turn invisible and split his body in two, and was reanimated in the Fourth Shinobi World War.",
+      jutsu: [["Dust Release: Detachment of the Primitive World", "All", "Kekkei Tōta"], ["Transparency", "All", "Ninjutsu"], ["Fission", "All", "Ninjutsu"]], bijuu: []
+    },
+    {
+      id: "third_kazekage", name: "Third Kazekage", jp: "三代目風影", clan: "Other",
+      era: ["shippuden"], title: "Third Kazekage", aura: "none", gen: 4, x: 2750, y: 870,
+      bio: "Said to be the strongest Kazekage in the Hidden Sand's history, master of iron sand. He vanished without a trace; Sasori had killed him and turned him into a human puppet.",
+      jutsu: [["Iron Sand: Gathering Assault", "Earth", "Kekkei Genkai"], ["Iron Sand: World Order", "Earth", "Kekkei Genkai"]], bijuu: []
+    },
+    {
+      id: "pakura", name: "Pakura", jp: "パクラ", clan: "Other",
+      era: ["shippuden"], title: "Hero of the Sand", aura: "none", gen: 4, x: 3100, y: 870,
+      bio: "A Hidden Sand kunoichi hailed as a hero, whose Scorch Release burned enemies from the inside. Her own village betrayed her to the Hidden Mist, and she was reanimated in the war.",
+      jutsu: [["Scorch Release: Extreme Steaming Murder", "Fire", "Kekkei Genkai"]], bijuu: []
+    },
+    {
+      id: "third_raikage", name: "Third Raikage", jp: "三代目雷影", clan: "Other",
+      era: ["shippuden"], title: "Third Raikage", aura: "none", gen: 4, x: 3300, y: 870,
+      bio: "A's father, whose body was so tough that almost nothing could pierce it. He died after fighting ten thousand enemies alone for three days and nights to cover his comrades' retreat.",
+      jutsu: [["Hell Stab: Four Fingers", "Lightning", "Ninjutsu"], ["Lightning Release Armour", "Lightning", "Ninjutsu"]], bijuu: []
+    },
+    {
+      id: "darui", name: "Darui", jp: "ダルイ", clan: "Other",
+      era: ["shippuden", "boruto"], title: "Sixth Raikage", aura: "none", gen: 5, x: 3220, y: 1060,
+      bio: "The Fourth Raikage's laid-back right-hand man, who later became the Sixth Raikage. He wields Storm Release and Black Lightning.",
+      jutsu: [["Storm Release: Laser Circus", "Lightning", "Kekkei Genkai"], ["Black Lightning: Black Panther", "Lightning", "Ninjutsu"]], bijuu: []
+    },
+    {
+      id: "yamato", name: "Yamato", jp: "ヤマト", clan: "Other",
+      era: ["shippuden", "boruto"], title: "Wood Release User", aura: "none", gen: 5, x: 3340, y: 1060,
+      bio: "A former ANBU and the only survivor of Orochimaru's experiments implanting Hashirama's cells. His Wood Release can hold back Naruto's Nine-Tails chakra.",
+      jutsu: [["Wood Release: Four-Pillar House", "Earth", "Kekkei Genkai"], ["Wood Release: Wood Clone", "Earth", "Kekkei Genkai"]], bijuu: []
+    },
+    {
+      id: "kurotsuchi", name: "Kurotsuchi", jp: "黒ツチ", clan: "Other",
+      era: ["shippuden", "boruto"], title: "Fourth Tsuchikage", aura: "none", gen: 7, x: 2990, y: 1440,
+      bio: "Ōnoki's granddaughter, who fought in the Fourth Shinobi World War and later succeeded him as the Fourth Tsuchikage.",
+      jutsu: [["Lava Release: Quicklime Congealing", "Fire", "Kekkei Genkai"], ["Earth Release", "Earth", "Ninjutsu"]], bijuu: []
+    },
+    {
+      id: "chojuro", name: "Chōjūrō", jp: "長十郎", clan: "Other",
+      era: ["shippuden", "boruto"], title: "Sixth Mizukage", aura: "none", gen: 7, x: 3500, y: 1440,
+      bio: "A shy but skilled swordsman of the Hidden Mist and Mei's bodyguard, who later became the Sixth Mizukage. He wields Hiramekarei, one of the Seven Swords.",
+      jutsu: [["Hiramekarei Unleashed", "Weapon", "Kenjutsu"]], bijuu: []
+    },
+    {
+      id: "chino", name: "Chino", jp: "チノ", clan: "Other",
+      era: ["shippuden"], title: "Chinoike Survivor", aura: "none", gen: 7, x: 3700, y: 1440,
+      bio: "A survivor of the exiled Chinoike clan and wielder of the blood-red Ketsuryūgan, from the anime.",
+      jutsu: [["Ketsuryūgan Genjutsu", "Yin-Yang", "Kekkei Genkai"], ["Blood Iron Control", "All", "Kekkei Genkai"]], bijuu: []
+    },
     /* ---- Konoha 11, Sand siblings and the Boruto generation ---- */
     {
       id: "guy", name: "Might Guy", jp: "マイト・ガイ", clan: "Other",
@@ -873,7 +932,7 @@ const WORLD = {
       abilities: [["Chakra Point Sight", "All"], ["Dimension Sense", "Space-Time"]],
       lore: "Boruto's mysterious right eye. It sees chakra flows and the seams between dimensions, and the Ōtsutsuki fear what it may become." },
     { id: "ketsuryugan", name: "Ketsuryūgan", jp: "血龍眼", type: "Kekkei Genkai", clan: "Chinoike", color: "#C02F45",
-      users: [], others: ["Chino"],
+      users: ["chino"], others: [],
       abilities: [["Genjutsu Casting", "Yin-Yang"], ["Blood Iron Control", "All"]],
       lore: "The blood-red eye of the Chinoike clan, feared and driven into exile for its power. Chino wields it to cast genjutsu and to turn the iron in an enemy's blood against them." },
     { id: "kokugan", name: "Kokugan", jp: "コクガン", type: "Dōjutsu", clan: "Unknown", color: "#D9B300",
@@ -958,7 +1017,7 @@ const WORLD = {
      Artwork (optional): assets/kekkei-genkai/<id>.webp|png|jpg, or image: "path". */
   kekkei: [
     { id: "wood_release", name: "Wood Release", jp: "木遁", type: "Kekkei Genkai", natures: ["Earth", "Water"], clan: "Senju", color: "#6F8F3A",
-      users: ["hashirama", "madara", "obito"], others: ["Yamato"],
+      users: ["hashirama", "madara", "obito", "yamato"], others: [],
       abilities: [["Deep Forest Emergence", "Earth"], ["Wood Dragon Technique", "Earth"], ["Wood Clone Technique", "Earth"]],
       lore: "The legendary bloodline of Hashirama Senju, fusing Earth and Water to create living trees. Its chakra can suppress and tame the Tailed Beasts; others have only gained it through Hashirama's cells." },
     { id: "ice_release", name: "Ice Release", jp: "氷遁", type: "Kekkei Genkai", natures: ["Water", "Wind"], clan: "Yuki", color: "#8EC5E0",
@@ -966,7 +1025,7 @@ const WORLD = {
       abilities: [["Demonic Mirroring Ice Crystals", "Water"], ["Thousand Needles of Death", "Water"]],
       lore: "The bloodline of the Yuki clan of the Land of Water, combining Water and Wind to create ice. Haku, its last known wielder, trapped his enemies inside a dome of ice mirrors." },
     { id: "lava_release", name: "Lava Release", jp: "熔遁", type: "Kekkei Genkai", natures: ["Fire", "Earth"], clan: "None", color: "#D2552B",
-      users: ["roshi", "mei"], others: [],
+      users: ["roshi", "mei", "kurotsuchi"], others: [],
       abilities: [["Melting Apparition Technique", "Fire"], ["Lava Monster", "Fire"], ["Lava Chakra Mode", "Fire"]],
       lore: "Fire and Earth combined into molten rock. Rōshi drew on it through the Four-Tails, while the Fifth Mizukage spat lava hot enough to melt stone." },
     { id: "boil_release", name: "Boil Release", jp: "沸遁", type: "Kekkei Genkai", natures: ["Fire", "Water"], clan: "None", color: "#C9857A",
@@ -974,15 +1033,15 @@ const WORLD = {
       abilities: [["Skilled Mist Technique", "Water"], ["Unrivalled Strength", "Fire"]],
       lore: "Fire and Water fused into boiling steam. Mei Terumī breathes a corrosive acid mist, and Han, host of the Five-Tails, turns steam into raw power." },
     { id: "storm_release", name: "Storm Release", jp: "嵐遁", type: "Kekkei Genkai", natures: ["Water", "Lightning"], clan: "None", color: "#4A6FB5",
-      users: [], others: ["Darui"],
+      users: ["darui"], others: [],
       abilities: [["Laser Circus", "Lightning"], ["Black Panther", "Lightning"]],
       lore: "Water and Lightning combined into beams of energy that can bend and track a target. Darui of the Cloud is its best-known wielder." },
     { id: "magnet_release", name: "Magnet Release", jp: "磁遁", type: "Kekkei Genkai", natures: ["Wind", "Earth"], clan: "None", color: "#B8962E",
-      users: ["rasa"], others: ["Third Kazekage"],
+      users: ["third_kazekage", "rasa"], others: [],
       abilities: [["Gold Dust Wave", "Earth"], ["Iron Sand Drizzle", "Earth"]],
       lore: "Wind and Earth combined to magnetise metal and sand. The Third Kazekage commanded iron sand, and the Fourth Kazekage, Rasa, wielded gold dust." },
     { id: "dust_release", name: "Dust Release", jp: "塵遁", type: "Kekkei Tōta", natures: ["Fire", "Wind", "Earth"], clan: "None", color: "#C8C2B4",
-      users: ["onoki"], others: ["Mū"],
+      users: ["mu", "onoki"], others: [],
       abilities: [["Detachment of the Primitive World", "All"]],
       lore: "A Kekkei Tōta fusing Fire, Wind and Earth. It erases its target down to the molecular level; Mū passed it to his student Ōnoki, the Third Tsuchikage." },
     { id: "explosion_release", name: "Explosion Release", jp: "爆遁", type: "Kekkei Genkai", natures: ["Earth", "Lightning"], clan: "None", color: "#E0A030",
@@ -990,7 +1049,7 @@ const WORLD = {
       abilities: [["C1 Clay Birds", "Earth"], ["C4 Karura", "Earth"], ["C0", "Earth"]],
       lore: "Earth and Lightning fused into explosive chakra. Deidara kneads it into clay with the mouths on his palms, calling every blast art." },
     { id: "scorch_release", name: "Scorch Release", jp: "灼遁", type: "Kekkei Genkai", natures: ["Fire", "Wind"], clan: "None", color: "#E46A2E",
-      users: [], others: ["Pakura"],
+      users: ["pakura"], others: [],
       abilities: [["Extreme Steaming Murder", "Fire"]],
       lore: "Fire and Wind combined into searing orbs that evaporate the water from a target's body. Pakura of the Sand was its renowned wielder." },
     { id: "shikotsumyaku", name: "Shikotsumyaku", jp: "屍骨脈", type: "Kekkei Genkai", natures: [], clan: "Kaguya", color: "#E8E1D3",
@@ -1003,6 +1062,10 @@ const WORLD = {
      shown as Ancestors / Descendants), spouse (a, b), sibling (a, b),
      sensei (s -> d), team (a, b), reinc (chain of ids). */
   links: [
+    { t: "sensei", s: "mu", d: "onoki" },
+    { t: "parent", p: "onoki", c: "kurotsuchi", lineage: true },
+    { t: "parent", p: "third_raikage", c: "a_raikage" },
+    { t: "team", a: "yamato", b: "kakashi" },
     { t: "parent", p: "kaguya", c: "hagoromo" },
     { t: "parent", p: "kaguya", c: "hamura" },
     { t: "parent", p: "hagoromo", c: "indra" },

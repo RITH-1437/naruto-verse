@@ -37,8 +37,13 @@ def main():
                 best[p.stem] = p
             elif p.suffix.lower() in EXTS and EXTS.index(p.suffix.lower()) < EXTS.index(best[p.stem].suffix.lower()):
                 best[p.stem] = p
+        on_disk = {q.name.lower(): q for q in out_dir.glob("*.webp")}
         for stem, src in best.items():
             out = out_dir / f"{stem}.webp"
+            twin = on_disk.get(out.name.lower())
+            if twin and twin.name != out.name:     # case-only rename (Windows): fix the thumb's case
+                tmp = twin.with_name("_case_" + twin.name)
+                twin.rename(tmp); tmp.rename(out)
             if not force and out.exists() and out.stat().st_mtime >= src.stat().st_mtime:
                 continue
             with Image.open(src) as im:

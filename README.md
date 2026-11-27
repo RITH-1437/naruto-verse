@@ -4,7 +4,7 @@ A complete, static, interactive parchment scroll of the Narutoverse: bloodlines,
 marriages, reincarnation chains, sensei/student and team bonds, legendary weapons,
 and the nine Tailed Beasts, from Kaguya through Naruto and Shippuden to Boruto.
 
-Currently covers **107 characters**, **10 Bijuu**, **18 weapons** and **168 relationships**.
+Currently covers **116 characters**, **10 Bijuu**, **18 weapons**, **12 eyes**, **14 colossi**, **10 Kekkei Genkai** and **172 relationships**.
 All but three characters have artwork: Sakumo Hatake, Iruka Umino and Konohamaru Sarutobi
 show initials on the scroll and an ink silhouette in the preview until their pictures are added.
 Zetsu appears as one combined character (both halves in a single profile).
