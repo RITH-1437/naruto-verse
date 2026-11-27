@@ -20,7 +20,7 @@ import sys
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
-FOLDERS = ["characters", "tail-beast", "eyes", "weapons"]
+FOLDERS = ["characters", "tail-beast", "eyes", "colossi", "kekkei-genkai", "weapons"]
 EXTS = [".webp", ".png", ".jpg", ".jpeg", ".gif"]   # same priority as the site
 WIDTH = 256                                         # 2x the largest avatar (104px)
 
@@ -49,9 +49,15 @@ def main():
                 im.save(out, "WEBP", quality=78, method=6)
             written += 1
         for stale in out_dir.glob("*.webp"):
-            if stale.stem not in best:
-                stale.unlink()
-                removed += 1
+            if stale.stem in best:
+                continue
+            # On a case-insensitive disk (Windows) "Kokugan.webp" may be the very same
+            # file as the live thumb "kokugan.webp" after a case-only rename: keep it.
+            twin = next((out_dir / f"{k}.webp" for k in best if k.lower() == stale.stem.lower()), None)
+            if twin and twin.exists() and twin.samefile(stale):
+                continue
+            stale.unlink()
+            removed += 1
     print(f"thumbs: {written} written, {removed} removed")
     if written or removed:
         subprocess.run([sys.executable, str(ROOT / "tools" / "build_media_index.py")], check=True)

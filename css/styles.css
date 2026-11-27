@@ -543,6 +543,14 @@ html.pv-active, html.pv-active body { overflow: hidden; }   /* page stays put be
 }
 .pv-jutsu:hover, .pv-jutsu.active { background: var(--ink); color: var(--paper); }
 .pv-actions { display: flex; flex-direction: column; gap: 6px; }
+.pv-links { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.pv-links-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: .65; margin-right: 2px; }
+.pv-link {
+  display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px 3px 4px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 12px; color: var(--ink); background: transparent; border: 1px solid var(--lc, var(--ink));
+}
+.pv-link span { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; font-size: 10px; color: #fff; background: var(--lc, var(--ink)); }
+.pv-link:hover, .pv-link:focus-visible { background: var(--lc, var(--ink)); color: #fff; }
 .pv-btn {
   border: 1.5px solid var(--ink); background: rgba(255,252,242,.85); border-radius: 2px;
   font-size: 12px; font-weight: 700; letter-spacing: .4px; padding: 7px 14px; white-space: nowrap;
@@ -557,6 +565,7 @@ html.pv-active, html.pv-active body { overflow: hidden; }   /* page stays put be
   .pv-info { grid-template-columns: minmax(0, 1fr); padding: 12px 14px; gap: 10px; }
   .pv-actions { flex-direction: row; flex-wrap: wrap; }
   .pv-jutsu-list { max-height: 76px; overflow-y: auto; }
+  .pv-links { max-height: 58px; overflow-y: auto; }
 }
 
 /* idle loop */

@@ -16,6 +16,8 @@
   const BIJUU = WORLD.bijuu;
   const WEAPONS = WORLD.weapons || [];
   const EYES = WORLD.eyes || [];
+  const COLOSSI = WORLD.colossi || [];
+  const KEKKEI = WORLD.kekkei || [];
   const byId = (id) => CHARS.find((c) => c.id === id);
   const groupsOf = (c) => Object.keys(WORLD.groups || {}).filter((g) => WORLD.groups[g].includes(c.id));
   const hostOf = (id) => BIJUU.filter((b) => b.jinchuriki.includes(id));
@@ -52,13 +54,18 @@
     aura: "weapon", auraColor: "#8A8FA0", image: w.image, video: w.video,
     jutsu: [[w.ability, "Weapon", w.type, w.clip]], bijuu: []
   });
-  const eyeWielders = (e) => [...e.users.map((u) => (byId(u) || { name: u }).name), ...(e.others || [])];
-  const eyeAsCharacter = (e) => ({
-    id: e.id, isEye: true, folder: "eyes", glyph: "眼", users: e.users,
-    name: e.name, jp: e.jp, clan: e.type, era: [],
-    title: eyeWielders(e).length ? "Wielded by " + eyeWielders(e).join(", ") : "Wielder unknown",
-    aura: "eye", auraColor: e.color, image: e.image, video: e.video,
-    jutsu: e.abilities.map((a) => [a[0], a[1], e.type]), bijuu: []
+  /* Eyes, Colossi and Kekkei Genkai share one shape (users / others / abilities);
+     preview.js turns them into preview objects so both pages link them the same way. */
+  const wielders = (e) => [...e.users.map((u) => (byId(u) || { name: u }).name), ...(e.others || [])];
+  const relicCollection = (kind, title, sub, glyph, title2) => ({
+    title, sub, items: WORLD[kind] || [], folder: window.CharacterPreview.relics[kind].folder,
+    color: (e) => e.color, glyph: () => glyph,
+    tag: (e) => e.clan, num: () => "",
+    text: (e) => [e.name, e.jp, e.type, e.clan, e.lore, ...(e.natures || []), ...e.abilities.map((a) => a[0]), ...wielders(e)].join(" "),
+    meta: (e) => [...e.users.map((id) => [(byId(id) || { name: id }).name, auraHex(byId(id) || {})]),
+      ...(e.others || []).map((n) => [n, e.color])].slice(0, 3).map(([n, c]) =>
+      `<span class="s-dot" style="--dot:${c}">${esc(n)}</span>`).join(""),
+    title2, preview: (e) => window.CharacterPreview.relic(kind, e)
   });
 
   /* ------------------------------------------------------------- collections */
@@ -101,18 +108,13 @@
       title2: (w) => w.ability,
       preview: weaponAsCharacter
     },
-    eyes: {
-      title: "Eyes", sub: "The Dōjutsu: visual powers of the Uchiha, Hyūga and Ōtsutsuki, and those who carry them.",
-      items: EYES, folder: "eyes",
-      color: (e) => e.color, glyph: () => "眼",
-      tag: (e) => e.clan, num: () => "",
-      text: (e) => [e.name, e.jp, e.type, e.clan, e.lore, ...e.abilities.map((a) => a[0]), ...eyeWielders(e)].join(" "),
-      meta: (e) => [...e.users.map((id) => [(byId(id) || { name: id }).name, auraHex(byId(id) || {})]),
-        ...(e.others || []).map((n) => [n, e.color])].slice(0, 3).map(([n, c]) =>
-        `<span class="s-dot" style="--dot:${c}">${esc(n)}</span>`).join(""),
-      title2: (e) => e.type,
-      preview: eyeAsCharacter
-    }
+    eyes: relicCollection("eyes", "Eyes",
+      "The Dōjutsu: visual powers of the Uchiha, Hyūga and Ōtsutsuki, and those who carry them.", "眼", (e) => e.type),
+    colossi: relicCollection("colossi", "Colossi",
+      "Giant constructs, Susanoo and summoned titans that tower over the battlefield.", "巨", (e) => e.type),
+    kekkei: relicCollection("kekkei", "Kekkei Genkai",
+      "Bloodline natures that fuse two or three chakra types into something new.", "血",
+      (e) => (e.natures && e.natures.length ? e.natures.join(" + ") : e.type))
   };
   const col = () => COLLECTIONS[state.tab];
 
@@ -162,7 +164,10 @@
   function clipCount(it) {
     if (!INDEX) return 0;
     if (state.tab === "weapons") return it.clip && INDEX.has(it.clip) ? 1 : 0;
-    if (state.tab === "eyes") return [it.video, `assets/videos/${it.id}/${it.id}.mp4`].filter((p) => p && INDEX.has(p)).length ? 1 : 0;
+    if (it.abilities && it.users) {                     // eyes, colossi, kekkei genkai
+      const own = [it.video, `assets/videos/${it.id}/${it.id}.mp4`].some((p) => p && INDEX.has(p)) ? 1 : 0;
+      return own + it.abilities.filter((a) => a[2] && INDEX.has(a[2])).length;
+    }
     if (state.tab === "bijuu") return [it.video, `assets/videos/bijuu/${it.tails}.mp4`].filter((p) => p && INDEX.has(p)).length ? 1 : 0;
     const own = CLIPS_BY_FOLDER.get(it.id) || 0;
     const extra = it.jutsu.filter((j) => j[3] && INDEX.has(j[3]) && !j[3].startsWith(`assets/videos/${it.id}/`)).length;
@@ -267,7 +272,7 @@
       history.replaceState(null, "", h);
   }
   function readHash() {
-    const m = location.hash.match(/^#(characters|bijuu|weapons|eyes)(?:\/(\d+))?$/);
+    const m = location.hash.match(/^#(characters|bijuu|weapons|eyes|colossi|kekkei)(?:\/(\d+))?$/);
     if (!m) return false;
     state.tab = m[1]; state.page = Number(m[2] || 1);
     return true;
@@ -285,7 +290,9 @@
     $("era-group").hidden = $("clan-group").hidden = tab !== "characters";
     $("q").placeholder = tab === "characters" ? "Search name, clan, jutsu…"
       : tab === "bijuu" ? "Search beast, host, ability…"
-      : tab === "eyes" ? "Search eye, clan, user, ability…" : "Search weapon, wielder, power…";
+      : tab === "eyes" ? "Search eye, clan, user, ability…"
+      : tab === "colossi" ? "Search colossus, summoner, ability…"
+      : tab === "kekkei" ? "Search nature, clan, user, jutsu…" : "Search weapon, wielder, power…";
     render(scroll);
   }
 
@@ -312,7 +319,7 @@
   function bind() {
     $("hero-stats").innerHTML = [
       ["Shinobi", CHARS.length], ["Tailed Beasts", BIJUU.length],
-      ["Weapons", WEAPONS.length], ["Eyes", EYES.length], ["Relationships", (WORLD.links || []).length]
+      ["Weapons", WEAPONS.length], ["Eyes", EYES.length], ["Colossi", COLOSSI.length], ["Kekkei Genkai", KEKKEI.length], ["Relationships", (WORLD.links || []).length]
     ].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
 
     $("era-chips").innerHTML = WORLD.eras.map((e) =>
@@ -408,7 +415,7 @@
       PV.onChronicle((c) => {
         const page = "html/scroll.html";
         const url = c.isWeapon ? `${page}?weapon=${c.id}` : c.isBijuu ? `${page}?bijuu=${c.id}`
-          : c.isEye ? (c.users[0] ? `${page}?focus=${c.users[0]}` : page) : `${page}?focus=${c.id}`;
+          : c.relicKind ? (c.users[0] ? `${page}?focus=${c.users[0]}` : page) : `${page}?focus=${c.id}`;
         location.href = url;
       });
     }

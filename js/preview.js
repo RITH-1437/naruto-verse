@@ -53,6 +53,45 @@
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const auraHex = (c) => c.auraColor || (WORLD.auraColors && WORLD.auraColors[c.aura]) || "#6B5B45";
 
+  /* ------------------------------------------- eyes, colossi, kekkei genkai */
+  /* Archive collections whose entries list the characters who wield them
+     (users = ids on the tree, others = plain names). A character's preview links
+     to everything it wields, and each entry links back to its wielders. */
+  const RELICS = {
+    eyes: { flag: "isEye", folder: "eyes", glyph: "眼", cast: "Activate Eye" },
+    colossi: { flag: "isColossus", folder: "colossi", glyph: "巨", cast: "Unleash" },
+    kekkei: { flag: "isKekkei", folder: "kekkei-genkai", glyph: "血", cast: "Perform Jutsu" }
+  };
+  const charById = (id) => WORLD.characters.find((x) => x.id === id);
+  const wieldersOf = (e) => [...e.users.map((u) => (charById(u) || { name: u }).name), ...(e.others || [])];
+  function relicAsCharacter(kind, e) {
+    const R = RELICS[kind];
+    const who = wieldersOf(e);
+    return {
+      id: e.id, [R.flag]: true, relicKind: kind, folder: R.folder, glyph: R.glyph, users: e.users,
+      name: e.name, jp: e.jp, clan: e.natures && e.natures.length ? `${e.type} · ${e.natures.join(" + ")}` : e.type, era: [],
+      title: who.length ? "Wielded by " + who.join(", ") : "Wielder unknown",
+      aura: "relic", auraColor: e.color, image: e.image, video: e.video,
+      jutsu: e.abilities.map((a) => [a[0], a[1], e.type, a[2]]), bijuu: []
+    };
+  }
+  const relicsOf = (id) => Object.keys(RELICS).flatMap((k) =>
+    (WORLD[k] || []).filter((e) => e.users.includes(id)).map((e) => [k, e]));
+  /* chips under the name: a character's powers, or an entry's wielders */
+  function linksMarkup(c) {
+    let label, links;
+    if (c.relicKind) {
+      label = "Wielders";
+      links = c.users.map(charById).filter(Boolean).map((u) => [`char:${u.id}`, u.name, auraHex(u), "忍"]);
+    } else if (!c.isWeapon && !c.isBijuu) {
+      label = "Powers";
+      links = relicsOf(c.id).map(([k, e]) => [`${k}:${e.id}`, e.name, e.color, RELICS[k].glyph]);
+    }
+    if (!links || !links.length) return "";
+    return `<div class="pv-links" role="group" aria-label="${label}"><span class="pv-links-label">${label}</span>${links.map(([key, name, col, glyph]) =>
+      `<button class="pv-link" data-pv-link="${esc(key)}" style="--lc:${col}" title="Open ${esc(name)}"><span aria-hidden="true">${glyph}</span>${esc(name)}</button>`).join("")}</div>`;
+  }
+
   /* ------------------------------------------------------- media discovery */
   const mediaCache = new Map();
   function probeImage(src) {
@@ -110,7 +149,7 @@
   /* Jutsu plus the character's special weapons, as one list of
      [name, nature, type, clip?] entries. Weapons use the "Weapon" nature. */
   function skillsOf(c) {
-    if (c.isWeapon || c.isEye) return c.jutsu || [];
+    if (c.isWeapon || c.relicKind) return c.jutsu || [];
     const names = new Set((c.jutsu || []).map((j) => j[0].toLowerCase()));
     const arms = (WORLD.weapons || []).filter((w) => w.owners.includes(c.id) && !names.has(w.name.toLowerCase()))
       .map((w) => [w.name, "Weapon", w.type, w.clip]);
@@ -310,7 +349,7 @@
             </g>
             <ellipse class="pv-shadow" cx="130" cy="183" rx="40" ry="6" fill="${INK}" opacity=".25"/>
             ${auraSVG(c)}
-            ${img ? "" : `<g class="pv-figure-wrap"><g class="pv-figure">${c.isWeapon || c.isEye ? weaponSealSVG(c, col) : c.isBijuu ? bijuuSealSVG(c, col) : silhouetteSVG(col)}</g></g>`}
+            ${img ? "" : `<g class="pv-figure-wrap"><g class="pv-figure">${c.isWeapon || c.relicKind ? weaponSealSVG(c, col) : c.isBijuu ? bijuuSealSVG(c, col) : silhouetteSVG(col)}</g></g>`}
           </svg>
           ${figure}
           <svg class="pv-layer pv-front" viewBox="0 0 260 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
@@ -338,9 +377,10 @@
           <h2 class="pv-name">${esc(c.name)} <span class="pv-jp">${esc(c.jp)}</span></h2>
           <span class="drawer-title">${esc(c.title)}</span>
         </div>
+        ${linksMarkup(c)}
         <div class="pv-jutsu-list" role="group" aria-label="Perform a jutsu">${jutsu}</div>
         <div class="pv-actions">
-          ${skillsOf(c).length ? `<button class="pv-btn accent" data-pv-cast>▶ ${c.isWeapon ? "Strike" : c.isBijuu ? "Unleash Ability" : c.isEye ? "Activate Eye" : "Perform Jutsu"}</button>` : ""}
+          ${skillsOf(c).length ? `<button class="pv-btn accent" data-pv-cast>▶ ${c.isWeapon ? "Strike" : c.isBijuu ? "Unleash Ability" : c.relicKind ? RELICS[c.relicKind].cast : "Perform Jutsu"}</button>` : ""}
           <button class="pv-btn" data-pv-summon>↻ Summon</button>
           <button class="pv-btn" data-pv-sound hidden>🔊 Sound on</button>
           <button class="pv-btn" data-pv-chronicle>📜 Read Chronicle</button>
@@ -562,6 +602,13 @@
         return;
       }
       if (e.target.closest("[data-pv-chronicle]")) { const c = current; close(); if (onChronicle) onChronicle(c); return; }
+      const lk = e.target.closest("[data-pv-link]");
+      if (lk) {
+        const [kind, id] = lk.dataset.pvLink.split(":");
+        const target = kind === "char" ? charById(id) : (WORLD[kind] || []).find((x) => x.id === id);
+        if (target) open(kind === "char" ? target : relicAsCharacter(kind, target));
+        return;
+      }
       const j = e.target.closest(".pv-jutsu");
       if (j) cast(stage, current, Number(j.dataset.jutsu));
     });
@@ -627,6 +674,7 @@
 
   window.CharacterPreview = {
     open, close, cast, summon, findMedia, findImage, findThumb,
+    relic: relicAsCharacter, relics: RELICS,
     isOpen: () => !!modal && !modal.hidden,
     setNavigator: (nav) => { navigator_ = nav || null; if (modal && !modal.hidden) updateNav(); },
     hasFile: (path) => (INDEX ? INDEX.has(path) : null),   // null = unknown (no index)
