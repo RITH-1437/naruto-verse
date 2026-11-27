@@ -378,7 +378,7 @@
     return {
       id: b.id, isBijuu: true, tails: b.tails, name: b.name, jp: b.jp,
       clan: "Tailed Beast", era: [], title: `${b.tails}-Tails · ${b.nature}`,
-      aura: "bijuu", auraColor: b.color, image: b.image, video: b.video,
+      aura: "bijuu", auraColor: b.color, image: b.image, video: b.video, folder: "tail-beast",
       jutsu: b.abilities.map((ab) => [ab, natureOf(ab), "Bijuu"]), bijuu: []
     };
   }
@@ -908,7 +908,7 @@
 
     // Full-screen animated preview: reopen it from the drawer, or perform a listed jutsu
     if (window.CharacterPreview) {
-      window.CharacterPreview.onChronicle((c) => (c.isWeapon ? openWeapon(c.id) : c.isBijuu ? openBijuu(c.id) : openCharacter(c.id, false)));
+      window.CharacterPreview.onChronicle((c) => (c.isWeapon ? openWeapon(c.id) : c.isBijuu ? openBijuu(c.id) : c.isEye ? openCharacter(c.users[0], false) : openCharacter(c.id, false)));
       els.drawerBody.addEventListener("click", (e) => {
         const c = byId(state.selected);
         if (!c) return;
@@ -1029,7 +1029,7 @@
       });
     });
     WORLD.bijuu.forEach((b) => {
-      thumbOf(b).then((src) => {
+      thumbOf(b, "tail-beast").then((src) => {
         if (!src) return;
         portraits.set("bijuu:" + b.id, src);
         applyBijuuPortrait(b, src);

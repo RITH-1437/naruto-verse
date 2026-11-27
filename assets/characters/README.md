@@ -8,6 +8,8 @@ assets/characters/killer_b.webp
 assets/characters/moon_main.webp
 ```
 
+Tailed Beast (Bijuu) artwork goes in `assets/tail-beast/<id>.webp` instead (e.g. `assets/tail-beast/kurama.webp`).
+
 Supported: `.webp`, `.png`, `.jpg`, `.jpeg`, `.gif` (checked in that order). WebP is preferred: keep files under ~1400px and ~500 KB.
 Every file here is named exactly after its id (lowercase, no spaces), so no `image:` field
 is needed. Only set `image: "path/to/file.webp"` in `js/data.js` to point at artwork

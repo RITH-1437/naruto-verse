@@ -110,7 +110,7 @@
   /* Jutsu plus the character's special weapons, as one list of
      [name, nature, type, clip?] entries. Weapons use the "Weapon" nature. */
   function skillsOf(c) {
-    if (c.isWeapon) return c.jutsu || [];
+    if (c.isWeapon || c.isEye) return c.jutsu || [];
     const names = new Set((c.jutsu || []).map((j) => j[0].toLowerCase()));
     const arms = (WORLD.weapons || []).filter((w) => w.owners.includes(c.id) && !names.has(w.name.toLowerCase()))
       .map((w) => [w.name, "Weapon", w.type, w.clip]);
@@ -310,7 +310,7 @@
             </g>
             <ellipse class="pv-shadow" cx="130" cy="183" rx="40" ry="6" fill="${INK}" opacity=".25"/>
             ${auraSVG(c)}
-            ${img ? "" : `<g class="pv-figure-wrap"><g class="pv-figure">${c.isWeapon ? weaponSealSVG(c, col) : c.isBijuu ? bijuuSealSVG(c, col) : silhouetteSVG(col)}</g></g>`}
+            ${img ? "" : `<g class="pv-figure-wrap"><g class="pv-figure">${c.isWeapon || c.isEye ? weaponSealSVG(c, col) : c.isBijuu ? bijuuSealSVG(c, col) : silhouetteSVG(col)}</g></g>`}
           </svg>
           ${figure}
           <svg class="pv-layer pv-front" viewBox="0 0 260 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
@@ -340,7 +340,7 @@
         </div>
         <div class="pv-jutsu-list" role="group" aria-label="Perform a jutsu">${jutsu}</div>
         <div class="pv-actions">
-          ${skillsOf(c).length ? `<button class="pv-btn accent" data-pv-cast>▶ ${c.isWeapon ? "Strike" : c.isBijuu ? "Unleash Ability" : "Perform Jutsu"}</button>` : ""}
+          ${skillsOf(c).length ? `<button class="pv-btn accent" data-pv-cast>▶ ${c.isWeapon ? "Strike" : c.isBijuu ? "Unleash Ability" : c.isEye ? "Activate Eye" : "Perform Jutsu"}</button>` : ""}
           <button class="pv-btn" data-pv-summon>↻ Summon</button>
           <button class="pv-btn" data-pv-sound hidden>🔊 Sound on</button>
           <button class="pv-btn" data-pv-chronicle>📜 Read Chronicle</button>

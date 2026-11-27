@@ -20,7 +20,7 @@ import sys
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
-FOLDERS = ["characters", "weapons"]
+FOLDERS = ["characters", "tail-beast", "eyes", "weapons"]
 EXTS = [".webp", ".png", ".jpg", ".jpeg", ".gif"]   # same priority as the site
 WIDTH = 256                                         # 2x the largest avatar (104px)
 

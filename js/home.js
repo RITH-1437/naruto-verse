@@ -15,6 +15,7 @@
   const CHARS = WORLD.characters;
   const BIJUU = WORLD.bijuu;
   const WEAPONS = WORLD.weapons || [];
+  const EYES = WORLD.eyes || [];
   const byId = (id) => CHARS.find((c) => c.id === id);
   const groupsOf = (c) => Object.keys(WORLD.groups || {}).filter((g) => WORLD.groups[g].includes(c.id));
   const hostOf = (id) => BIJUU.filter((b) => b.jinchuriki.includes(id));
@@ -41,7 +42,7 @@
   const bijuuAsCharacter = (b) => ({
     id: b.id, isBijuu: true, tails: b.tails, name: b.name, jp: b.jp,
     clan: "Tailed Beast", era: [], title: `${b.tails}-Tails · ${b.nature}`,
-    aura: "bijuu", auraColor: b.color, image: b.image, video: b.video,
+    aura: "bijuu", auraColor: b.color, image: b.image, video: b.video, folder: "tail-beast",
     jutsu: b.abilities.map((ab) => [ab, natureOf(ab), "Bijuu"]), bijuu: []
   });
   const weaponAsCharacter = (w) => ({
@@ -50,6 +51,13 @@
     title: "Wielded by " + w.owners.map((o) => (byId(o) || { name: o }).name).join(", "),
     aura: "weapon", auraColor: "#8A8FA0", image: w.image, video: w.video,
     jutsu: [[w.ability, "Weapon", w.type, w.clip]], bijuu: []
+  });
+  const eyeAsCharacter = (e) => ({
+    id: e.id, isEye: true, folder: "eyes", glyph: "眼", users: e.users,
+    name: e.name, jp: e.jp, clan: e.type, era: [],
+    title: "Wielded by " + e.users.map((u) => (byId(u) || { name: u }).name).join(", "),
+    aura: "eye", auraColor: e.color, image: e.image, video: e.video,
+    jutsu: e.abilities.map((a) => [a[0], a[1], e.type]), bijuu: []
   });
 
   /* ------------------------------------------------------------- collections */
@@ -72,7 +80,7 @@
     },
     bijuu: {
       title: "Tailed Beasts", sub: "The nine Bijuu and the primordial Ten-Tails, with their hosts.",
-      items: BIJUU, folder: "characters",
+      items: BIJUU, folder: "tail-beast",
       color: (b) => b.color, glyph: () => "尾",
       tag: (b) => b.nature, num: (b) => b.tails,
       text: (b) => [b.name, b.jp, b.nature, b.lore, ...b.abilities, ...b.jinchuriki.map((id) => (byId(id) || {}).name)].join(" "),
@@ -91,6 +99,18 @@
         `<span class="s-dot" style="--dot:${auraHex(byId(id) || {})}">${esc((byId(id) || { name: id }).name)}</span>`).join(""),
       title2: (w) => w.ability,
       preview: weaponAsCharacter
+    },
+    eyes: {
+      title: "Eyes", sub: "The Dōjutsu: visual powers of the Uchiha, Hyūga and Ōtsutsuki, and those who carry them.",
+      items: EYES, folder: "eyes",
+      color: (e) => e.color, glyph: () => "眼",
+      tag: (e) => e.clan, num: () => "",
+      text: (e) => [e.name, e.jp, e.type, e.clan, e.lore, ...e.abilities.map((a) => a[0]),
+        ...e.users.map((id) => (byId(id) || {}).name)].join(" "),
+      meta: (e) => e.users.slice(0, 3).map((id) =>
+        `<span class="s-dot" style="--dot:${auraHex(byId(id) || {})}">${esc((byId(id) || { name: id }).name)}</span>`).join(""),
+      title2: (e) => e.type,
+      preview: eyeAsCharacter
     }
   };
   const col = () => COLLECTIONS[state.tab];
@@ -141,6 +161,7 @@
   function clipCount(it) {
     if (!INDEX) return 0;
     if (state.tab === "weapons") return it.clip && INDEX.has(it.clip) ? 1 : 0;
+    if (state.tab === "eyes") return [it.video, `assets/videos/${it.id}/${it.id}.mp4`].filter((p) => p && INDEX.has(p)).length ? 1 : 0;
     if (state.tab === "bijuu") return [it.video, `assets/videos/bijuu/${it.tails}.mp4`].filter((p) => p && INDEX.has(p)).length ? 1 : 0;
     const own = CLIPS_BY_FOLDER.get(it.id) || 0;
     const extra = it.jutsu.filter((j) => j[3] && INDEX.has(j[3]) && !j[3].startsWith(`assets/videos/${it.id}/`)).length;
@@ -245,7 +266,7 @@
       history.replaceState(null, "", h);
   }
   function readHash() {
-    const m = location.hash.match(/^#(characters|bijuu|weapons)(?:\/(\d+))?$/);
+    const m = location.hash.match(/^#(characters|bijuu|weapons|eyes)(?:\/(\d+))?$/);
     if (!m) return false;
     state.tab = m[1]; state.page = Number(m[2] || 1);
     return true;
@@ -262,7 +283,8 @@
     document.querySelectorAll("[data-tab-link]").forEach((a) => a.classList.toggle("active", a.dataset.tabLink === tab));
     $("era-group").hidden = $("clan-group").hidden = tab !== "characters";
     $("q").placeholder = tab === "characters" ? "Search name, clan, jutsu…"
-      : tab === "bijuu" ? "Search beast, host, ability…" : "Search weapon, wielder, power…";
+      : tab === "bijuu" ? "Search beast, host, ability…"
+      : tab === "eyes" ? "Search eye, clan, user, ability…" : "Search weapon, wielder, power…";
     render(scroll);
   }
 
@@ -289,7 +311,7 @@
   function bind() {
     $("hero-stats").innerHTML = [
       ["Shinobi", CHARS.length], ["Tailed Beasts", BIJUU.length],
-      ["Weapons", WEAPONS.length], ["Relationships", (WORLD.links || []).length]
+      ["Weapons", WEAPONS.length], ["Eyes", EYES.length], ["Relationships", (WORLD.links || []).length]
     ].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
 
     $("era-chips").innerHTML = WORLD.eras.map((e) =>
@@ -359,6 +381,13 @@
       if (e.key === "ArrowLeft" && state.page > 1) { state.page--; render(true); }
     });
 
+    // featured profile in the hero: opens that shinobi's full-screen preview,
+    // where the clip plays with sound (the click counts as the user gesture)
+    document.querySelectorAll("[data-preview]").forEach((b) => b.addEventListener("click", () => {
+      if (state.tab !== "characters") setTab("characters");
+      openPreview(b.dataset.preview);
+    }));
+
     $("surprise").addEventListener("click", () => {
       if (state.tab !== "characters" || !lastList.length) setTab("characters");
       const pick = lastList[Math.floor(Math.random() * lastList.length)];
@@ -377,7 +406,8 @@
     if (PV) {
       PV.onChronicle((c) => {
         const page = "html/scroll.html";
-        const url = c.isWeapon ? `${page}?weapon=${c.id}` : c.isBijuu ? `${page}?bijuu=${c.id}` : `${page}?focus=${c.id}`;
+        const url = c.isWeapon ? `${page}?weapon=${c.id}` : c.isBijuu ? `${page}?bijuu=${c.id}`
+          : c.isEye ? `${page}?focus=${c.users[0]}` : `${page}?focus=${c.id}`;
         location.href = url;
       });
     }

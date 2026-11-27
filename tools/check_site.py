@@ -27,18 +27,18 @@ import sys
 ROOT = Path(__file__).resolve().parent.parent
 PAGES = {"index.html": "js/home.js", "html/scroll.html": "js/scroll.js"}   # only index.html lives at the root
 CORE = ["js/data.js", "js/media-index.js", "js/preview.js"]
-MEDIA_FOLDERS = ["assets/characters", "assets/weapons", "assets/videos", "assets/thumbs"]
+MEDIA_FOLDERS = ["assets/characters", "assets/tail-beast", "assets/eyes", "assets/weapons", "assets/videos", "assets/thumbs"]
 MEDIA_EXTS = {".webp", ".png", ".jpg", ".jpeg", ".gif", ".mp4", ".webm"}
 
 NODE_CHECK = r"""
 const W = require(process.argv[1]);
 const problems = [], notes = [];
 const P = (m) => problems.push(m);
-const chars = W.characters, beasts = W.bijuu, arms = W.weapons || [];
+const chars = W.characters, beasts = W.bijuu, arms = W.weapons || [], eyes = W.eyes || [];
 const cid = new Map(chars.map((c) => [c.id, c]));
 const bid = new Map(beasts.map((b) => [b.id, b]));
 const seen = new Set();
-for (const x of [...chars, ...beasts, ...arms]) {
+for (const x of [...chars, ...beasts, ...arms, ...eyes]) {
   if (!x.id || !/^[a-z0-9_]+$/.test(x.id)) P(`bad id "${x.id}" (lowercase letters, digits, _ only)`);
   if (seen.has(x.id)) P(`duplicate id "${x.id}"`);
   seen.add(x.id);
@@ -73,6 +73,11 @@ for (const b of beasts) {
 for (const w of arms) {
   if (!w.owners || !w.owners.length) P(`weapon ${w.id}: no owners`);
   (w.owners || []).forEach((o) => { if (!cid.has(o)) P(`weapon ${w.id}: unknown wielder "${o}"`); });
+}
+for (const e of eyes) {
+  if (!e.users || !e.users.length) P(`eye ${e.id}: no users`);
+  (e.users || []).forEach((u) => { if (!cid.has(u)) P(`eye ${e.id}: unknown user "${u}"`); });
+  (e.abilities || []).forEach((a) => { if (!natures.has(a[1])) P(`eye ${e.id}: ability "${a[0]}" has unknown nature "${a[1]}"`); });
 }
 for (const [g, ids] of Object.entries(W.groups || {})) {
   if (!clans.has(g)) P(`group ${g}: no matching entry in WORLD.clans (filter would be missing)`);
@@ -122,10 +127,11 @@ const media = [];
 chars.forEach((c) => { if (c.image) media.push([c.id, c.image]); if (c.video) media.push([c.id, c.video]);
   (c.jutsu || []).forEach((j) => { if (j[3]) media.push([c.id, j[3]]); }); });
 beasts.forEach((b) => { if (b.image) media.push([b.id, b.image]); if (b.video) media.push([b.id, b.video]); });
+eyes.forEach((e) => ["image", "video"].forEach((k) => { if (e[k]) media.push([e.id, e[k]]); }));
 arms.forEach((w) => ["image", "video", "clip"].forEach((k) => { if (w[k]) media.push([w.id, w[k]]); }));
 console.log(JSON.stringify({
-  counts: { characters: chars.length, bijuu: beasts.length, weapons: arms.length, links: W.links.length },
-  ids: { characters: chars.map((c) => c.id), bijuu: beasts.map((b) => b.id), weapons: arms.map((w) => w.id) },
+  counts: { characters: chars.length, bijuu: beasts.length, weapons: arms.length, eyes: eyes.length, links: W.links.length },
+  ids: { characters: chars.map((c) => c.id), bijuu: beasts.map((b) => b.id), weapons: arms.map((w) => w.id), eyes: eyes.map((e) => e.id) },
   media, problems
 }));
 """
@@ -191,7 +197,7 @@ def main():
     listed_set = set(listed)
     # every artwork has a scroll thumbnail (tools/make_thumbs.py)
     for p in sorted(listed):
-        m = re.match(r"assets/(characters|weapons)/([^/]+)\.(webp|png|jpe?g|gif)$", p)
+        m = re.match(r"assets/(characters|tail-beast|eyes|weapons)/([^/]+)\.(webp|png|jpe?g|gif)$", p)
         if m and f"assets/thumbs/{m.group(1)}/{m.group(2)}.webp" not in listed_set:
             errors.append(f"thumbs: no thumbnail for {p} (run tools/make_thumbs.py)")
 
@@ -211,13 +217,15 @@ def main():
                     errors.append(f"data: {owner} points at missing media {path}")
             exts = ["webp", "png", "jpg", "jpeg", "gif"]
             has = lambda folder, i: any(f"assets/{folder}/{i}.{e}" in listed_set for e in exts)
-            no_art = [i for i in info["ids"]["characters"] + info["ids"]["bijuu"] if not has("characters", i)]
+            no_art = [i for i in info["ids"]["characters"] if not has("characters", i)]
+            no_art += [i for i in info["ids"]["bijuu"] if not has("tail-beast", i)]
             no_art += [i for i in info["ids"]["weapons"] if not has("weapons", i)]
+            no_art += [i for i in info["ids"]["eyes"] if not has("eyes", i)]
             if no_art:
                 notes.append(f"no artwork yet (placeholder shown): {', '.join(no_art)}")
             c = info["counts"]
             print(f"data: {c['characters']} characters, {c['bijuu']} Tailed Beasts, "
-                  f"{c['weapons']} weapons, {c['links']} relationships")
+                  f"{c['weapons']} weapons, {c['eyes']} eyes, {c['links']} relationships")
     else:
         notes.append("node not found, data reference check skipped")
 

@@ -4,7 +4,7 @@ A complete, static, interactive parchment scroll of the Narutoverse: bloodlines,
 marriages, reincarnation chains, sensei/student and team bonds, legendary weapons,
 and the nine Tailed Beasts, from Kaguya through Naruto and Shippuden to Boruto.
 
-Currently covers **101 characters**, **10 Bijuu**, **17 weapons** and **163 relationships**.
+Currently covers **107 characters**, **10 Bijuu**, **18 weapons** and **168 relationships**.
 All but three characters have artwork: Sakumo Hatake, Iruka Umino and Konohamaru Sarutobi
 show initials on the scroll and an ink silhouette in the preview until their pictures are added.
 Zetsu appears as one combined character (both halves in a single profile).
@@ -115,7 +115,7 @@ It exits non-zero on any problem.
 - **Ancestral lines**: lighter dashed bloodlines skip generations (Indra → Tajima, Hashirama → Tsunade); profiles list
   them as **Ancestors / Descendants** rather than parents and children.
 - **⚔ Weapons**: the scroll of special weapons (Samehada, Kusanagi, Totsuka Blade…); each opens its lore and wielders. Weapons also appear in profiles, search and the full-screen preview.
-- **Era / Clan filters**: the Clan selector also has an **Akatsuki (group)** option that highlights the organisation's twelve members (Orochimaru included) while keeping their real clan badges intact. Add other groups in `WORLD.groups` in `js/data.js`.
+- **Era / Clan filters**: the Clan selector also has an **Akatsuki (group)** option that highlights the organisation's twelve members (Orochimaru included), and a **Land of Waves (arc)** option for Zabuza, Haku, the Demon Brothers, Gatō and Tazuna, while keeping everyone's real clan badges intact. Add other groups in `WORLD.groups` in `js/data.js`.
 - Instant search by name, clan, group, jutsu or Bijuu. Search ignores accents, so `jugo` finds **Jūgo** and `choji` finds **Chōji**.
   `↓` / `↑` move through the results, `Enter` opens the first one.
 - On touch screens, drag with one finger to pan and pinch with two to zoom.

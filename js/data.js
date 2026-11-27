@@ -30,14 +30,16 @@ const WORLD = {
     { id: "Uzumaki", label: "Uzumaki" },
     { id: "Hyūga", label: "Hyūga" },
     { id: "Other", label: "Other / None" },
-    { id: "Akatsuki", label: "Akatsuki (group)" }
+    { id: "Akatsuki", label: "Akatsuki (group)" },
+    { id: "Land of Waves", label: "Land of Waves (arc)" }
   ],
 
   /* Organisations that behave like an extra clan filter. Members keep their
      real clan in `clan:`; these ids only drive the group filter and badges. */
   groups: {
     Akatsuki: ["nagato", "konan", "yahiko", "obito", "itachi", "kisame",
-      "sasori", "deidara", "hidan", "kakuzu", "zetsu", "orochimaru"]
+      "sasori", "deidara", "hidan", "kakuzu", "zetsu", "orochimaru"],
+    "Land of Waves": ["zabuza", "haku", "gozu", "meizu", "gato", "tazuna"]
   },
 
   auraColors: {
@@ -691,6 +693,43 @@ const WORLD = {
       era: ["shippuden"], title: "7-tails host", aura: "none", gen: 8, x: 1900, y: 1630,
       bio: "A young ninja of Takigakure who carried Chōmei, the Seven-Tails, and could manipulate wind with remarkable grace.",
       jutsu: [["Wind Release", "Wind", "Ninjutsu"], ["Chōmei's Chakra", "Wind", "Bijuu"]], bijuu: ["chomei"], compact: true
+    },
+    /* ---- Land of Waves arc (Team 7's first real mission) ---- */
+    {
+      id: "tazuna", name: "Tazuna", jp: "タズナ", clan: "Other",
+      era: ["naruto"], title: "Master Bridge Builder", aura: "none", gen: 5, x: 3450, y: 1060,
+      bio: "The bridge builder from the Land of Waves whom Team 7 escorted home. He hid that Gatō had hired killers to stop him, turning a C-rank escort into a far more dangerous mission. His finished bridge was named the Great Naruto Bridge.",
+      jutsu: [], bijuu: []
+    },
+    {
+      id: "gato", name: "Gatō", jp: "ガトー", clan: "Other",
+      era: ["naruto"], title: "Shipping Magnate", aura: "none", gen: 5, x: 3650, y: 1060,
+      bio: "A ruthless businessman who choked the Land of Waves through his shipping monopoly. He hired Zabuza to kill Tazuna and planned to betray him rather than pay; after Haku's death, Zabuza killed him.",
+      jutsu: [], bijuu: []
+    },
+    {
+      id: "gozu", name: "Gōzu", jp: "ゴウズ", clan: "Other",
+      era: ["naruto"], title: "Demon Brothers · Rogue Mist chūnin", aura: "none", gen: 5, x: 3850, y: 1060,
+      bio: "One of the Demon Brothers, rogue Mist ninja serving Zabuza. With his brother Meizu he ambushed Team 7 on the road from a puddle, wrapping a chain between their clawed gauntlets, until Kakashi captured them both.",
+      jutsu: [["Chain Shuriken Ambush", "Weapon", "Ninja Tool"], ["Poisoned Claw Gauntlet", "Weapon", "Ninja Tool"]], bijuu: []
+    },
+    {
+      id: "meizu", name: "Meizu", jp: "メイズ", clan: "Other",
+      era: ["naruto"], title: "Demon Brothers · Rogue Mist chūnin", aura: "none", gen: 5, x: 4000, y: 1060,
+      bio: "Gōzu's brother and partner in the Demon Brothers' ambush on Team 7. Their poisoned claws cut Naruto's hand, and Naruto stabbed it to bleed out the poison, vowing never to freeze up again. Kakashi, who had only faked being caught, captured them both.",
+      jutsu: [["Chain Shuriken Ambush", "Weapon", "Ninja Tool"], ["Poisoned Claw Gauntlet", "Weapon", "Ninja Tool"]], bijuu: []
+    },
+    {
+      id: "zabuza", name: "Zabuza Momochi", jp: "桃地 再不斬", clan: "Other",
+      era: ["naruto", "shippuden"], title: "Demon of the Hidden Mist", aura: "none", gen: 5, x: 4180, y: 1060,
+      bio: "One of the Seven Ninja Swordsmen of the Mist, who fled the village after a failed attempt on the Mizukage. Hired by Gatō, he fought Kakashi in the Land of Waves. When Haku died shielding him, Zabuza killed Gatō and died beside Haku. He was reanimated in the Fourth Shinobi World War.",
+      jutsu: [["Hidden Mist Technique", "Water", "Ninjutsu"], ["Silent Killing", "Weapon", "Kenjutsu"], ["Water Prison Technique", "Water", "Ninjutsu"], ["Water Dragon Bullet", "Water", "Ninjutsu"], ["Water Clone Technique", "Water", "Ninjutsu"]], bijuu: []
+    },
+    {
+      id: "haku", name: "Haku", jp: "白", clan: "Other",
+      era: ["naruto", "shippuden"], title: "Last of the Yuki clan · Ice Release", aura: "none", gen: 5, x: 4350, y: 1060,
+      bio: "The last of the Yuki clan, whose Ice Release kekkei genkai made him feared in the Mist. Zabuza took him in as an orphan, and Haku chose to be his tool. He fought Naruto and Sasuke on the bridge and died taking Kakashi's Lightning Blade for Zabuza. He was reanimated in the Fourth Shinobi World War.",
+      jutsu: [["Ice Release: Demonic Mirroring Ice Crystals", "Water", "Kekkei Genkai"], ["Ice Release: Thousand Needles of Death", "Water", "Kekkei Genkai"], ["Senbon", "Weapon", "Ninja Tool"]], bijuu: []
     }
   ],
 
@@ -785,7 +824,53 @@ const WORLD = {
       lore: "Killer B's unique style: seven swords held in his hands, armpits, neck and mouth, swung in unpredictable rhythm." },
     { id: "kote", name: "Scientific Ninja Gauntlet", jp: "科学忍具", type: "Ninja Tool", owners: ["boruto"],
       ability: "Fires stored jutsu from scrolls",
-      lore: "A gauntlet that releases jutsu stored in cartridge scrolls. Its use in the Chūnin Exams was controversial." }
+      lore: "A gauntlet that releases jutsu stored in cartridge scrolls. Its use in the Chūnin Exams was controversial." },
+    { id: "kubikiribocho", name: "Kubikiribōchō", jp: "首斬り包丁", type: "Sword", owners: ["zabuza", "suigetsu"],
+      ability: "Rebuilds itself from the iron in the blood it spills",
+      lore: "The Executioner's Blade, one of the Seven Swords of the Mist: a giant cleaver Zabuza carried. After his death Suigetsu took it from his grave." }
+  ],
+
+  /* Eyes (Dōjutsu). users = character ids on the tree.
+     abilities = [[name, nature]] using the keys of `natures` above.
+     Artwork (optional): assets/eyes/<id>.webp|png|jpg, or image: "path".
+     Clip (optional): assets/videos/<id>/<id>.mp4 or video: "path". */
+  eyes: [
+    { id: "sharingan", name: "Sharingan", jp: "写輪眼", type: "Kekkei Genkai", clan: "Uchiha", color: "#B3262E",
+      users: ["indra", "madara", "izuna", "kagami", "fugaku", "shisui", "obito", "itachi", "sasuke", "sarada", "kakashi", "danzo"],
+      abilities: [["Genjutsu Casting", "Yin-Yang"], ["Copy Technique", "All"], ["Movement Prediction", "All"]],
+      lore: "The red eye of the Uchiha, awakened through intense emotion. It reads and copies techniques, predicts movement and casts genjutsu with a single glance." },
+    { id: "mangekyo", name: "Mangekyō Sharingan", jp: "万華鏡写輪眼", type: "Kekkei Genkai", clan: "Uchiha", color: "#8E1F2A",
+      users: ["madara", "izuna", "shisui", "obito", "itachi", "sasuke", "kakashi"],
+      abilities: [["Amaterasu", "Fire"], ["Tsukuyomi", "Yin-Yang"], ["Kamui", "Space-Time"], ["Kotoamatsukami", "Yin-Yang"], ["Susanoo", "All"]],
+      lore: "A rare evolution of the Sharingan awakened by the trauma of losing someone close. Each pattern is unique and grants its own powers, at the cost of slowly going blind." },
+    { id: "eternal_mangekyo", name: "Eternal Mangekyō Sharingan", jp: "永遠の万華鏡写輪眼", type: "Kekkei Genkai", clan: "Uchiha", color: "#6E1420",
+      users: ["madara", "sasuke"],
+      abilities: [["Perfect Susanoo", "All"], ["Blaze Release", "Fire"], ["Unfading Sight", "All"]],
+      lore: "Made by transplanting a sibling's Mangekyō. It never goes blind and strengthens every Mangekyō ability, unlocking the Perfect Susanoo." },
+    { id: "rinnegan", name: "Rinnegan", jp: "輪廻眼", type: "Kekkei Mōra", clan: "Ōtsutsuki / Uchiha", color: "#7A5A9C",
+      users: ["hagoromo", "madara", "nagato", "obito", "sasuke"],
+      abilities: [["Six Paths Technique", "All"], ["Almighty Push", "Yin-Yang"], ["Planetary Devastation", "Earth"], ["Amenotejikara", "Space-Time"]],
+      lore: "The legendary rippled eye of the Sage of Six Paths, awakened by uniting Senju and Uchiha chakra. It grants mastery of all five natures and of life and death." },
+    { id: "sasuke_rinnegan", name: "Sasuke's Rinnegan", jp: "サスケの輪廻眼", type: "Kekkei Mōra", clan: "Uchiha", color: "#6A4C93",
+      users: ["sasuke"],
+      abilities: [["Amenotejikara", "Space-Time"], ["Dimension Travel", "Space-Time"], ["Indra's Arrow", "Lightning"]],
+      lore: "The six-tomoe Rinnegan Sasuke received from Hagoromo in his left eye. It lets him swap places with anything in range and cross between dimensions." },
+    { id: "rinne_sharingan", name: "Rinne Sharingan", jp: "輪廻写輪眼", type: "Kekkei Mōra", clan: "Ōtsutsuki", color: "#9B4C6E",
+      users: ["kaguya", "madara"],
+      abilities: [["Infinite Tsukuyomi", "Yin-Yang"], ["Dimension Shift", "Space-Time"], ["Limbo: Border Jail", "Yin-Yang"]],
+      lore: "The forehead eye of Kaguya and the Ten-Tails. Reflected on the moon, it casts the Infinite Tsukuyomi over the whole world." },
+    { id: "byakugan", name: "Byakugan", jp: "白眼", type: "Kekkei Genkai", clan: "Hyūga", color: "#A9B4C8",
+      users: ["hamura", "hyuga_elder", "hiashi", "hizashi", "neji", "hinata", "hanabi", "himawari"],
+      abilities: [["360° Vision", "All"], ["Chakra Network Sight", "All"], ["Gentle Fist", "All"]],
+      lore: "The pale eye of the Hyūga, inherited from Hamura Ōtsutsuki. It sees almost all the way around, through walls and into the chakra pathways of any body." },
+    { id: "tenseigan", name: "Tenseigan", jp: "転生眼", type: "Kekkei Mōra", clan: "Ōtsutsuki", color: "#4F86C6",
+      users: ["toneri"],
+      abilities: [["Golden Wheel Rebirth Explosion", "All"], ["Truth-Seeking Balls", "All"], ["Gravity Control", "Yin-Yang"]],
+      lore: "The blue eye born when Hamura's chakra meets the Byakugan. Toneri used it on the moon to command attraction and repulsion." },
+    { id: "jogan", name: "Jōgan", jp: "浄眼", type: "Dōjutsu", clan: "Uzumaki / Hyūga", color: "#5FA8D3",
+      users: ["boruto"],
+      abilities: [["Chakra Point Sight", "All"], ["Dimension Sense", "Space-Time"]],
+      lore: "Boruto's mysterious right eye. It sees chakra flows and the seams between dimensions, and the Ōtsutsuki fear what it may become." }
   ],
 
   /* Relationships. t = parent (p -> c; lineage: true when generations are skipped,
@@ -969,7 +1054,13 @@ const WORLD = {
     { t: "team", a: "sarada", b: "mitsuki" },
     { t: "team", a: "shikadai", b: "inojin" },
     { t: "team", a: "shikadai", b: "chocho" },
-    { t: "team", a: "inojin", b: "chocho" }
+    { t: "team", a: "inojin", b: "chocho" },
+    // Land of Waves
+    { t: "sensei", s: "zabuza", d: "haku" },
+    { t: "team", a: "zabuza", b: "haku" },
+    { t: "team", a: "zabuza", b: "gozu" },
+    { t: "team", a: "zabuza", b: "meizu" },
+    { t: "sibling", a: "gozu", b: "meizu" }
   ]
 };
 
