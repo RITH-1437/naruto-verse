@@ -52,10 +52,11 @@
     aura: "weapon", auraColor: "#8A8FA0", image: w.image, video: w.video,
     jutsu: [[w.ability, "Weapon", w.type, w.clip]], bijuu: []
   });
+  const eyeWielders = (e) => [...e.users.map((u) => (byId(u) || { name: u }).name), ...(e.others || [])];
   const eyeAsCharacter = (e) => ({
     id: e.id, isEye: true, folder: "eyes", glyph: "眼", users: e.users,
     name: e.name, jp: e.jp, clan: e.type, era: [],
-    title: "Wielded by " + e.users.map((u) => (byId(u) || { name: u }).name).join(", "),
+    title: eyeWielders(e).length ? "Wielded by " + eyeWielders(e).join(", ") : "Wielder unknown",
     aura: "eye", auraColor: e.color, image: e.image, video: e.video,
     jutsu: e.abilities.map((a) => [a[0], a[1], e.type]), bijuu: []
   });
@@ -105,10 +106,10 @@
       items: EYES, folder: "eyes",
       color: (e) => e.color, glyph: () => "眼",
       tag: (e) => e.clan, num: () => "",
-      text: (e) => [e.name, e.jp, e.type, e.clan, e.lore, ...e.abilities.map((a) => a[0]),
-        ...e.users.map((id) => (byId(id) || {}).name)].join(" "),
-      meta: (e) => e.users.slice(0, 3).map((id) =>
-        `<span class="s-dot" style="--dot:${auraHex(byId(id) || {})}">${esc((byId(id) || { name: id }).name)}</span>`).join(""),
+      text: (e) => [e.name, e.jp, e.type, e.clan, e.lore, ...e.abilities.map((a) => a[0]), ...eyeWielders(e)].join(" "),
+      meta: (e) => [...e.users.map((id) => [(byId(id) || { name: id }).name, auraHex(byId(id) || {})]),
+        ...(e.others || []).map((n) => [n, e.color])].slice(0, 3).map(([n, c]) =>
+        `<span class="s-dot" style="--dot:${c}">${esc(n)}</span>`).join(""),
       title2: (e) => e.type,
       preview: eyeAsCharacter
     }
@@ -407,7 +408,7 @@
       PV.onChronicle((c) => {
         const page = "html/scroll.html";
         const url = c.isWeapon ? `${page}?weapon=${c.id}` : c.isBijuu ? `${page}?bijuu=${c.id}`
-          : c.isEye ? `${page}?focus=${c.users[0]}` : `${page}?focus=${c.id}`;
+          : c.isEye ? (c.users[0] ? `${page}?focus=${c.users[0]}` : page) : `${page}?focus=${c.id}`;
         location.href = url;
       });
     }

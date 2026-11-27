@@ -908,7 +908,7 @@
 
     // Full-screen animated preview: reopen it from the drawer, or perform a listed jutsu
     if (window.CharacterPreview) {
-      window.CharacterPreview.onChronicle((c) => (c.isWeapon ? openWeapon(c.id) : c.isBijuu ? openBijuu(c.id) : c.isEye ? openCharacter(c.users[0], false) : openCharacter(c.id, false)));
+      window.CharacterPreview.onChronicle((c) => (c.isWeapon ? openWeapon(c.id) : c.isBijuu ? openBijuu(c.id) : c.isEye ? (c.users[0] && openCharacter(c.users[0], false)) : openCharacter(c.id, false)));
       els.drawerBody.addEventListener("click", (e) => {
         const c = byId(state.selected);
         if (!c) return;

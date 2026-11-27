@@ -830,7 +830,8 @@ const WORLD = {
       lore: "The Executioner's Blade, one of the Seven Swords of the Mist: a giant cleaver Zabuza carried. After his death Suigetsu took it from his grave." }
   ],
 
-  /* Eyes (Dōjutsu). users = character ids on the tree.
+  /* Eyes (Dōjutsu). users = character ids on the tree; others = plain names of
+     wielders who are not on the tree (optional). Both may be empty.
      abilities = [[name, nature]] using the keys of `natures` above.
      Artwork (optional): assets/eyes/<id>.webp|png|jpg, or image: "path".
      Clip (optional): assets/videos/<id>/<id>.mp4 or video: "path". */
@@ -870,7 +871,19 @@ const WORLD = {
     { id: "jogan", name: "Jōgan", jp: "浄眼", type: "Dōjutsu", clan: "Uzumaki / Hyūga", color: "#5FA8D3",
       users: ["boruto"],
       abilities: [["Chakra Point Sight", "All"], ["Dimension Sense", "Space-Time"]],
-      lore: "Boruto's mysterious right eye. It sees chakra flows and the seams between dimensions, and the Ōtsutsuki fear what it may become." }
+      lore: "Boruto's mysterious right eye. It sees chakra flows and the seams between dimensions, and the Ōtsutsuki fear what it may become." },
+    { id: "ketsuryugan", name: "Ketsuryūgan", jp: "血龍眼", type: "Kekkei Genkai", clan: "Chinoike", color: "#C02F45",
+      users: [], others: ["Chino"],
+      abilities: [["Genjutsu Casting", "Yin-Yang"], ["Blood Iron Control", "All"]],
+      lore: "The blood-red eye of the Chinoike clan, feared and driven into exile for its power. Chino wields it to cast genjutsu and to turn the iron in an enemy's blood against them." },
+    { id: "kokugan", name: "Kokugan", jp: "コクガン", type: "Dōjutsu", clan: "Unknown", color: "#D9B300",
+      users: [], others: [],
+      abilities: [],
+      lore: "A golden eye marked with eight black spokes around a blazing white pupil. Its wielder and powers are not yet recorded in this archive." },
+    { id: "senrigan", name: "Senrigan", jp: "千里眼", type: "Dōjutsu", clan: "Unknown", color: "#2F7FD8",
+      users: [], others: [],
+      abilities: [],
+      lore: "The \"thousand-league eye\": a deep blue eye with a pale crescent around a shining pupil. Its name means clairvoyance; its wielder and powers are not yet recorded in this archive." }
   ],
 
   /* Relationships. t = parent (p -> c; lineage: true when generations are skipped,

@@ -75,7 +75,7 @@ for (const w of arms) {
   (w.owners || []).forEach((o) => { if (!cid.has(o)) P(`weapon ${w.id}: unknown wielder "${o}"`); });
 }
 for (const e of eyes) {
-  if (!e.users || !e.users.length) P(`eye ${e.id}: no users`);
+  if (!Array.isArray(e.users)) P(`eye ${e.id}: users must be an array (may be empty)`);
   (e.users || []).forEach((u) => { if (!cid.has(u)) P(`eye ${e.id}: unknown user "${u}"`); });
   (e.abilities || []).forEach((a) => { if (!natures.has(a[1])) P(`eye ${e.id}: ability "${a[0]}" has unknown nature "${a[1]}"`); });
 }
