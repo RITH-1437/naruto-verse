@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-root="../">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,9 +7,9 @@
   <meta name="description" content="An interactive parchment scroll of the Naruto-verse: lineage, reincarnation, and the Nine-Tailed Beasts from Kaguya to Boruto." />
 
   <!-- Favicon: the red 忍 seal from the navbar -->
-  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
-  <link rel="icon" href="assets/icons/favicon.ico" sizes="any" />
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png" />
   <meta name="theme-color" content="#F4EBD0" />
 
   <!-- Fonts: brush display + clean readable body -->
@@ -17,9 +17,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Shippori+Mincho:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="../css/styles.css" />
 </head>
 <body>
+  <a class="skip-link" href="#search">Skip to search</a>
   <div id="app" class="app-shell">
 
     <!-- ===================== HEADER ===================== -->
@@ -32,7 +33,7 @@
         </div>
       </div>
       <div class="header-right">
-        <a class="ink-btn home-link" href="index.html" title="Back to the Shinobi Chronicles home">← Home</a>
+        <a class="ink-btn home-link" href="../index.html" title="Back to the Shinobi Chronicles home">← Home</a>
         <span class="era-ribbon">Kaguya &nbsp;·&nbsp; Warring States &nbsp;·&nbsp; Naruto &nbsp;·&nbsp; Shippuden &nbsp;·&nbsp; Boruto</span>
       </div>
     </header>
@@ -43,9 +44,10 @@
         <div class="search-wrap">
           <span class="search-icon" aria-hidden="true">⌕</span>
           <input id="search" type="search" autocomplete="off"
-                 placeholder="Search name, clan, jutsu, Bijuu…" aria-label="Search the chronicles" />
-          <button id="search-clear" class="mini-clear" title="Clear search" aria-label="Clear search">×</button>
-          <div id="search-results" class="search-results" hidden></div>
+                 placeholder="Search name, clan, jutsu, Bijuu…" aria-label="Search the chronicles"
+                 aria-controls="search-results" enterkeyhint="search" />
+          <button type="button" id="search-clear" class="mini-clear" title="Clear search" aria-label="Clear search">×</button>
+          <div id="search-results" class="search-results" role="group" aria-label="Search results" hidden></div>
         </div>
 
         <div class="tool-group" role="group" aria-label="Era filter">
@@ -80,16 +82,16 @@
           <span class="switch-text">Sensei Links</span>
         </label>
         <div class="spacer"></div>
-        <button id="btn-weapons" class="ink-btn"> ⚔ Weapons</button>
-        <button id="btn-bijuu" class="ink-btn accent"> Bijuu Scroll</button>
-        <button id="btn-reset" class="ink-btn scroll-only"> Reset View</button>
+        <button type="button" id="btn-weapons" class="ink-btn" aria-controls="weapon-drawer"><span aria-hidden="true">⚔</span> Weapons</button>
+        <button type="button" id="btn-bijuu" class="ink-btn accent" aria-controls="bijuu-drawer">Bijuu Scroll</button>
+        <button type="button" id="btn-reset" class="ink-btn scroll-only">Reset View</button>
       </div>
     </section>
 
     <!-- ===================== CANVAS ===================== -->
     <main class="canvas-wrap" id="canvas-wrap">
-      <svg id="graph" xmlns="http://www.w3.org/2000/svg" role="img"
-           aria-label="Interactive Naruto-verse family tree">
+      <svg id="graph" xmlns="http://www.w3.org/2000/svg" role="group"
+           aria-label="Interactive Naruto-verse family tree. Tab to a portrait and press Enter to open it; plus and minus keys zoom, 0 fits the scroll.">
         <defs>
           <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5"
                   markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -131,9 +133,10 @@
       </svg>
 
       <!-- floating legends / controls -->
-      <div class="legend floating-panel">
+      <div class="legend floating-panel" aria-hidden="true">
         <div class="legend-title">Reading the Scroll</div>
         <div class="legend-item"><span class="legend-line solid"></span> Bloodline / Parent → Child</div>
+        <div class="legend-item"><span class="legend-line lineage-line"></span> Ancestral line (generations skipped)</div>
         <div class="legend-item"><span class="legend-line bracket"></span> Marriage / Partner</div>
         <div class="legend-item"><span class="legend-line reinc"></span> Reincarnation (glowing)</div>
         <div class="legend-item"><span class="legend-line dotted"></span> Sensei → Student</div>
@@ -141,14 +144,14 @@
         <div class="legend-item"><span class="legend-line bijuu-line"></span> Bijuu → Jinchūriki</div>
       </div>
 
-      <div class="zoom-controls floating-panel">
-        <button id="zoom-in" aria-label="Zoom in">＋</button>
-        <button id="zoom-out" aria-label="Zoom out">－</button>
-        <button id="zoom-fit" aria-label="Fit whole scroll" title="Fit whole scroll">⤢</button>
+      <div class="zoom-controls floating-panel" role="group" aria-label="Zoom">
+        <button type="button" id="zoom-in" aria-label="Zoom in" title="Zoom in (+)">＋</button>
+        <button type="button" id="zoom-out" aria-label="Zoom out" title="Zoom out (−)">－</button>
+        <button type="button" id="zoom-fit" aria-label="Fit whole scroll" title="Fit whole scroll (0)">⤢</button>
       </div>
 
       <div id="canvas-hint" class="canvas-hint">Drag to pan &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click a portrait to open its chronicle</div>
-      <div id="status-pill" class="status-pill" hidden></div>
+      <div id="status-pill" class="status-pill" role="status" hidden></div>
 
       <!-- relationship flow (default view) -->
       <div id="flow-view" class="flow-view" hidden>
@@ -172,19 +175,19 @@
     </main>
 
     <!-- ===================== CHARACTER DRAWER ===================== -->
-    <aside id="drawer" class="drawer" aria-label="Character profile" aria-hidden="true">
+    <aside id="drawer" class="drawer" aria-label="Character profile" aria-hidden="true" inert>
       <div class="drawer-head">
-        <div class="drawer-seal">忍</div>
-        <button id="drawer-close" class="drawer-close" aria-label="Close profile">×</button>
+        <div class="drawer-seal" aria-hidden="true">忍</div>
+        <button type="button" id="drawer-close" class="drawer-close" aria-label="Close profile">×</button>
       </div>
       <div id="drawer-body" class="drawer-body"></div>
     </aside>
 
     <!-- ===================== BIJUU DRAWER ===================== -->
-    <aside id="bijuu-drawer" class="drawer bijuu-drawer" aria-label="Tailed Beasts" aria-hidden="true">
+    <aside id="bijuu-drawer" class="drawer bijuu-drawer" aria-label="Tailed Beasts" aria-hidden="true" inert>
       <div class="drawer-head">
-        <div class="drawer-seal">尾</div>
-        <button id="bijuu-close" class="drawer-close" aria-label="Close Bijuu scroll">×</button>
+        <div class="drawer-seal" aria-hidden="true">尾</div>
+        <button type="button" id="bijuu-close" class="drawer-close" aria-label="Close Bijuu scroll">×</button>
       </div>
       <div class="drawer-body">
         <h2 class="drawer-kicker">The Nine &amp; the Primordial</h2>
@@ -195,10 +198,10 @@
     </aside>
 
     <!-- ===================== WEAPONS DRAWER ===================== -->
-    <aside id="weapon-drawer" class="drawer weapon-drawer" aria-label="Special weapons" aria-hidden="true">
+    <aside id="weapon-drawer" class="drawer weapon-drawer" aria-label="Special weapons" aria-hidden="true" inert>
       <div class="drawer-head">
-        <div class="drawer-seal">刀</div>
-        <button id="weapon-close" class="drawer-close" aria-label="Close weapons scroll">×</button>
+        <div class="drawer-seal" aria-hidden="true">刀</div>
+        <button type="button" id="weapon-close" class="drawer-close" aria-label="Close weapons scroll">×</button>
       </div>
       <div class="drawer-body">
         <h2 class="drawer-kicker">Legendary Weapons &amp; Ninja Tools</h2>
@@ -211,9 +214,9 @@
     <div id="scrim" class="scrim" hidden></div>
   </div>
 
-  <script src="js/data.js"></script>
-  <script src="js/media-index.js"></script>
-  <script src="js/preview.js"></script>
-  <script src="js/scroll.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/media-index.js"></script>
+  <script src="../js/preview.js"></script>
+  <script src="../js/scroll.js"></script>
 </body>
 </html>

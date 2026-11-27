@@ -780,3 +780,37 @@ a.ink-btn.home-link { text-decoration: none; white-space: nowrap; }
   .fc .ink-btn { justify-self: start; }
 }
 @media (prefers-reduced-motion: reduce) { .flow.enter .fg, .flow.enter .fc { animation: none; } }
+
+/* ================================================= upgrade: a11y + performance */
+/* Visible keyboard focus everywhere (mouse clicks keep the clean look). */
+:where(button, a, select, input, [tabindex]):focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.node:focus { outline: none; }
+.node:focus-visible .disc { stroke: var(--red); stroke-width: 4; }
+.node:focus-visible .node-label { fill: var(--red); }
+.skip-link {
+  position: absolute; left: 12px; top: -60px; z-index: 200; padding: 10px 14px;
+  background: var(--ink); color: var(--paper); font: 700 13px var(--body); border-radius: 4px; text-decoration: none;
+}
+.skip-link:focus { top: 10px; }
+
+/* The hand-inked wobble filter is costly to repaint, so it is skipped while the camera moves. */
+.link.parent { filter: url(#ink-soft); }
+#graph.panning .link.parent { filter: none; }
+/* Generation-skipping lineage (Indra → Tajima, Hashirama → Tsunade): lighter and dashed. */
+.link.parent.lineage { stroke-dasharray: 7 4; opacity: .55; }
+.legend-line.lineage-line { border-top: 2px dashed var(--ink-soft); opacity: .7; }
+a.ink-btn.home-link { color: var(--ink); }
+.pv-hint { max-width: 32ch; margin-inline: auto; text-align: center; }
+
+@media (max-width: 620px) {
+  /* keep the toolbar to a few compact rows so the canvas keeps most of the screen */
+  .toolbar .chip-row { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .toolbar .chip-row::-webkit-scrollbar { display: none; }
+  .toolbar .tool-group { min-width: 0; max-width: 100%; }
+  .tool-row-secondary { gap: 8px; }
+  .header-titles p { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .flow-lines .fl, .pv-flame, .pv-spark, .pv-dust circle { animation: none !important; }
+}

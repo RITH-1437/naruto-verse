@@ -14,7 +14,7 @@ from pathlib import Path
 import json
 
 ROOT = Path(__file__).resolve().parent.parent
-FOLDERS = ["assets/characters", "assets/weapons", "assets/videos"]
+FOLDERS = ["assets/characters", "assets/weapons", "assets/videos", "assets/thumbs"]
 MEDIA = {".webp", ".png", ".jpg", ".jpeg", ".gif", ".mp4", ".webm"}
 
 

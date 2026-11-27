@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SHINOBI CHRONICLES: Lineage Scroll (scroll.html)
+   SHINOBI CHRONICLES: Lineage Scroll (html/scroll.html)
    Pure static SVG renderer with pan / zoom, filters, graph links and drawers.
    ========================================================================== */
 
@@ -7,8 +7,13 @@
   "use strict";
 
   const NS = "http://www.w3.org/2000/svg";
-  const byId = (id) => WORLD.characters.find((c) => c.id === id);
-  const bijuuById = (id) => WORLD.bijuu.find((b) => b.id === id);
+  // The query string as the page was opened (setView rewrites ?focus= later on).
+  const START_QUERY = new URLSearchParams(location.search);
+  const REDUCED_MOTION = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+  const CHAR_MAP = new Map(WORLD.characters.map((c) => [c.id, c]));
+  const BIJUU_MAP = new Map(WORLD.bijuu.map((b) => [b.id, b]));
+  const byId = (id) => CHAR_MAP.get(id);
+  const bijuuById = (id) => BIJUU_MAP.get(id);
   const WEAPONS = WORLD.weapons || [];
   const weaponById = (id) => WEAPONS.find((w) => w.id === id);
   const weaponsOf = (cid) => WEAPONS.filter((w) => w.owners.includes(cid));
@@ -106,7 +111,7 @@
         grid).textContent = `GEN ${g}`;
     });
     el("text", { class: "band-label", x: centerX, y: 1785 }, grid)
-      .textContent = "THE SPIRIT REALM · TIED BEASTS";
+      .textContent = "THE SPIRIT REALM · TAILED BEASTS";
     el("text", { class: "band-label", x: centerX, y: 1630 - 42 }, grid)
       .textContent = "JINCHŪRIKI THROUGH THE AGES";
   }
@@ -168,11 +173,11 @@
       if (l.t === "parent") {
         const p = byId(l.p), c = byId(l.c);
         if (!p || !c) return;
-        const path = el("path", {
-          class: "link parent", d: parentPath(p, c),
+        // the hand-inked wobble filter lives in CSS so it can be dropped while panning
+        el("path", {
+          class: `link parent${l.lineage ? " lineage" : ""}`, d: parentPath(p, c),
           "data-a": l.p, "data-b": l.c
         }, els.parent);
-        path.style.filter = "url(#ink-soft)";
       } else if (l.t === "spouse") {
         const a = byId(l.a), b = byId(l.b);
         if (!a || !b) return;
@@ -229,14 +234,18 @@
 
   /* ---------------------------------------------------------- relation derive */
   function relations(id) {
-    const out = { parents: [], children: [], spouse: [], siblings: [], sensei: [], students: [], team: [], reinc: [] };
+    const out = { ancestors: [], parents: [], children: [], descendants: [], spouse: [], siblings: [], sensei: [], students: [], team: [], reinc: [] };
     WORLD.links.forEach((l) => {
       if (l.t === "parent") {
-        if (l.c === id) out.parents.push(l.p);
-        if (l.p === id) out.children.push(l.c);
+        // lineage links skip generations (Indra → Tajima, Hashirama → Tsunade)
+        if (l.c === id) out[l.lineage ? "ancestors" : "parents"].push(l.p);
+        if (l.p === id) out[l.lineage ? "descendants" : "children"].push(l.c);
       } else if (l.t === "spouse") {
         if (l.a === id) out.spouse.push(l.b);
         if (l.b === id) out.spouse.push(l.a);
+      } else if (l.t === "sibling") {
+        if (l.a === id) out.siblings.push(l.b);
+        if (l.b === id) out.siblings.push(l.a);
       } else if (l.t === "sensei") {
         if (l.d === id) out.sensei.push(l.s);
         if (l.s === id) out.students.push(l.d);
@@ -247,8 +256,10 @@
         out.reinc.push(...l.chain.filter((x) => x !== id));
       }
     });
-    const parentIds = WORLD.links.filter((l) => l.t === "parent" && l.c === id).map((l) => l.p);
-    WORLD.links.filter((l) => l.t === "parent" && parentIds.includes(l.p) && l.c !== id)
+    // siblings share a direct parent (a shared distant ancestor does not count)
+    const direct = (l) => l.t === "parent" && !l.lineage;
+    const parentIds = WORLD.links.filter((l) => direct(l) && l.c === id).map((l) => l.p);
+    WORLD.links.filter((l) => direct(l) && parentIds.includes(l.p) && l.c !== id)
       .forEach((l) => { if (!out.siblings.includes(l.c)) out.siblings.push(l.c); });
     Object.keys(out).forEach((k) => { out[k] = [...new Set(out[k])]; });
     return out;
@@ -336,10 +347,12 @@
       ${bijuuChips ? `<div class="drawer-section"><h3>Tailed Beast Bond</h3><div class="chip-group">${bijuuChips}</div></div>` : ""}
       <div class="drawer-section">
         <h3>Relationships</h3>
+        ${group("Ancestors", rel.ancestors)}
         ${group("Parents", rel.parents)}
         ${group("Spouse / Partner", rel.spouse)}
         ${group("Siblings", rel.siblings)}
         ${group("Children", rel.children)}
+        ${group("Descendants", rel.descendants)}
         ${group("Sensei", rel.sensei)}
         ${group("Students", rel.students)}
         ${group("Team / Comrades", rel.team)}
@@ -347,12 +360,7 @@
       </div>`;
 
     els.drawerBody.scrollTop = 0;
-    hideWeaponDrawer();
-    els.drawer.classList.add("open");
-    els.drawer.setAttribute("aria-hidden", "false");
-    els.scrim.hidden = false;
-    els.bijuuDrawer.classList.remove("open");
-    els.bijuuDrawer.setAttribute("aria-hidden", "true");
+    showDrawer(els.drawer);
   }
 
   /* A tailed beast shaped like a character, for the full-screen preview. */
@@ -432,36 +440,48 @@
       <button class="ink-btn" data-trace="${b.id}">Trace chakra threads on tree</button>
       <button class="ink-btn accent" data-bijuu-full="${b.id}" style="margin-top:8px">⛶ View full form</button>`;
 
-    hideWeaponDrawer();
-    els.bijuuDrawer.classList.add("open");
-    els.bijuuDrawer.setAttribute("aria-hidden", "false");
-    els.scrim.hidden = false;
-    els.drawer.classList.remove("open");
-    els.drawer.setAttribute("aria-hidden", "true");
+    showDrawer(els.bijuuDrawer);
     if (!state.bijuu) {
       state.bijuu = true;
       els.bijuuToggle.checked = true;
       applyVisibility();
       if (!focus) fitView();
     }
-    if (focus) focusNode(b.id, RB, 1.3);
+    if (focus) focusNode(b.id, 1.3);
+  }
+
+  /* ------------------------------------------------------------ drawer state
+     Closed drawers are `inert` so their buttons drop out of the tab order.
+     Opening one moves focus into it (unless the full-screen preview owns
+     focus); closing returns focus to whatever opened it. */
+  const DRAWERS = () => [els.drawer, els.bijuuDrawer, els.weaponDrawer].filter(Boolean);
+  let drawerReturn = null;
+  function setDrawer(d, open) {
+    d.classList.toggle("open", open);
+    d.setAttribute("aria-hidden", String(!open));
+    d.inert = !open;
+  }
+  function showDrawer(d) {
+    const wasOpen = d.classList.contains("open");
+    const anyOpen = DRAWERS().some((x) => x.classList.contains("open"));
+    if (!anyOpen && !(document.activeElement && document.activeElement.closest(".drawer"))) drawerReturn = document.activeElement;
+    DRAWERS().forEach((x) => { if (x !== d) setDrawer(x, false); });
+    setDrawer(d, true);
+    els.scrim.hidden = false;
+    const pvOpen = window.CharacterPreview && window.CharacterPreview.isOpen();
+    if (!wasOpen && !pvOpen) {
+      const btn = d.querySelector(".drawer-close");
+      if (btn) btn.focus({ preventScroll: true });
+    }
   }
 
   /* ---------------------------------------------------------- weapons drawer */
   function hideWeaponDrawer() {
-    if (!els.weaponDrawer) return;
-    els.weaponDrawer.classList.remove("open");
-    els.weaponDrawer.setAttribute("aria-hidden", "true");
+    if (els.weaponDrawer) setDrawer(els.weaponDrawer, false);
   }
 
   function showWeaponDrawer() {
-    els.weaponDrawer.classList.add("open");
-    els.weaponDrawer.setAttribute("aria-hidden", "false");
-    els.scrim.hidden = false;
-    els.drawer.classList.remove("open");
-    els.drawer.setAttribute("aria-hidden", "true");
-    els.bijuuDrawer.classList.remove("open");
-    els.bijuuDrawer.setAttribute("aria-hidden", "true");
+    showDrawer(els.weaponDrawer);
   }
 
   function openWeapon(id) {
@@ -500,23 +520,37 @@
   }
 
   function closeDrawers() {
-    hideWeaponDrawer();
-    els.drawer.classList.remove("open");
-    els.bijuuDrawer.classList.remove("open");
-    els.drawer.setAttribute("aria-hidden", "true");
-    els.bijuuDrawer.setAttribute("aria-hidden", "true");
+    const hadFocus = document.activeElement && document.activeElement.closest(".drawer");
+    const wasOpen = DRAWERS().some((x) => x.classList.contains("open"));
+    DRAWERS().forEach((x) => setDrawer(x, false));
     els.scrim.hidden = true;
     state.selected = null;
     document.querySelectorAll(".node.selected").forEach((n) => n.classList.remove("selected"));
+    if (wasOpen && (hadFocus || document.activeElement === document.body) && drawerReturn && drawerReturn.isConnected) {
+      drawerReturn.focus({ preventScroll: true });
+    }
+    drawerReturn = null;
   }
 
   /* ------------------------------------------------------------ canvas camera */
-  function applyTransform() {
+  // Batched into one write per frame, so fast wheel / drag events never queue up.
+  let transformQueued = false;
+  function writeTransform() {
+    transformQueued = false;
     els.viewport.setAttribute("transform", `translate(${state.tx} ${state.ty}) scale(${state.k})`);
+  }
+  function applyTransform(now = false) {
+    if (now) { writeTransform(); return; }
+    if (!transformQueued) { transformQueued = true; requestAnimationFrame(writeTransform); }
   }
 
   function animateTo(target, duration = 560) {
     if (state.raf) cancelAnimationFrame(state.raf);
+    if (REDUCED_MOTION && REDUCED_MOTION.matches) {
+      Object.assign(state, { tx: target.tx, ty: target.ty, k: target.k, raf: null });
+      applyTransform(true);
+      return;
+    }
     const from = { tx: state.tx, ty: state.ty, k: state.k };
     const t0 = performance.now();
     const ease = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -526,7 +560,7 @@
       state.tx = from.tx + (target.tx - from.tx) * e;
       state.ty = from.ty + (target.ty - from.ty) * e;
       state.k = from.k + (target.k - from.k) * e;
-      applyTransform();
+      applyTransform(true);
       if (t < 1) state.raf = requestAnimationFrame(step); else state.raf = null;
     };
     state.raf = requestAnimationFrame(step);
@@ -682,19 +716,42 @@
   /* ------------------------------------------------------------ interactions */
   function bindCanvas() {
     const svg = els.svg;
-    svg.addEventListener("wheel", (e) => {
-      e.preventDefault();
-      const rect = svg.getBoundingClientRect();
-      const px = e.clientX - rect.left, py = e.clientY - rect.top;
+    // While the camera moves, the costly ink filter on bloodlines is switched off.
+    let settle = null;
+    const moving = () => {
+      svg.classList.add("panning");
+      clearTimeout(settle);
+      settle = setTimeout(() => { if (!state.pointer) svg.classList.remove("panning"); }, 160);
+    };
+    const zoomAt = (px, py, nk) => {
       const wx = (px - state.tx) / state.k, wy = (py - state.ty) / state.k;
-      const nk = clamp(state.k * (e.deltaY < 0 ? 1.12 : 1 / 1.12), .08, 3);
+      nk = clamp(nk, .05, 3);
       state.tx = px - wx * nk; state.ty = py - wy * nk; state.k = nk;
       applyTransform();
+    };
+    svg.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      if (state.raf) { cancelAnimationFrame(state.raf); state.raf = null; }
+      const rect = svg.getBoundingClientRect();
+      zoomAt(e.clientX - rect.left, e.clientY - rect.top, state.k * (e.deltaY < 0 ? 1.12 : 1 / 1.12));
+      moving();
       els.hint.style.opacity = "0";
     }, { passive: false });
 
+    // Touch / pen / mouse: one pointer pans, two pointers pinch-zoom.
+    const touches = new Map();
+    let pinch = null;
     svg.addEventListener("pointerdown", (e) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;
+      if (state.raf) { cancelAnimationFrame(state.raf); state.raf = null; }
+      touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      try { svg.setPointerCapture(e.pointerId); } catch (_) { /* synthetic events */ }
+      if (touches.size === 2) {
+        const [a, b] = [...touches.values()];
+        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, k: state.k };
+        if (state.pointer) state.pointer.moved = true;   // a pinch is never a click
+        return;
+      }
       const node = e.target.closest(".node");
       state.pointer = {
         x: e.clientX, y: e.clientY, tx: state.tx, ty: state.ty,
@@ -702,21 +759,44 @@
         nodeType: node ? (node.classList.contains("bijuu-node") ? "bijuu" : "char") : null
       };
       svg.classList.add("dragging");
-      try { svg.setPointerCapture(e.pointerId); } catch (_) { /* synthetic events */ }
     });
 
     svg.addEventListener("pointermove", (e) => {
+      if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pinch && touches.size === 2) {
+        const [a, b] = [...touches.values()];
+        const rect = svg.getBoundingClientRect();
+        zoomAt((a.x + b.x) / 2 - rect.left, (a.y + b.y) / 2 - rect.top,
+          pinch.k * (Math.hypot(a.x - b.x, a.y - b.y) / pinch.d));
+        moving();
+        return;
+      }
       if (!state.pointer) return;
       const dx = e.clientX - state.pointer.x, dy = e.clientY - state.pointer.y;
-      if (Math.abs(dx) + Math.abs(dy) > 5) state.pointer.moved = true;
+      if (!state.pointer.moved && Math.abs(dx) + Math.abs(dy) > 5) {
+        state.pointer.moved = true;
+        // re-anchor so the content doesn't jump by the drag threshold
+        state.pointer.x = e.clientX; state.pointer.y = e.clientY;
+        state.pointer.tx = state.tx; state.pointer.ty = state.ty;
+      }
       if (state.pointer.moved) {
-        state.tx = state.pointer.tx + dx;
-        state.ty = state.pointer.ty + dy;
+        state.tx = state.pointer.tx + (e.clientX - state.pointer.x);
+        state.ty = state.pointer.ty + (e.clientY - state.pointer.y);
         applyTransform();
+        moving();
       }
     });
 
-    const endPointer = () => {
+    const endPointer = (e) => {
+      touches.delete(e.pointerId);
+      if (touches.size < 2) pinch = null;
+      if (touches.size) {                    // one finger lifted mid-pinch: keep panning with the other
+        if (state.pointer) {
+          const [t] = [...touches.values()];
+          Object.assign(state.pointer, { x: t.x, y: t.y, tx: state.tx, ty: state.ty });
+        }
+        return;
+      }
       if (!state.pointer) return;
       const p = state.pointer;
       state.pointer = null;
@@ -795,8 +875,24 @@
     els.search.addEventListener("input", () => { state.search = els.search.value; renderSearchResults(); applyVisibility(); });
     els.search.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
-        const first = els.searchResults.querySelector(".search-result");
+        const first = els.searchResults.querySelector("button.search-result");
         if (first) { e.preventDefault(); pickResult(first.dataset.type, first.dataset.id); }
+      } else if (e.key === "ArrowDown") {
+        const first = els.searchResults.querySelector("button.search-result");
+        if (first && !els.searchResults.hidden) { e.preventDefault(); first.focus(); }
+      }
+    });
+    // ↑ / ↓ move between results, Esc returns to the search box
+    els.searchResults.addEventListener("keydown", (e) => {
+      const items = [...els.searchResults.querySelectorAll("button.search-result")];
+      const i = items.indexOf(document.activeElement);
+      if (i < 0) return;
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        const next = items[i + (e.key === "ArrowDown" ? 1 : -1)];
+        (next || els.search).focus();
+      } else if (e.key === "Escape") {
+        e.preventDefault(); e.stopPropagation(); els.searchResults.hidden = true; els.search.focus();
       }
     });
     els.searchClear.addEventListener("click", () => {
@@ -844,11 +940,11 @@
       const trace = e.target.closest("[data-trace]");
       if (trace) {
         if (!state.bijuu) { state.bijuu = true; els.bijuuToggle.checked = true; applyVisibility(); }
-        focusNode(trace.dataset.trace, RB, 1.1);
+        focusNode(trace.dataset.trace, 1.1);
         status("Chakra threads revealed. Drag to explore the hosts.");
         return;
       }
-      const result = e.target.closest(".search-result");
+      const result = e.target.closest("button.search-result");
       if (result) pickResult(result.dataset.type, result.dataset.id);
     });
 
@@ -920,24 +1016,27 @@
     });
   }
 
+  // Small thumbnails (assets/thumbs/, see tools/make_thumbs.py) keep the scroll light;
+  // the full artwork is only loaded by the full-screen preview.
+  const thumbOf = (item, folder) => (window.CharacterPreview.findThumb || window.CharacterPreview.findImage)(item, folder);
   function loadPortraits() {
     if (!window.CharacterPreview || !window.CharacterPreview.findImage) return;
     WEAPONS.forEach((w) => {
-      window.CharacterPreview.findImage(w, "weapons").then((src) => {
+      thumbOf(w, "weapons").then((src) => {
         if (!src) return;
         portraits.set("weapon:" + w.id, src);
         buildWeaponList();
       });
     });
     WORLD.bijuu.forEach((b) => {
-      window.CharacterPreview.findImage(b).then((src) => {
+      thumbOf(b).then((src) => {
         if (!src) return;
         portraits.set("bijuu:" + b.id, src);
         applyBijuuPortrait(b, src);
       });
     });
     WORLD.characters.forEach((c) => {
-      window.CharacterPreview.findImage(c).then((src) => {
+      thumbOf(c).then((src) => {
         if (!src) return;
         portraits.set(c.id, src);
         applyPortrait(c, src);
@@ -971,10 +1070,12 @@
      right) with curved ink lines to every name. Click a name to re-centre.
      The full Lineage Scroll stays one click away ("Full scroll"). */
   const FLOW_GROUPS = [
+    { key: "ancestors", label: "Ancestors", side: "left", color: "#8A7A66" },
     { key: "parents", label: "Parents", side: "left", color: "#2B2118" },
     { key: "spouse", label: "Spouse", side: "left", color: "#9A5B2E" },
     { key: "siblings", label: "Siblings", side: "left", color: "#5A4A38" },
     { key: "children", label: "Children", side: "left", color: "#C9922B" },
+    { key: "descendants", label: "Descendants", side: "left", color: "#B39A6B" },
     { key: "sensei", label: "Teachers", side: "right", color: "#3E86A0" },
     { key: "students", label: "Students", side: "right", color: "#4C7A55" },
     { key: "team", label: "Team & comrades", side: "right", color: "#6B6088" },
@@ -1050,7 +1151,10 @@
       return `<h3>${escapeHtml(k)} <span>${l.length}</span></h3>` + l.map((c) => `<button type="button" class="fl-item" data-flow-go="${c.id}"${c.id === flow.focus ? ' aria-current="true"' : ""}>${flowAvatar(c, "fl-av")}<span class="fl-name">${escapeHtml(c.name)}</span><small>${flowDegree(c.id)}</small></button>`).join("");
     }).join("") || '<p class="flow-none">No one in this era and clan.</p>';
     const cur = fl.list.querySelector("[aria-current]");
-    if (cur) fl.list.scrollTop = cur.offsetTop - fl.list.offsetTop - fl.list.clientHeight / 2;
+    if (cur) {
+      const lr = fl.list.getBoundingClientRect(), cr = cur.getBoundingClientRect();
+      fl.list.scrollTop += cr.top - lr.top - (fl.list.clientHeight - cr.height) / 2;
+    }
   }
   function flowFocus(id, { push = true } = {}) {
     if (!byId(id)) return;
@@ -1095,7 +1199,7 @@
     els.clanFilter.addEventListener("change", () => flow.on && flowList());
     if ("ResizeObserver" in window) new ResizeObserver(() => requestAnimationFrame(flowLines)).observe(fl.stage);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => flow.on && flowLines());
-    const q = new URLSearchParams(location.search);
+    const q = START_QUERY;
     let v = q.get("view");
     if (!v) { try { v = localStorage.getItem("shinobi-view"); } catch (_) { v = null; } }
     if (q.get("bijuu") || q.get("weapon")) v = v || "scroll";
@@ -1103,9 +1207,9 @@
     setView(v === "scroll" ? "scroll" : "flow");
   }
 
-  /* Deep links from the home page: scroll.html?focus=<id> | ?bijuu=<id> | ?weapon=<id> */
+  /* Deep links from the home page: html/scroll.html?focus=<id> | ?bijuu=<id> | ?weapon=<id> */
   function openFromUrl() {
-    const q = new URLSearchParams(location.search);
+    const q = START_QUERY;      // read before setView() rewrote the address bar
     const id = q.get("focus"), b = q.get("bijuu"), w = q.get("weapon");
     setTimeout(() => {
       if (id && byId(id) && flow.on) return; // the flow already centres on it

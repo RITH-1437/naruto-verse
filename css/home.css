@@ -234,3 +234,12 @@ kbd {
   html { scroll-behavior: auto; }
   .s-card { animation: none; }
 }
+
+/* ================================================= upgrade: mobile nav */
+@media (max-width: 520px) {
+  .nav-inner { gap: 10px; }
+  .ns-long { display: none; }
+}
+@media (max-width: 360px) {
+  .brand-text { font-size: 16px; }
+}

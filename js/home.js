@@ -1,7 +1,7 @@
 /* ==========================================================================
    SHINOBI CHRONICLES: website home: paginated card archive
    Cards open the same full-screen animated preview as the Lineage Scroll
-   (preview.js). "Read Chronicle" / "On the scroll" deep-link into scroll.html.
+   (preview.js). "Read Chronicle" / "On the scroll" deep-link into html/scroll.html.
    ========================================================================== */
 
 (() => {
@@ -23,6 +23,8 @@
   const auraHex = (c) => (WORLD.auraColors && WORLD.auraColors[c.aura]) || "#6B5B45";
 
   const PAGE_SIZES = [8, 12, 16, 24];
+  const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+  const smooth = () => (REDUCED && REDUCED.matches ? "auto" : "smooth");
   const state = { tab: "characters", q: "", era: "all", clan: "all", sort: "scroll", page: 1, per: 12 };
   try { const p = Number(localStorage.getItem("sc-per-page")); if (PAGE_SIZES.includes(p)) state.per = p; } catch (e) { /* storage blocked */ }
 
@@ -126,14 +128,21 @@
   const EXTS = ["webp", "png", "jpg", "jpeg", "gif"];
   function indexedArt(it) {
     const C = col();
-    return [it.image, ...EXTS.map((e) => `assets/${C.folder}/${it.id}.${e}`)].filter(Boolean)
-      .find((p) => !/^assets\//.test(p) || INDEX.has(p)) || null;
+    const hit = [it.image, ...EXTS.map((e) => `assets/${C.folder}/${it.id}.${e}`)].filter(Boolean)
+      .find((p) => !/^assets\//.test(p) || INDEX.has(p));
+    return hit ? PV.url(hit) : null;
   }
+  // clips per character folder, counted once instead of scanning the index for every card
+  const CLIPS_BY_FOLDER = new Map();
+  if (INDEX) INDEX.forEach((p) => {
+    const m = p.match(/^assets\/videos\/([^/]+)\//);
+    if (m) CLIPS_BY_FOLDER.set(m[1], (CLIPS_BY_FOLDER.get(m[1]) || 0) + 1);
+  });
   function clipCount(it) {
     if (!INDEX) return 0;
     if (state.tab === "weapons") return it.clip && INDEX.has(it.clip) ? 1 : 0;
     if (state.tab === "bijuu") return [it.video, `assets/videos/bijuu/${it.tails}.mp4`].filter((p) => p && INDEX.has(p)).length ? 1 : 0;
-    const own = [...INDEX].filter((p) => p.startsWith(`assets/videos/${it.id}/`)).length;
+    const own = CLIPS_BY_FOLDER.get(it.id) || 0;
     const extra = it.jutsu.filter((j) => j[3] && INDEX.has(j[3]) && !j[3].startsWith(`assets/videos/${it.id}/`)).length;
     return own + extra;
   }
@@ -200,7 +209,7 @@
       : `0 ${C.title.toLowerCase()}`;
     renderPager(pages);
     writeHash();
-    if (scrollToTop) $("archive").scrollIntoView({ behavior: "smooth", block: "start" });
+    if (scrollToTop) $("archive").scrollIntoView({ behavior: smooth(), block: "start" });
   }
 
   function pageList(cur, total) {
@@ -245,7 +254,11 @@
   /* ------------------------------------------------------------------ controls */
   function setTab(tab, scroll, page = 1) {
     state.tab = tab; state.page = page;
-    document.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === tab)));
+    document.querySelectorAll(".tab").forEach((t) => {
+      const on = t.dataset.tab === tab;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;                 // roving tabindex: arrows move between tabs
+    });
     document.querySelectorAll("[data-tab-link]").forEach((a) => a.classList.toggle("active", a.dataset.tabLink === tab));
     $("era-group").hidden = $("clan-group").hidden = tab !== "characters";
     $("q").placeholder = tab === "characters" ? "Search name, clan, jutsu…"
@@ -276,7 +289,7 @@
   function bind() {
     $("hero-stats").innerHTML = [
       ["Shinobi", CHARS.length], ["Tailed Beasts", BIJUU.length],
-      ["Weapons", WEAPONS.length], ["Bonds", (WORLD.links || []).length]
+      ["Weapons", WEAPONS.length], ["Relationships", (WORLD.links || []).length]
     ].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
 
     $("era-chips").innerHTML = WORLD.eras.map((e) =>
@@ -298,6 +311,16 @@
     });
 
     document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => setTab(b.dataset.tab)));
+    $("grid").closest(".archive").querySelector("[role=tablist]").addEventListener("keydown", (e) => {
+      const tabs = [...document.querySelectorAll(".tab")];
+      const i = tabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (to === undefined) return;
+      e.preventDefault(); e.stopPropagation();
+      const t = tabs[(to + tabs.length) % tabs.length];
+      setTab(t.dataset.tab); t.focus();
+    });
     document.querySelectorAll("[data-tab-link]").forEach((a) => a.addEventListener("click", (e) => {
       e.preventDefault(); setTab(a.dataset.tabLink, true);
     }));
@@ -344,7 +367,7 @@
     const top = $("to-top");
     const onScroll = () => { top.hidden = window.scrollY < 900; };
     window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
-    top.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    top.addEventListener("click", () => window.scrollTo({ top: 0, behavior: smooth() }));
 
     window.addEventListener("hashchange", () => {
       const tab = state.tab, page = state.page;
@@ -353,7 +376,8 @@
 
     if (PV) {
       PV.onChronicle((c) => {
-        const url = c.isWeapon ? `scroll.html?weapon=${c.id}` : c.isBijuu ? `scroll.html?bijuu=${c.id}` : `scroll.html?focus=${c.id}`;
+        const page = "html/scroll.html";
+        const url = c.isWeapon ? `${page}?weapon=${c.id}` : c.isBijuu ? `${page}?bijuu=${c.id}` : `${page}?focus=${c.id}`;
         location.href = url;
       });
     }

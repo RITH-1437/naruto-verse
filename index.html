@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="css/home.css" />
 </head>
 <body class="site">
+  <a class="skip-link" href="#archive">Skip to the archive</a>
 
   <!-- ===================== NAV ===================== -->
   <header class="site-nav">
@@ -38,7 +39,7 @@
         <a href="#archive" data-tab-link="bijuu">Tailed Beasts</a>
         <a href="#archive" data-tab-link="weapons">Weapons</a>
       </nav>
-      <a class="ink-btn accent nav-scroll" href="scroll.html">巻 Lineage Scroll →</a>
+      <a class="ink-btn accent nav-scroll" href="html/scroll.html"><span aria-hidden="true">巻</span> <span class="ns-long">Lineage </span>Scroll <span aria-hidden="true">→</span></a>
     </div>
   </header>
 
@@ -54,14 +55,14 @@
             reincarnations and bonds across the ages.</p>
           <div class="hero-cta">
             <a class="ink-btn accent big" href="#archive">Browse the Shinobi</a>
-            <a class="ink-btn big" href="scroll.html">Open the Lineage Scroll</a>
-            <button type="button" class="ink-btn big" id="surprise" title="Summon a random shinobi">🎲 Surprise me</button>
+            <a class="ink-btn big" href="html/scroll.html">Open the Lineage Scroll</a>
+            <button type="button" class="ink-btn big" id="surprise" title="Summon a random shinobi"><span aria-hidden="true">🎲</span> Surprise me</button>
           </div>
           <dl class="hero-stats" id="hero-stats"></dl>
         </div>
 
         <!-- The scroll is the centrepiece: a large feature card linking to it -->
-        <a class="scroll-feature" href="scroll.html" aria-label="Open the interactive Lineage Scroll">
+        <a class="scroll-feature" href="html/scroll.html" aria-label="Open the interactive Lineage Scroll">
           <span class="sf-rod top" aria-hidden="true"></span>
           <span class="sf-paper">
             <span class="sf-kicker">Featured · Interactive</span>
@@ -89,16 +90,16 @@
             <p class="section-sub" id="archive-sub"></p>
           </div>
           <div class="tabs" role="tablist" aria-label="Collection">
-            <button role="tab" class="tab" data-tab="characters" aria-selected="true">Shinobi</button>
-            <button role="tab" class="tab" data-tab="bijuu" aria-selected="false">Tailed Beasts</button>
-            <button role="tab" class="tab" data-tab="weapons" aria-selected="false">Weapons</button>
+            <button role="tab" class="tab" id="tab-characters" data-tab="characters" aria-selected="true" aria-controls="grid">Shinobi</button>
+            <button role="tab" class="tab" id="tab-bijuu" data-tab="bijuu" aria-selected="false" aria-controls="grid" tabindex="-1">Tailed Beasts</button>
+            <button role="tab" class="tab" id="tab-weapons" data-tab="weapons" aria-selected="false" aria-controls="grid" tabindex="-1">Weapons</button>
           </div>
         </div>
 
         <div class="filters">
           <div class="search-wrap site-search">
             <span class="search-icon" aria-hidden="true">⌕</span>
-            <input id="q" type="search" autocomplete="off" placeholder="Search name, clan, jutsu…" aria-label="Search the archive" />
+            <input id="q" enterkeyhint="search" type="search" autocomplete="off" placeholder="Search name, clan, jutsu…" aria-label="Search the archive" />
           </div>
           <div class="filter-group" id="era-group">
             <span class="tool-label">Era</span>
@@ -119,11 +120,11 @@
         </div>
 
         <div class="result-bar">
-          <span id="result-count"></span>
+          <span id="result-count" role="status" aria-live="polite"></span>
           <span class="result-hint">Click a card to summon it · <kbd>←</kbd> <kbd>→</kbd> browse · <kbd>/</kbd> search</span>
         </div>
 
-        <div class="card-grid" id="grid" aria-live="polite"></div>
+        <div class="card-grid" id="grid" role="tabpanel" aria-labelledby="archive-title"></div>
         <p class="empty" id="empty" hidden>No match in the archive. Try another name, era or clan.</p>
 
         <nav class="pager" id="pager" aria-label="Pages"></nav>
@@ -138,7 +139,7 @@
   <footer class="site-foot">
     <div class="site-wrap foot-inner">
       <span><span class="foot-seal">忍</span> Shinobi Chronicles, a fan-made Naruto-verse archive.</span>
-      <a href="scroll.html">Open the Lineage Scroll →</a>
+      <a href="html/scroll.html">Open the Lineage Scroll →</a>
     </div>
   </footer>
 

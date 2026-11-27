@@ -37,7 +37,7 @@ const WORLD = {
      real clan in `clan:`; these ids only drive the group filter and badges. */
   groups: {
     Akatsuki: ["nagato", "konan", "yahiko", "obito", "itachi", "kisame",
-      "sasori", "deidara", "hidan", "kakuzu", "zetsu"]
+      "sasori", "deidara", "hidan", "kakuzu", "zetsu", "orochimaru"]
   },
 
   auraColors: {
@@ -71,7 +71,7 @@ const WORLD = {
       id: "hagoromo", name: "Hagoromo Ōtsutsuki", jp: "六道仙人", clan: "Ōtsutsuki",
       era: ["origin"], title: "Sage of the Six Paths", aura: "gold", gen: 1, x: 1050, y: 300,
       bio: "Eldest son of Kaguya. He defeated the Ten-Tails, became the first Jinchūriki, and divided its chakra into the nine Bijuu. He founded the ninja way of harmony.",
-      jutsu: [["Creation of All Things", "Yin-Yang", "Kekkei Mōra"], ["Six Paths Senjutsu", "Sage", "Senjutsu"], ["Tailed Beast Ball", "All", "Bijuu"]], bijuu: []
+      jutsu: [["Creation of All Things", "Yin-Yang", "Kekkei Mōra"], ["Six Paths Senjutsu", "Sage", "Senjutsu"], ["Tailed Beast Ball", "All", "Bijuu"]], bijuu: ["juubi"]
     },
     {
       id: "hamura", name: "Hamura Ōtsutsuki", jp: "大筒木 ハムラ", clan: "Ōtsutsuki",
@@ -94,13 +94,13 @@ const WORLD = {
     {
       id: "moon_main", name: "Moon Main Branch", jp: "月の本家", clan: "Ōtsutsuki",
       era: ["origin"], title: "Ōtsutsuki of the Moon", aura: "cyan", gen: 2, x: 1750, y: 490,
-      bio: "The principal hereditary line of Hamura's clan, guardians of the moon realm and the Tenseigen.",
-      jutsu: [["Tenseigen Chakra", "All", "Kekkei Mōra"]], bijuu: []
+      bio: "The principal hereditary line of Hamura's clan, guardians of the moon realm and the Tenseigan.",
+      jutsu: [["Tenseigan Chakra", "All", "Kekkei Mōra"]], bijuu: []
     },
     {
       id: "moon_side", name: "Moon Side Branch", jp: "月の分家", clan: "Ōtsutsuki",
       era: ["origin"], title: "Ōtsutsuki cadet line", aura: "cyan", gen: 2, x: 2000, y: 490,
-      bio: "The cadet branch of Hamura's line. From this line would eventually emerge Toneri.",
+      bio: "The cadet branch of Hamura's descendants on the moon, one of the two houses into which his clan divided.",
       jutsu: [["Byakugan-derived techniques", "All", "Kekkei Genkai"]], bijuu: []
     },
     {
@@ -112,7 +112,7 @@ const WORLD = {
     {
       id: "tajima", name: "Tajima Uchiha", jp: "うちは タジマ", clan: "Uchiha",
       era: ["origin"], title: "Uchiha patriarch", aura: "none", gen: 3, x: 480, y: 680,
-      bio: "Head of the Uchiha during the Warring States era and father of Madara, Izuna and Kagami.",
+      bio: "Head of the Uchiha during the Warring States era and father of Madara and Izuna, leading the clan in its long feud with Butsuma Senju.",
       jutsu: [["Sharingan", "All", "Kekkei Genkai"]], bijuu: []
     },
     {
@@ -123,21 +123,21 @@ const WORLD = {
     },
     {
       id: "ashina", name: "Ashina Uzumaki", jp: "うずまき アシナ", clan: "Uzumaki",
-      era: ["origin"], title: "Uzumaki matriarch", aura: "none", gen: 3, x: 1550, y: 680,
-      bio: "Fourth leader of the Uzumaki clan of the Whirlpool Village, renowned for sealing techniques and longevity.",
+      era: ["origin"], title: "Uzumaki clan leader", aura: "none", gen: 3, x: 1550, y: 680,
+      bio: "Leader of the Uzumaki clan of the Land of Whirlpools in the Warring States era. The clan was renowned for sealing techniques and long life, and was distant kin of the Senju.",
       jutsu: [["Adamant Sealing Style", "All", "Fūinjutsu"], ["Adamant Ghost Tunnel", "All", "Fūinjutsu"]], bijuu: []
     },
     {
       id: "fuso", name: "Fuso Uzumaki", jp: "うずまき フソ", clan: "Uzumaki",
-      era: ["origin"], title: "Uzumaki of the Whirlpool", aura: "none", gen: 3, x: 1700, y: 680,
-      bio: "An Uzumaki survivor whose bloodline continued through Nagato and the Rain Village.",
+      era: ["origin"], title: "Nagato's mother", aura: "none", gen: 3, x: 1700, y: 680,
+      bio: "An Uzumaki living in the Land of Rain and the mother of Nagato. She and her husband were killed by Leaf ninja during the Third Shinobi War.",
       jutsu: [["Sealing Techniques", "All", "Fūinjutsu"]], bijuu: []
     },
     {
       id: "madara", name: "Madara Uchiha", jp: "うちは マダラ", clan: "Uchiha",
       era: ["origin", "shippuden"], title: "Co-founder of Konoha · Ten-Tails host", aura: "purple", gen: 4, x: 180, y: 870,
       bio: "Legendary Uchiha warrior, rival of Hashirama, reincarnation of Indra. He became the Ten-Tails' Jinchūriki and cast the Infinite Tsukuyomi.",
-      jutsu: [["Susanoo", "All", "Kekkei Genkai"], ["Perfect Susanoo", "All", "Kekkei Genkai"], ["Fire Release: Great Fire annihilation", "Fire", "Ninjutsu"], ["Limbo", "All", "Kekkei Mōra"]], bijuu: ["juubi"]
+      jutsu: [["Susanoo", "All", "Kekkei Genkai"], ["Perfect Susanoo", "All", "Kekkei Genkai"], ["Fire Release: Great Fire Annihilation", "Fire", "Ninjutsu"], ["Limbo", "All", "Kekkei Mōra"]], bijuu: ["juubi"]
     },
     {
       id: "izuna", name: "Izuna Uchiha", jp: "うちは イズナ", clan: "Uchiha",
@@ -147,13 +147,13 @@ const WORLD = {
     },
     {
       id: "kagami", name: "Kagami Uchiha", jp: "うちは カガミ", clan: "Uchiha",
-      era: ["origin"], title: "Uchiha elder", aura: "none", gen: 4, x: 560, y: 870,
-      bio: "An Uchiha contemporary of Hashirama and ancestor of Shisui and Fugaku's line.",
-      jutsu: [["Fire Release: Blaze Impression", "Fire", "Ninjutsu"]], bijuu: []
+      era: ["origin"], title: "Tobirama's student · Shisui's ancestor", aura: "none", gen: 4, x: 560, y: 870,
+      bio: "An Uchiha who served in the Second Hokage's squad alongside Hiruzen Sarutobi and Danzō Shimura, and an ancestor of Shisui.",
+      jutsu: [["Sharingan", "All", "Kekkei Genkai"]], bijuu: []
     },
     {
       id: "obito", name: "Obito Uchiha", jp: "うちは オビト", clan: "Uchiha",
-      era: ["naruto", "shippuden"], title: "2nd Ten-Tails host · Kaguya's vessel", aura: "purple", gen: 4, x: 980, y: 870,
+      era: ["naruto", "shippuden"], title: "2nd Ten-Tails host · Masked man of Akatsuki", aura: "purple", gen: 4, x: 980, y: 870,
       bio: "Presumed dead in the Third Shinobi War, rescued by Madara and groomed as his successor. He became the masked leader of Akatsuki and the Ten-Tails' Jinchūriki.",
       jutsu: [["Kamui", "Space-Time", "Kekkei Genkai"], ["Rinnegan", "All", "Kekkei Genkai"], ["Tailed Beast Ball", "All", "Bijuu"]], bijuu: ["juubi"]
     },
@@ -172,8 +172,8 @@ const WORLD = {
     {
       id: "itama", name: "Itama Senju", jp: "千手 板間", clan: "Senju",
       era: ["origin"], title: "Senju brother", aura: "none", gen: 4, x: 1420, y: 870,
-      bio: "The fiery-tempered third Senju brother, who fell during the Warring States conflicts.",
-      jutsu: [["Fire Release", "Fire", "Ninjutsu"]], bijuu: []
+      bio: "A younger brother of Hashirama and Tobirama, killed as a child in the Warring States clan wars.",
+      jutsu: [], bijuu: []
     },
     {
       id: "mito", name: "Mito Uzumaki", jp: "うずまき ミト", clan: "Uzumaki",
@@ -190,8 +190,8 @@ const WORLD = {
     {
       id: "toneri", name: "Toneri Ōtsutsuki", jp: "大筒木 トネリ", clan: "Ōtsutsuki",
       era: ["boruto"], title: "Moon realm guardian", aura: "cyan", gen: 3, x: 1900, y: 680,
-      bio: "The last of the Ōtsutsuki Moon Branch. He abducted Hinata in pursuit of the Byakugan and the Tenseigen.",
-      jutsu: [["Tenseigen", "All", "Kekkei Mōra"], ["Golden Wheel", "All", "Kekkei Mōra"]], bijuu: []
+      bio: "The last of the Ōtsutsuki Moon Branch. He abducted Hinata in pursuit of the Byakugan and the Tenseigan.",
+      jutsu: [["Tenseigan", "All", "Kekkei Mōra"], ["Golden Wheel", "All", "Kekkei Mōra"]], bijuu: []
     },
     {
       id: "hiashi", name: "Hiashi Hyūga", jp: "日向 ヒアシ", clan: "Hyūga",
@@ -225,21 +225,21 @@ const WORLD = {
     },
     {
       id: "rin", name: "Rin Nohara", jp: "野原 リン", clan: "Other",
-      era: ["naruto"], title: "Third Jinchūriki of Isobu", aura: "none", gen: 5, x: 1150, y: 1060,
-      bio: "Teammate of Kakashi and Obito and a gifted medical ninja. She was made the Jinchūriki of the Three-Tails by Madara's plan.",
+      era: ["naruto"], title: "Jinchūriki of Isobu", aura: "none", gen: 5, x: 1155, y: 1060,
+      bio: "Teammate of Kakashi and Obito and a gifted medical ninja. Mist ninja sealed the Three-Tails into her to unleash it on Konoha; she chose to die by Kakashi's hand rather than become that weapon.",
       jutsu: [["Medical Ninjutsu", "Water", "Ninjutsu"], ["Isobu's Chakra", "Water", "Bijuu"]], bijuu: ["isobu"]
     },
     {
       id: "kushina", name: "Kushina Uzumaki", jp: "うずまき クシナ", clan: "Uzumaki",
       era: ["naruto"], title: "2nd Jinchūriki of Kurama", aura: "gold", gen: 5, x: 1750, y: 1060,
-      bio: "A fiery Uzumaki and mother of Naruto. Volunteered to become Kurama's next host and died sealing it into her son.",
+      bio: "A fiery Uzumaki from the Land of Whirlpools, brought to Konoha to succeed Mito as Kurama's host. Wife of Minato and mother of Naruto, she gave her life with Minato so the Nine-Tails could be sealed into their newborn son.",
       jutsu: [["Adamant Sealing Style", "All", "Fūinjutsu"], ["Kurama Chakra", "All", "Bijuu"]], bijuu: ["kurama"]
     },
     {
       id: "minato", name: "Minato Namikaze", jp: "波風 ミナト", clan: "Other",
       era: ["naruto"], title: "4th Hokage · Yellow Flash", aura: "gold", gen: 5, x: 1900, y: 1060,
-      bio: "Konoha's fourth Hokage, master of the Flying Thunder God, and father of Naruto. He sacrificed himself to seal Kurama into his son.",
-      jutsu: [["Flying Thunder God", "Space-Time", "Ninjutsu", "assets/videos/minato/flying-thunder-god.mp4"], ["Rasengan", "Wind", "Ninjutsu"], ["Reaper Death Seal", "All", "Fūinjutsu"], ["Kurama Chakra", "All", "Bijuu"]], bijuu: []
+      bio: "Konoha's fourth Hokage, master of the Flying Thunder God, and father of Naruto. He sacrificed himself to seal Kurama's Yang half into his son and its Yin half into himself.",
+      jutsu: [["Flying Thunder God", "Space-Time", "Ninjutsu", "assets/videos/minato/flying-thunder-god.mp4"], ["Rasengan", "Wind", "Ninjutsu"], ["Reaper Death Seal", "All", "Fūinjutsu"], ["Kurama Chakra", "All", "Bijuu"]], bijuu: ["kurama"]
     },
     {
       id: "jiraiya", name: "Jiraiya", jp: "自来也", clan: "Other",
@@ -251,23 +251,23 @@ const WORLD = {
       id: "orochimaru", name: "Orochimaru", jp: "大蛇丸", clan: "Other",
       era: ["naruto", "shippuden", "boruto"], title: "Legendary Sannin", aura: "none", gen: 5, x: 2580, y: 1060,
       bio: "A Sannin obsessed with forbidden techniques and immortality, teacher of Mitsuki and former experimenter on Sasuke.",
-      jutsu: [["Snake Sage Mode", "Sage", "Senjutsu"], ["Deadly Nekrai", "All", "Ninjutsu"], ["Eight Branches Technique", "All", "Ninjutsu"]], bijuu: []
+      jutsu: [["Hidden Shadow Snake Hands", "All", "Ninjutsu"], ["Impure World Reincarnation", "Yin-Yang", "Kinjutsu"], ["Eight Branches Technique", "All", "Ninjutsu"], ["Living Corpse Reincarnation", "Yin-Yang", "Kinjutsu"]], bijuu: []
     },
     {
       id: "kabuto", name: "Kabuto Yakushi", jp: "薬師 カブト", clan: "Other",
       era: ["naruto", "shippuden", "boruto"], title: "Snake Sage · Orochimaru's right hand", aura: "purple", gen: 5, x: 2920, y: 1060,
-      bio: "A brilliant medical ninja and spy who served Orochimaru, then consumed his remains to master Snake Sage Mode. Hidden in the shadows of the Fourth Shinobi War, he revived the fallen with Reanimation and became the vessel for Orochimaru's final form.",
+      bio: "A brilliant medical ninja and spy who served Orochimaru, then consumed his remains to master Snake Sage Mode. In the Fourth Shinobi World War he revived fallen shinobi with the Impure World Reincarnation, until Itachi's Izanami freed him from his search for an identity of his own.",
       jutsu: [
         ["Chakra Scalpel", "Yin-Yang", "Medical Ninjutsu"],
         ["Snake Sage Mode", "Sage", "Senjutsu"],
-        ["Parasite Reincarnation", "Yin-Yang", "Kinjutsu"],
-        ["Deadly Nekrai", "All", "Ninjutsu"],
-        ["White Snake Seal", "Sage", "Senjutsu"]
+        ["Impure World Reincarnation", "Yin-Yang", "Kinjutsu"],
+        ["Dead Soul Technique", "All", "Ninjutsu"],
+        ["Temple of Nirvana Technique", "Yin-Yang", "Genjutsu"]
       ], bijuu: []
     },
     {
       id: "tsunade", name: "Tsunade", jp: "綱手", clan: "Senju",
-      era: ["naruto", "shippuden", "boruto"], title: "5th Hokage · Legendary Sannin", aura: "none", gen: 5, x: 1080, y: 1060,
+      era: ["naruto", "shippuden", "boruto"], title: "5th Hokage · Legendary Sannin", aura: "none", gen: 5, x: 1030, y: 1060,
       bio: "Granddaughter of Hashirama and Mito, the greatest medical ninja of her age and Konoha's fifth Hokage.",
       jutsu: [["Strength of a Hundred Seal", "Yin-Yang", "Ninjutsu"], ["Medical Ninjutsu", "Water", "Ninjutsu"], ["Creation Rebirth", "Yin-Yang", "Ninjutsu"]], bijuu: []
     },
@@ -290,8 +290,8 @@ const WORLD = {
     },
     {
       id: "sakura", name: "Sakura Haruno", jp: "春野 サクラ", clan: "Other",
-      era: ["naruto", "shippuden", "boruto"], title: "Inspector General · Medical ninja", aura: "none", gen: 6, x: 1020, y: 1250,
-      bio: "Student of Tsunade, monster strength and peerless medical ninjutsu. Wife of Sasuke and mother of Sarada.",
+      era: ["naruto", "shippuden", "boruto"], title: "Medical ninja · Team 7", aura: "none", gen: 6, x: 1020, y: 1250,
+      bio: "Member of Team 7 and Tsunade's student, with monstrous strength and peerless medical ninjutsu. Wife of Sasuke and mother of Sarada.",
       jutsu: [["Strength of a Hundred Seal", "Yin-Yang", "Ninjutsu"], ["Medical Ninjutsu", "Water", "Ninjutsu"], ["Super Strength", "All", "Ninjutsu"]], bijuu: []
     },
     {
@@ -321,19 +321,19 @@ const WORLD = {
     {
       id: "killer_b", name: "Killer B", jp: "キラービー", clan: "Other",
       era: ["naruto", "shippuden", "boruto"], title: "8-tails Jinchūriki", aura: "none", gen: 6, x: 2650, y: 1250,
-      bio: "The energetic rapper-host of Gyuki, cousin to the Kazekage line and the ninja who taught Naruto to befriend his Bijuu.",
-      jutsu: [["Tailed Beast Ball", "All", "Bijuu"], ["Lava Release", "Fire", "Kekkei Genkai"], ["Eight-Tails Chakra", "Water", "Bijuu"]], bijuu: ["gyuki"]
+      bio: "The energetic rapper-host of Gyūki and the Fourth Raikage's adoptive brother. He taught Naruto to befriend his Tailed Beast.",
+      jutsu: [["Tailed Beast Ball", "All", "Bijuu"], ["Lariat", "Lightning", "Taijutsu"], ["Eight-Tails Chakra", "Water", "Bijuu"]], bijuu: ["gyuki"]
     },
     {
       id: "hanabi", name: "Hanabi Hyūga", jp: "日向 ハナビ", clan: "Hyūga",
-      era: ["boruto"], title: "Hyūga heiress", aura: "cyan", gen: 5, x: 2400, y: 1060,
+      era: ["naruto", "shippuden", "boruto"], title: "Hyūga heiress", aura: "cyan", gen: 5, x: 2400, y: 1060,
       bio: "Younger sister of Hinata and the favoured heir of the main branch in the Boruto era.",
       jutsu: [["Byakugan", "All", "Kekkei Genkai"], ["Gentle Fist", "All", "Taijutsu"]], bijuu: []
     },
     {
       id: "neji", name: "Neji Hyūga", jp: "日向 ネジ", clan: "Hyūga",
       era: ["naruto", "shippuden"], title: "Genius of the Side Branch", aura: "cyan", gen: 5, x: 2560, y: 870,
-      bio: "Prodigy of the Hyūga side branch who broke free of the cursed seal's fatalism and gave his life protecting Hinata.",
+      bio: "Prodigy of the Hyūga side branch who broke free of the cursed seal's fatalism and gave his life shielding Naruto and Hinata in the Fourth Shinobi World War.",
       jutsu: [["Byakugan", "All", "Kekkei Genkai"], ["Gentle Fist: Eight Trigrams", "All", "Taijutsu"], ["Rotation", "All", "Taijutsu"]], bijuu: []
     },
     {
@@ -358,20 +358,20 @@ const WORLD = {
       id: "kawaki", name: "Kawaki", jp: "カワキ", clan: "Other",
       era: ["boruto"], title: "Ōtsutsuki vessel", aura: "purple", gen: 7, x: 2500, y: 1440,
       bio: "A vessel created by the Ōtsutsuki, bearing the Karma seal. Raised by Konoha after being rescued from the Kara organization.",
-      jutsu: [["Karma", "All", "Ōtsutsuki"], ["Flight", "All", "Kekkei Mōra"], ["Gentle Fist", "All", "Taijutsu"]], bijuu: []
+      jutsu: [["Karma", "All", "Ōtsutsuki"], ["Daikokuten", "Space-Time", "Kekkei Mōra"], ["Ninjutsu Absorption", "All", "Ōtsutsuki"]], bijuu: []
     },
     {
       id: "mitsuki", name: "Mitsuki", jp: "ミツキ", clan: "Other",
       era: ["boruto"], title: "Synthetic human · Orochimaru's son", aura: "none", gen: 7, x: 2300, y: 1440,
       bio: "A synthetic human created by Orochimaru and raised as his son. Teammate of Boruto and Sarada, wielder of Sage Mode.",
-      jutsu: [["Sage Mode", "Sage", "Senjutsu"], ["Snake Sage Mode", "Sage", "Senjutsu"], ["Wind Release", "Wind", "Ninjutsu"]], bijuu: []
+      jutsu: [["Sage Mode", "Sage", "Senjutsu"], ["Wind Release", "Wind", "Ninjutsu"]], bijuu: []
     },
     /* --- Sand family, teachers and the next generation -------------------- */
     {
       id: "karura", name: "Karura", jp: "加流羅", clan: "Other",
       era: ["naruto", "shippuden"], title: "Rasa's wife · Gaara's mother", aura: "none", gen: 4, x: 2410, y: 870,
       bio: "A citizen of Sunagakure and wife of the Fourth Kazekage. Mother of Temari, Kankurō and Gaara, she died giving birth to her youngest. Rasa later revealed that her love lived on in the sand that protects Gaara.",
-      jutsu: [["Wind Release", "Wind", "Ninjutsu"], ["Sand Manipulation", "Wind", "Kekkei Genkai"]], bijuu: []
+      jutsu: [], bijuu: []
     },
     {
       id: "chiyo", name: "Chiyo", jp: "千代", clan: "Other",
@@ -388,31 +388,31 @@ const WORLD = {
     {
       id: "kimimaro", name: "Kimimaro", jp: "君麻呂", clan: "Other",
       era: ["naruto", "shippuden"], title: "Last of the Kaguya · Orochimaru's blade", aura: "none", gen: 6, x: 2760, y: 1250,
-      bio: "The last survivor of the Kaguya clan and Orochimaru's most devoted student. His Shikotsumyaku lets him shape his bones into weapons; he fought Sasuke's group despite a fatal illness.",
+      bio: "The last survivor of the Kaguya clan and Orochimaru's most devoted student. His Shikotsumyaku lets him shape his bones into weapons. Despite a fatal illness he fought Naruto, Rock Lee and Gaara to deliver Sasuke to Orochimaru.",
       jutsu: [["Shikotsumyaku", "All", "Kekkei Genkai"], ["Dance of the Camellia", "All", "Kekkeijutsu"], ["Bone Bullet", "All", "Kekkeijutsu"]], bijuu: []
     },
     {
       id: "shizune", name: "Shizune", jp: "静音", clan: "Other",
       era: ["naruto", "shippuden", "boruto"], title: "Medical ninja · Tsunade's apprentice", aura: "none", gen: 6, x: 1160, y: 1250,
-      bio: "Tsunade's niece and loyal apprentice, an expert in medical ninjutsu and poisons who served as the Fifth Hokage's right hand and advisor.",
+      bio: "Dan Katō's niece and Tsunade's loyal apprentice, an expert in medical ninjutsu and poisons who served as the Fifth Hokage's right hand and advisor.",
       jutsu: [["Medical Ninjutsu", "Water", "Ninjutsu"], ["Poison Mist", "All", "Ninjutsu"], ["Secret Needle Technique", "All", "Ninjutsu"]], bijuu: []
     },
     {
       id: "dan", name: "Dan Katō", jp: "加藤 ダン", clan: "Other",
       era: ["shippuden"], title: "Tsunade's beloved · Would-be Hokage", aura: "none", gen: 4, x: 2260, y: 870,
       bio: "A gifted ninja who dreamed of becoming Hokage beside Tsunade. He was killed in the Second Shinobi War, and his death shaped her lifelong fear of blood.",
-      jutsu: [["Shadow Clone Jutsu", "All", "Ninjutsu"]], bijuu: []
+      jutsu: [["Spirit Transformation Technique", "Yin-Yang", "Ninjutsu"]], bijuu: []
     },
     {
       id: "nawaki", name: "Nawaki", jp: "縄樹", clan: "Senju",
       era: ["shippuden"], title: "Tsunade's brother · Aspiring Hokage", aura: "none", gen: 7, x: 1020, y: 1440,
-      bio: "Tsunade's younger brother and grandson of Hashirama, who wanted to become Hokage and protect the village. He died in the First Shinobi War, inspiring her own resolve.",
-      jutsu: [["Senju Taijutsu", "All", "Taijutsu"]], bijuu: []
+      bio: "Tsunade's younger brother and grandson of Hashirama, who dreamed of becoming Hokage. He was killed in battle the day after his twelfth birthday, and his dream later passed to Tsunade and, through her, to Naruto.",
+      jutsu: [], bijuu: []
     },
     {
       id: "shinki", name: "Shinki", jp: "砂希", clan: "Other",
       era: ["boruto"], title: "Gaara's adopted son · Iron Sand user", aura: "none", gen: 7, x: 2650, y: 1440,
-      bio: "A former puppet prodigy adopted by Gaara in the Boruto era. He follows his father's path as a protector of Sunagakure, wielding iron sand in battle.",
+      bio: "An orphan born with the power to control iron sand, adopted by Gaara. He follows his father's path as a protector of Sunagakure.",
       jutsu: [["Iron Sand", "Earth", "Kekkei Genkai"], ["Sand Manipulation", "Wind", "Ninjutsu"], ["Puppet Technique", "All", "Ninjutsu"]], bijuu: []
     },
     /* --- Sasuke's Hebi / Taka team ---------------------------------------- */
@@ -425,13 +425,13 @@ const WORLD = {
     {
       id: "suigetsu", name: "Suigetsu Hōzuki", jp: "鬼灯 水月", clan: "Other",
       era: ["naruto", "shippuden"], title: "Hebi swordsman · Water Release", aura: "none", gen: 6, x: 4250, y: 1250,
-      bio: "A member of the Hōzuki clan who can liquefy his body and merge with water. Hunted by Killer B for the Seven Swords, he joined Sasuke's search for Orochimaru's remains.",
+      bio: "A member of the Mist's Hōzuki clan who can liquefy his body and merge with water. Freed by Sasuke from Orochimaru's hideout, he joined Hebi hoping to collect the swords of the Seven Ninja Swordsmen.",
       jutsu: [["Water Release", "Water", "Ninjutsu"], ["Hydration Technique", "Water", "Kekkei Genkai"], ["Kenjutsu", "All", "Bukijutsu"]], bijuu: []
     },
     {
       id: "juugo", name: "Jūgo", jp: "重吾", clan: "Other",
       era: ["naruto", "shippuden"], title: "Hebi brute · Natural energy host", aura: "none", gen: 6, x: 4400, y: 1250,
-      bio: "A fugitive whose body absorbed natural energy uncontrollably, driving him into violent rages. Orochimaru's experiments gave him a curse seal; he found calm as Sasuke's comrade.",
+      bio: "His body absorbs natural energy uncontrollably, driving him into murderous rages. Orochimaru derived his curse marks from Jūgo's enzyme; Kimimaro and later Sasuke helped him keep his calm.",
       jutsu: [["Curse Mark Transformation", "Yin-Yang", "Kekkei Genkai"], ["Natural Energy Absorption", "Sage", "Senjutsu"], ["Super Strength", "All", "Taijutsu"]], bijuu: []
     },
     /* --- Akatsuki's remaining members ------------------------------------- */
@@ -450,7 +450,7 @@ const WORLD = {
     {
       id: "kakuzu", name: "Kakuzu", jp: "角都", clan: "Other",
       era: ["naruto", "shippuden"], title: "Akatsuki bounty hunter · Hidan's partner", aura: "none", gen: 5, x: 3100, y: 1060,
-      bio: "Akatsuki's greedy bounty hunter and Hidan's partner. The Earth Grudge Fear keeps several masked hearts beating inside his stitched body, each breathing a different chakra nature. Naruto finally destroyed them all.",
+      bio: "Akatsuki's greedy bounty hunter and Hidan's partner. The Earth Grudge Fear keeps several masked hearts beating inside his stitched body, each breathing a different chakra nature. Kakashi and Naruto destroyed them one by one.",
       jutsu: [["Earth Grudge Fear", "All", "Kekkei Genkai"], ["Fire Release", "Fire", "Ninjutsu"], ["Lightning Release", "Lightning", "Ninjutsu"], ["Wind Release", "Wind", "Ninjutsu"]], bijuu: []
     },
     /* --- Jinchūriki hosts kept in the lower "Guest Hosts" row ------------- */
@@ -459,7 +459,7 @@ const WORLD = {
     {
       id: "hiruzen", name: "Hiruzen Sarutobi", jp: "猿飛 ヒルゼン", clan: "Other",
       era: ["origin", "naruto"], title: "Third Hokage · The Professor", aura: "none", gen: 3, x: 2080, y: 680,
-      bio: "Student of the Second Hokage and leader of the Leaf for decades. Called the Professor for mastering every jutsu in the village, he taught the Legendary Sannin and gave his life sealing Orochimaru's arms.",
+      bio: "Student of the First and Second Hokage and leader of the Leaf for decades. Called the Professor for mastering every jutsu in the village, he taught the Legendary Sannin and gave his life sealing Orochimaru's arms.",
       jutsu: [["Fire Release: Fire Dragon Flame Bullet", "Fire", "Ninjutsu"], ["Summoning: Monkey King Enma", "All", "Summoning"], ["Reaper Death Seal", "All", "Fūinjutsu"], ["Shadow Shuriken", "All", "Ninjutsu"]], bijuu: []
     },
     {
@@ -488,13 +488,13 @@ const WORLD = {
     },
     {
       id: "a_raikage", name: "A (Fourth Raikage)", jp: "四代目雷影 エー", clan: "Other",
-      era: ["shippuden", "boruto"], title: "Fourth Raikage", aura: "none", gen: 5, x: 1400, y: 1060,
+      era: ["shippuden", "boruto"], title: "Fourth Raikage", aura: "none", gen: 5, x: 1390, y: 1060,
       bio: "The hot-tempered leader of the Hidden Cloud and Killer B's sworn brother. His Lightning Release Armour makes him one of the fastest shinobi alive.",
       jutsu: [["Lightning Release Armour", "Lightning", "Ninjutsu"], ["Lightning Release: Liger Bomb", "Lightning", "Taijutsu"], ["Hell Stab", "Lightning", "Ninjutsu"]], bijuu: []
     },
     {
       id: "mei", name: "Mei Terumī", jp: "照美 メイ", clan: "Other",
-      era: ["shippuden", "boruto"], title: "Fifth Mizukage", aura: "none", gen: 5, x: 1600, y: 1060,
+      era: ["shippuden", "boruto"], title: "Fifth Mizukage", aura: "none", gen: 5, x: 1640, y: 1060,
       bio: "Leader of the Hidden Mist who ended its Bloody Mist era. She wields two kekkei genkai, Lava Release and Boil Release.",
       jutsu: [["Lava Release: Melting Apparition", "Fire", "Kekkei Genkai"], ["Boil Release: Skilled Mist", "Water", "Kekkei Genkai"], ["Water Release: Water Dragon", "Water", "Ninjutsu"]], bijuu: []
     },
@@ -507,7 +507,7 @@ const WORLD = {
     /* ---- Konoha 11, Sand siblings and the Boruto generation ---- */
     {
       id: "guy", name: "Might Guy", jp: "マイト・ガイ", clan: "Other",
-      era: ["naruto", "shippuden", "boruto"], title: "Leader of Team Guy · Blue Beast", aura: "none", gen: 5, x: 1275, y: 1060,
+      era: ["naruto", "shippuden", "boruto"], title: "Leader of Team Guy · Blue Beast", aura: "none", gen: 5, x: 1515, y: 1060,
       bio: "Kakashi's self-declared eternal rival and the Leaf's greatest taijutsu master. He opened all Eight Gates against Madara and passed his way of hard work to Rock Lee.",
       jutsu: [["Dynamic Entry", "All", "Taijutsu"], ["Morning Peacock", "Fire", "Taijutsu"], ["Night Guy", "All", "Taijutsu"]], bijuu: []
     },
@@ -637,6 +637,25 @@ const WORLD = {
       bio: "A Leaf ninja who cannot use ninjutsu or genjutsu, so he trained relentlessly in taijutsu alone. Neji's teammate and rival, famed for opening the Eight Gates.",
       jutsu: [["Leaf Hurricane", "All", "Taijutsu"], ["Primary Lotus", "All", "Taijutsu"], ["Eight Gates", "All", "Taijutsu", "assets/videos/rocklee/8-gates.mp4"]], bijuu: []
     },
+    /* ---- added without artwork: the UI falls back to initials / ink silhouette ---- */
+    {
+      id: "sakumo", name: "Sakumo Hatake", jp: "はたけ サクモ", clan: "Other",
+      era: ["naruto"], title: "The White Fang of the Leaf", aura: "none", gen: 5, x: 1275, y: 1060,
+      bio: "Kakashi's father, a Leaf ninja whose fame once rivalled the Legendary Sannin. He abandoned a mission to save his comrades, was shamed for it by the village and by those he saved, and took his own life.",
+      jutsu: [], bijuu: []
+    },
+    {
+      id: "iruka", name: "Iruka Umino", jp: "うみの イルカ", clan: "Other",
+      era: ["naruto", "shippuden", "boruto"], title: "Academy Instructor", aura: "none", gen: 6, x: 1720, y: 1250,
+      bio: "A teacher at the Leaf's Ninja Academy and the first adult to acknowledge Naruto. After Naruto saved him from Mizuki, Iruka gave him his own forehead protector.",
+      jutsu: [["Transformation Technique", "All", "Ninjutsu"]], bijuu: []
+    },
+    {
+      id: "konohamaru", name: "Konohamaru Sarutobi", jp: "猿飛 木ノ葉丸", clan: "Other",
+      era: ["naruto", "shippuden", "boruto"], title: "Jōnin leader of Boruto's team", aura: "none", gen: 7, x: 1235, y: 1440,
+      bio: "Grandson of the Third Hokage and Asuma's nephew. He looked up to Naruto as his rival and 'boss', learned the Rasengan from him, and later became the jōnin leader of Boruto, Sarada and Mitsuki.",
+      jutsu: [["Rasengan", "Wind", "Ninjutsu"], ["Shadow Clone Jutsu", "All", "Ninjutsu"]], bijuu: []
+    },
     {
       id: "yugito", name: "Yugito Nii", jp: "二位 ユギト", clan: "Other",
       era: ["shippuden"], title: "2-tails Jinchūriki", aura: "none", gen: 8, x: 400, y: 1630,
@@ -645,20 +664,20 @@ const WORLD = {
     },
     {
       id: "yagura", name: "Yagura", jp: "矢倉", clan: "Other",
-      era: ["shippuden"], title: "Mizukage · 3-tails host", aura: "none", gen: 8, x: 700, y: 1630,
-      bio: "The Fourth Mizukage, secretly under Madara's control and host of Isobu for many years.",
+      era: ["shippuden"], title: "Fourth Mizukage · 3-tails host", aura: "none", gen: 8, x: 700, y: 1630,
+      bio: "The Fourth Mizukage and a perfect Jinchūriki of Isobu, secretly controlled by Obito, who was posing as Madara.",
       jutsu: [["Water Release", "Water", "Ninjutsu"], ["Isobu's Chakra", "Water", "Bijuu"]], bijuu: ["isobu"], compact: true
     },
     {
       id: "roshi", name: "Rōshi", jp: "老紫", clan: "Other",
       era: ["shippuden"], title: "4-tails host", aura: "none", gen: 8, x: 1000, y: 1630,
-      bio: "A wandering ninja of the Land of Earth who befriended and was bonded with Son Goku, the Four-Tails.",
+      bio: "A veteran ninja of Iwagakure and host of Son Gokū, the Four-Tails, whose Lava Release he could wield.",
       jutsu: [["Lava Release", "Fire", "Kekkei Genkai"], ["Son Goku's Chakra", "Earth", "Bijuu"]], bijuu: ["songoku"], compact: true
     },
     {
       id: "han", name: "Han", jp: "ハン", clan: "Other",
       era: ["shippuden"], title: "5-tails host", aura: "none", gen: 8, x: 1300, y: 1630,
-      bio: "Elder brother of the Kazekage and host of Kokuo, the Five-Tails, who commanded the twin chakra natures of fire and water.",
+      bio: "A ninja of Iwagakure and host of Kokuō, the Five-Tails, fighting with its Steam Release from inside his armour.",
       jutsu: [["Steam Release", "Water", "Kekkei Genkai"], ["Kokuo's Chakra", "Water", "Bijuu"]], bijuu: ["kokuo"], compact: true
     },
     {
@@ -679,7 +698,7 @@ const WORLD = {
   bijuu: [
     { id: "shukaku", name: "Shukaku", jp: "一尾 守鶴", tails: 1, nature: "Wind", x: 300, y: 1850, color: "#C9A227",
       abilities: ["Sand Manipulation", "Wind Release", "Tailed Beast Ball", "Sand Shield"],
-      jinchuriki: ["gaara"], lore: "A mischievous tanuki spirit of sand sealed into the youngest Kazekage's son." },
+      jinchuriki: ["gaara"], lore: "A mischievous tanuki spirit of sand, sealed into Gaara, youngest son of the Fourth Kazekage." },
     { id: "matatabi", name: "Matatabi", jp: "二尾 又旅", tails: 2, nature: "Fire", x: 560, y: 1850, color: "#C0563A",
       abilities: ["Blue Flames", "Fire Release", "Tailed Beast Ball"],
       jinchuriki: ["yugito"], lore: "A two-tailed cat spirit wreathed in blue flames that devour chakra." },
@@ -699,18 +718,17 @@ const WORLD = {
       abilities: ["Wind Release", "Dust Cloud", "Tailed Beast Ball", "Flight"],
       jinchuriki: ["fu"], lore: "A seven-tailed beetle spirit capable of flight and powder-blindness." },
     { id: "gyuki", name: "Gyūki", jp: "八尾 牛鬼", tails: 8, nature: "Water / Ink", x: 2120, y: 1850, color: "#6A5B8C",
-      abilities: ["Ink Manipulation", "Tentacle Arms", "Tailed Beast Ball", "Lava Release"],
+      abilities: ["Ink Creation", "Tentacle Arms", "Tailed Beast Ball"],
       jinchuriki: ["killer_b"], lore: "An eight-tailed octopus-cow spirit bound to the rapper of Cloud Village." },
     { id: "kurama", name: "Kurama", jp: "九尾 九喇嘛", tails: 9, nature: "Wind / Chakra", x: 2380, y: 1850, color: "#C9922B",
       abilities: ["Tailed Beast Ball", "Chakra Cloak", "Wind Release", "Bijuu Bomb barrage"],
-      jinchuriki: ["mito", "kushina", "naruto", "himawari"], lore: "The nine-tailed fox, once feared as the most destructive of the Bijuu, now Naruto's closest ally." },
+      jinchuriki: ["mito", "kushina", "minato", "naruto", "himawari"], lore: "The nine-tailed fox, once feared as the most destructive of the Bijuu, now Naruto's closest ally." },
     { id: "juubi", name: "Ten-Tails (Jūbi)", jp: "十尾", tails: 10, nature: "All Chakra", x: 2640, y: 1850, color: "#9B4C6E",
       video: "assets/videos/bijuu/10.mp4",
       abilities: ["Tailed Beast Ball", "Wood Release", "Infinite Tsukuyomi", "Truth-Seeking Balls"],
-      jinchuriki: ["madara", "obito"], lore: "The primordial chakra tree spirit from which all nine Bijuu were split. Its complete form heralds the Infinite Tsukuyomi." }
+      jinchuriki: ["hagoromo", "obito", "madara"], lore: "The primordial chakra tree spirit from which all nine Bijuu were split. Its complete form heralds the Infinite Tsukuyomi." }
   ],
 
-  /* Relationships --------------------------------------------------------- */
   /* Special weapons & ninja tools. owners = character ids on the tree.
      Artwork (optional): assets/weapons/<id>.webp|png|jpg, or image: "path".
      Clip (optional): assets/videos/<owner>/<word>.mp4 or clip: "path". */
@@ -756,9 +774,9 @@ const WORLD = {
       clip: "assets/videos/shikamaru/chakra-blade.mp4",
       ability: "Extend a cutting edge of Wind chakra",
       lore: "Trench knives made from chakra-conducting metal, inherited from Shikamaru's sensei. Wind chakra makes their edge far longer and sharper." },
-    { id: "white_sabre", name: "White Light Chakra Sabre", jp: "白光のチャクラ刀", type: "Short Sword", owners: ["kakashi"],
+    { id: "white_sabre", name: "White Light Chakra Sabre", jp: "白光のチャクラ刀", type: "Short Sword", owners: ["sakumo", "kakashi"],
       ability: "Glows white with the user's chakra",
-      lore: "The tantō of Kakashi's father, the White Fang of the Leaf. Kakashi carried it in his early ANBU years." },
+      lore: "The tantō of Sakumo Hatake, the White Fang of the Leaf. His son Kakashi inherited it and fought with it as a young ninja in the Third Shinobi War." },
     { id: "clay", name: "Explosive Clay", jp: "起爆粘土", type: "Ninja Tool", owners: ["deidara"],
       ability: "Sculptures that fly, hunt and detonate",
       lore: "Clay chewed by the mouths on Deidara's palms and moulded into birds, spiders and bombs, then detonated with his signature cry." },
@@ -770,36 +788,37 @@ const WORLD = {
       lore: "A gauntlet that releases jutsu stored in cartridge scrolls. Its use in the Chūnin Exams was controversial." }
   ],
 
+  /* Relationships. t = parent (p -> c; lineage: true when generations are skipped,
+     shown as Ancestors / Descendants), spouse (a, b), sibling (a, b),
+     sensei (s -> d), team (a, b), reinc (chain of ids). */
   links: [
     { t: "parent", p: "kaguya", c: "hagoromo" },
     { t: "parent", p: "kaguya", c: "hamura" },
     { t: "parent", p: "hagoromo", c: "indra" },
     { t: "parent", p: "hagoromo", c: "asura" },
-    { t: "parent", p: "hamura", c: "moon_main" },
-    { t: "parent", p: "hamura", c: "moon_side" },
-    { t: "parent", p: "hamura", c: "hyuga_elder" },
-    { t: "parent", p: "moon_main", c: "toneri" },
-    { t: "parent", p: "indra", c: "tajima" },
+    { t: "parent", p: "hamura", c: "moon_main", lineage: true },
+    { t: "parent", p: "hamura", c: "moon_side", lineage: true },
+    { t: "parent", p: "hamura", c: "hyuga_elder", lineage: true },
+    { t: "parent", p: "moon_main", c: "toneri", lineage: true },
+    { t: "parent", p: "indra", c: "tajima", lineage: true },
     { t: "parent", p: "tajima", c: "madara" },
     { t: "parent", p: "tajima", c: "izuna" },
-    { t: "parent", p: "tajima", c: "kagami" },
-    { t: "parent", p: "kagami", c: "shisui" },
-    { t: "parent", p: "kagami", c: "fugaku" },
+    { t: "parent", p: "kagami", c: "shisui", lineage: true },
     { t: "parent", p: "fugaku", c: "itachi" },
     { t: "parent", p: "fugaku", c: "sasuke" },
     { t: "parent", p: "mikoto", c: "itachi" },
     { t: "parent", p: "mikoto", c: "sasuke" },
-    { t: "parent", p: "asura", c: "butsuma" },
-    { t: "parent", p: "asura", c: "ashina" },
-    { t: "parent", p: "asura", c: "fuso" },
+    { t: "parent", p: "asura", c: "butsuma", lineage: true },
+    { t: "parent", p: "asura", c: "ashina", lineage: true },
+    { t: "parent", p: "asura", c: "fuso", lineage: true },
     { t: "parent", p: "butsuma", c: "hashirama" },
     { t: "parent", p: "butsuma", c: "tobirama" },
     { t: "parent", p: "butsuma", c: "itama" },
-    { t: "parent", p: "ashina", c: "mito" },
-    { t: "parent", p: "ashina", c: "kushina" },
+    { t: "parent", p: "ashina", c: "mito", lineage: true },
+    { t: "parent", p: "ashina", c: "kushina", lineage: true },
     { t: "parent", p: "fuso", c: "nagato" },
-    { t: "parent", p: "hashirama", c: "tsunade" },
-    { t: "parent", p: "mito", c: "tsunade" },
+    { t: "parent", p: "hashirama", c: "tsunade", lineage: true },
+    { t: "parent", p: "mito", c: "tsunade", lineage: true },
     { t: "parent", p: "minato", c: "naruto" },
     { t: "parent", p: "kushina", c: "naruto" },
     { t: "parent", p: "hiashi", c: "hinata" },
@@ -876,13 +895,13 @@ const WORLD = {
     { t: "parent", p: "karura", c: "gaara" },
     { t: "parent", p: "gaara", c: "shinki" },
     { t: "sensei", s: "chiyo", d: "sasori" },
-    { t: "sensei", s: "chiyo", d: "sakura" },
+    { t: "team", a: "chiyo", b: "sakura" },
     { t: "sensei", s: "jiraiya", d: "yahiko" },
     { t: "sensei", s: "orochimaru", d: "kimimaro" },
     { t: "sensei", s: "tsunade", d: "shizune" },
     { t: "spouse", a: "tsunade", b: "dan" },
-    { t: "parent", p: "hashirama", c: "nawaki" },
-    { t: "parent", p: "mito", c: "nawaki" },
+    { t: "parent", p: "hashirama", c: "nawaki", lineage: true },
+    { t: "parent", p: "mito", c: "nawaki", lineage: true },
 
     /* Sasuke's Hebi / Taka team */
     { t: "team", a: "sasuke", b: "karin" },
@@ -898,7 +917,59 @@ const WORLD = {
     { t: "team", a: "hidan", b: "kakuzu" },
     { t: "team", a: "itachi", b: "kisame" },
     { t: "team", a: "sasori", b: "deidara" },
-    { t: "team", a: "nagato", b: "konan" }
+    { t: "team", a: "nagato", b: "konan" },
+    { t: "team", a: "obito", b: "deidara" },
+    { t: "team", a: "orochimaru", b: "sasori" },
+
+    /* Explicit siblings (shared parents already imply siblings) */
+    { t: "sibling", a: "hiashi", b: "hizashi" },
+    { t: "sibling", a: "tsunade", b: "nawaki" },
+    { t: "sibling", a: "killer_b", b: "a_raikage" },
+
+    /* Clan lines, family and teachers */
+    { t: "parent", p: "hyuga_elder", c: "hiashi", lineage: true },
+    { t: "parent", p: "hyuga_elder", c: "hizashi", lineage: true },
+    { t: "parent", p: "hiruzen", c: "konohamaru", lineage: true },
+    { t: "parent", p: "sakumo", c: "kakashi" },
+    { t: "sensei", s: "hashirama", d: "hiruzen" },
+    { t: "sensei", s: "tobirama", d: "kagami" },
+    { t: "sensei", s: "sasuke", d: "boruto" },
+    { t: "sensei", s: "iruka", d: "naruto" },
+    { t: "sensei", s: "naruto", d: "konohamaru" },
+    { t: "sensei", s: "konohamaru", d: "boruto" },
+    { t: "sensei", s: "konohamaru", d: "sarada" },
+    { t: "sensei", s: "konohamaru", d: "mitsuki" },
+
+    /* Canon squads */
+    { t: "team", a: "naruto", b: "sasuke" },
+    { t: "team", a: "naruto", b: "sakura" },
+    { t: "team", a: "sasuke", b: "sakura" },
+    { t: "team", a: "kakashi", b: "obito" },
+    { t: "team", a: "kakashi", b: "rin" },
+    { t: "team", a: "obito", b: "rin" },
+    { t: "team", a: "jiraiya", b: "tsunade" },
+    { t: "team", a: "jiraiya", b: "orochimaru" },
+    { t: "team", a: "tsunade", b: "orochimaru" },
+    { t: "team", a: "hiruzen", b: "danzo" },
+    { t: "team", a: "hiruzen", b: "kagami" },
+    { t: "team", a: "danzo", b: "kagami" },
+    { t: "team", a: "nagato", b: "yahiko" },
+    { t: "team", a: "konan", b: "yahiko" },
+    { t: "team", a: "neji", b: "rocklee" },
+    { t: "team", a: "neji", b: "tenten" },
+    { t: "team", a: "rocklee", b: "tenten" },
+    { t: "team", a: "hinata", b: "kiba" },
+    { t: "team", a: "hinata", b: "shino" },
+    { t: "team", a: "kiba", b: "shino" },
+    { t: "team", a: "shikamaru", b: "ino" },
+    { t: "team", a: "shikamaru", b: "choji" },
+    { t: "team", a: "ino", b: "choji" },
+    { t: "team", a: "boruto", b: "sarada" },
+    { t: "team", a: "boruto", b: "mitsuki" },
+    { t: "team", a: "sarada", b: "mitsuki" },
+    { t: "team", a: "shikadai", b: "inojin" },
+    { t: "team", a: "shikadai", b: "chocho" },
+    { t: "team", a: "inojin", b: "chocho" }
   ]
 };
 

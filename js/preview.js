@@ -38,6 +38,11 @@
      listed paths are requested, so missing candidates never hit the network. */
   const INDEX = Array.isArray(window.MEDIA_INDEX) ? new Set(window.MEDIA_INDEX) : null;
   const isLocal = (p) => !/^(https?:|data:|blob:|\/\/)/i.test(p);
+  /* Media paths everywhere (data.js, media-index.js) are relative to the site root.
+     A page in a sub-folder declares <html data-root="../"> and every URL handed
+     to the browser gets that prefix; index lookups keep the root-relative path. */
+  const ROOT = document.documentElement.getAttribute("data-root") || "";
+  const url = (p) => (p && isLocal(p) && !p.startsWith("/") ? ROOT + p : p);
   const known = (p) => !INDEX || !isLocal(p) || INDEX.has(p);
   const NATURE_FX = {
     Weapon: "slash", Fire: "fire", Wind: "wind", Water: "water", Lightning: "lightning", Earth: "earth",
@@ -53,9 +58,9 @@
   function probeImage(src) {
     return new Promise((resolve) => {
       const img = new Image();
-      img.onload = () => resolve({ type: "image", src, ratio: img.naturalWidth / img.naturalHeight || .75 });
+      img.onload = () => resolve({ type: "image", src: url(src), ratio: img.naturalWidth / img.naturalHeight || .75 });
       img.onerror = () => resolve(null);
-      img.src = src;
+      img.src = url(src);
     });
   }
   function probeVideo(src) {
@@ -66,9 +71,9 @@
       const t = setTimeout(() => done(null), INDEX && INDEX.has(src) ? 20000 : 5000);
       v.preload = "metadata";
       v.muted = true;
-      v.onloadedmetadata = () => done({ type: "video", src, ratio: v.videoWidth / v.videoHeight || .75 });
+      v.onloadedmetadata = () => done({ type: "video", src: url(src), ratio: v.videoWidth / v.videoHeight || .75 });
       v.onerror = () => done(null);
-      v.src = src;
+      v.src = url(src);
     });
   }
   async function firstHit(list, probe) {
@@ -78,13 +83,28 @@
   /* Still image only (no video probing), used for portraits on the tree,
      relationship chips and search results. */
   const imageCache = new Map();
+  const hitCache = new Map();
+  function findImageHit(c, folder = "characters") {
+    const key = folder + ":" + c.id;
+    if (!hitCache.has(key)) {
+      hitCache.set(key, firstHit([c.image, ...EXTS.map((e) => `${dir(folder)}/${c.id}.${e}`)].filter(Boolean), probeImage));
+    }
+    return hitCache.get(key);
+  }
   function findImage(c, folder = "characters") {
     const key = folder + ":" + c.id;
     if (!imageCache.has(key)) {
-      imageCache.set(key, firstHit([c.image, ...EXTS.map((e) => `${dir(folder)}/${c.id}.${e}`)].filter(Boolean), probeImage)
-        .then((hit) => hit && hit.src));
+      imageCache.set(key, findImageHit(c, folder).then((hit) => hit && hit.src));   // URL for this page
     }
     return imageCache.get(key);
+  }
+  /* Small scroll thumbnail (assets/thumbs/<folder>/<id>.webp, made by
+     tools/make_thumbs.py); falls back to the full artwork. Only used when the
+     media index proves the thumbnail exists, so it never causes a 404. */
+  function findThumb(c, folder = "characters") {
+    const thumb = `${ASSETS}/thumbs/${folder}/${c.id}.webp`;
+    if (!c.image && INDEX && INDEX.has(thumb)) return Promise.resolve(url(thumb));
+    return findImage(c, folder);
   }
 
   /* Jutsu plus the character's special weapons, as one list of
@@ -113,7 +133,7 @@
     ].filter(Boolean);
     const [video, image] = await Promise.all([
       firstHit([...new Set(videoPaths)], probeVideo),
-      findImage(c, folder).then((src) => src ? probeImage(src) : null)
+      findImageHit(c, folder)
     ]);
     const media = video ? { ...video, poster: image && image.src, posterRatio: image && image.ratio } : image;
     mediaCache.set(key, media);
@@ -300,7 +320,7 @@
           </svg>
         </div>
         <div class="pv-banner" aria-live="polite"></div>
-        ${img ? "" : `<div class="pv-hint">Add your own artwork: <code>${esc(dir(c.folder || "characters"))}/${esc(c.id)}.webp</code> or <code>${VIDEOS}/${esc(c.id)}/${esc(c.id)}.mp4</code></div>`}
+        ${img ? "" : `<div class="pv-hint" title="Add ${esc(dir(c.folder || "characters"))}/${esc(c.id)}.webp to show artwork here">Artwork for ${esc(c.name)} has not been added yet.</div>`}
       </div>`;
   }
 
@@ -318,7 +338,7 @@
           <h2 class="pv-name">${esc(c.name)} <span class="pv-jp">${esc(c.jp)}</span></h2>
           <span class="drawer-title">${esc(c.title)}</span>
         </div>
-        <div class="pv-jutsu-list" aria-label="Perform a jutsu">${jutsu}</div>
+        <div class="pv-jutsu-list" role="group" aria-label="Perform a jutsu">${jutsu}</div>
         <div class="pv-actions">
           ${skillsOf(c).length ? `<button class="pv-btn accent" data-pv-cast>▶ ${c.isWeapon ? "Strike" : c.isBijuu ? "Unleash Ability" : "Perform Jutsu"}</button>` : ""}
           <button class="pv-btn" data-pv-summon>↻ Summon</button>
@@ -548,6 +568,16 @@
     document.addEventListener("keydown", (e) => {
       if (modal.hidden) return;
       if (e.key === "Escape") { e.stopImmediatePropagation(); close(); return; }
+      if (e.key === "Tab") {                       // keep keyboard focus inside the dialog
+        const f = [...modal.querySelectorAll("button, [href], video[controls], [tabindex]:not([tabindex='-1'])")]
+          .filter((x) => !x.hidden && !x.disabled && x.offsetParent !== null);
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (!modal.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+        else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        return;
+      }
       if (navigator_ && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
         e.preventDefault(); e.stopImmediatePropagation(); step(e.key === "ArrowLeft" ? -1 : 1);
       }
@@ -560,7 +590,8 @@
     current = c;
     if (modal.hidden) lastFocus = document.activeElement;
     modal.style.setProperty("--pv-aura", auraHex(c));
-    body.innerHTML = `<div class="pv-stage-wrap"><div class="pv-loading">召</div></div>${infoMarkup(c)}`;
+    modal.setAttribute("aria-label", `${c.name}: full-screen preview`);
+    body.innerHTML = `<div class="pv-stage-wrap"><div class="pv-loading" role="status" aria-label="Summoning…">召</div></div>${infoMarkup(c)}`;
     modal.hidden = false;
     document.documentElement.classList.add("pv-active");     // stop the page scrolling behind
     updateNav();
@@ -595,10 +626,11 @@
   }
 
   window.CharacterPreview = {
-    open, close, cast, summon, findMedia, findImage,
+    open, close, cast, summon, findMedia, findImage, findThumb,
     isOpen: () => !!modal && !modal.hidden,
     setNavigator: (nav) => { navigator_ = nav || null; if (modal && !modal.hidden) updateNav(); },
     hasFile: (path) => (INDEX ? INDEX.has(path) : null),   // null = unknown (no index)
+    url,                                                   // root-relative path -> URL for this page
     mediaIndex: INDEX,
     onChronicle: (fn) => { onChronicle = fn; }
   };
