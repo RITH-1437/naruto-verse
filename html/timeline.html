@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" data-root="../">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timeline | Shinobi Chronicles</title>
+  <meta name="description" content="The story of the Naruto-verse in order, from Kaguya and the God Tree through the Shinobi World Wars to Boruto." />
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png" />
+  <meta name="theme-color" content="#F4EBD0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Shippori+Mincho:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/timeline.css" />
+  <link rel="stylesheet" href="../css/palette.css" />
+</head>
+<body class="tl-page">
+  <a class="skip-link" href="#tl-main">Skip to the timeline</a>
+  <div class="app-shell">
+
+    <header class="app-header">
+      <div class="header-left">
+        <div class="seal" aria-hidden="true"><span>忍</span></div>
+        <div class="header-titles">
+          <h1>Shinobi <em>Chronicles</em></h1>
+          <p>The Naruto-Verse Timeline</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <a class="ink-btn home-link hub-link" href="https://rith-1437.github.io/anime-verse/" title="Back to Anime Verse" aria-label="Back to Anime Verse"><span aria-hidden="true">←</span><span class="hub-lbl"> Anime Verse</span></a>
+        <a class="ink-btn home-link" href="../index.html" title="Back to the Shinobi Chronicles home">Home</a>
+        <a class="ink-btn accent home-link tl-scroll-link" href="scroll.html" title="Open the Lineage Scroll"><span aria-hidden="true">巻</span><span class="tl-scroll-lbl"> Scroll</span></a>
+        <button type="button" class="ink-btn pal-btn" data-palette-open title="Search everything (Ctrl K)" aria-label="Search everything (Ctrl K)"><span aria-hidden="true">⌕</span><span class="pal-lbl"> Search</span></button>
+      </div>
+    </header>
+
+    <main id="tl-main" class="tl-main" tabindex="-1">
+      <section class="tl-intro">
+        <p class="tl-kicker">年表 · Timeline</p>
+        <h2 class="tl-heading">From the God Tree to the new generation</h2>
+        <p class="tl-lead">The story of the Naruto-verse in order. Pick an era, or tap a portrait to open that shinobi.</p>
+        <div class="tl-filters" id="tl-filters" role="group" aria-label="Filter by era"></div>
+      </section>
+      <div class="tl-eras" id="tl-eras" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/media-index.js"></script>
+  <script src="../js/preview.js"></script>
+  <script src="../js/timeline-data.js"></script>
+  <script src="../js/timeline.js"></script>
+  <script src="../js/palette.js"></script>
+</body>
+</html>

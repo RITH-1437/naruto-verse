@@ -1219,5 +1219,15 @@
     }, 350);
   }
 
+  /* Command palette (Ctrl K): open the picked entry right here on the scroll. */
+  if (window.SCPalette && window.SCPalette.setHandler) window.SCPalette.setHandler((kind, id) => {
+    if (kind === "char" && byId(id)) { focusNode(id); openCharacter(id); return true; }
+    if (kind === "bijuu" && bijuuById(id)) { openBijuu(id, true); return true; }
+    if (kind === "weapon" && weaponById(id)) { showWeaponDrawer(); openWeapon(id); return true; }
+    const e = ["eyes", "colossi", "kekkei"].includes(kind) && (WORLD[kind] || []).find((x) => x.id === id);
+    if (e && window.CharacterPreview) { window.CharacterPreview.open(window.CharacterPreview.relic(kind, e)); return true; }
+    return false;
+  });
+
   init();
 })();

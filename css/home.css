@@ -288,10 +288,20 @@ kbd {
   .brand-text { font-size: 13px; }
   .hub-link, .nav-scroll { padding: 6px 8px; }
 }
-@media (max-width: 340px) {
+@media (max-width: 370px) {
   .brand-text em { display: none; }   /* "Shinobi" only on the narrowest phones */
 }
 @media (max-width: 1000px) and (min-width: 901px) {
   .brand-text { font-size: 20px; }
   .nav-links a { padding: 8px 5px; font-size: 13px; }
 }
+
+/* Header with the search button: keep everything on one line */
+@media (min-width: 1181px) and (max-width: 1440px) { .pal-btn .pal-lbl { display: none; } }
+@media (max-width: 900px) { .ns-long { display: none; } }
+@media (max-width: 520px) {
+  .nav-inner { gap: 8px; }
+  .pal-btn, .hub-link { padding: 7px 9px; font-size: 12px; }
+}
+@media (min-width: 361px) and (max-width: 440px) { .nav-scroll { padding: 7px 9px; font-size: 12px; } .brand-text { font-size: 14px; } .brand .seal { width: 30px; height: 30px; flex-basis: 30px; font-size: 17px; } }
+@media (max-width: 360px) { .pal-btn, .hub-link { padding: 6px 8px; } }

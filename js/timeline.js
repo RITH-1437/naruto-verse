@@ -1,0 +1,121 @@
+/* ==========================================================================
+   SHINOBI CHRONICLES: timeline page (html/timeline.html)
+   Renders window.TIMELINE (js/timeline-data.js) as era sections on a vertical
+   ink line. Portrait chips open the shared full-screen preview (preview.js);
+   Tailed Beast chips open that beast on the Lineage Scroll. #<event-id> in the
+   URL scrolls to and highlights that event.
+   ========================================================================== */
+
+(() => {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const PV = window.CharacterPreview;
+  const EVENTS = window.TIMELINE || [];
+  const ERAS = WORLD.eras.filter((e) => e.id !== "all" && EVENTS.some((t) => t.era === e.id));
+  const charById = new Map(WORLD.characters.map((c) => [c.id, c]));
+  const beastById = new Map(WORLD.bijuu.map((b) => [b.id, b]));
+  const auraHex = (c) => (WORLD.auraColors && WORLD.auraColors[c.aura]) || "#6B5B45";
+  const initials = (name) => name.split(/\s+/).map((w) => w[0]).slice(0, 2).join("");
+  const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+  const smooth = () => (REDUCED && REDUCED.matches ? "auto" : "smooth");
+  const ERA_SEAL = { origin: "始", naruto: "忍", shippuden: "疾", boruto: "新" };
+
+  let era = "all";
+
+  function chipsHtml(t) {
+    const people = t.characters.map((id) => charById.get(id)).filter(Boolean).map((c) =>
+      `<button type="button" class="tl-chip" data-char="${esc(c.id)}" style="--c:${auraHex(c)}" title="Open ${esc(c.name)}">
+        <span class="tl-ava" aria-hidden="true"><span>${esc(initials(c.name))}</span><img alt="" data-thumb="${esc(c.id)}" hidden></span>${esc(c.name)}</button>`);
+    const beasts = (t.bijuu || []).map((id) => beastById.get(id)).filter(Boolean).map((b) =>
+      `<a class="tl-chip tl-beast" href="scroll.html?bijuu=${esc(b.id)}" style="--c:${esc(b.color)}" title="${esc(b.name)} on the Lineage Scroll">
+        <span class="tl-ava" aria-hidden="true"><span>${b.tails}</span></span>${esc(b.name)}</a>`);
+    return people.concat(beasts).join("");
+  }
+
+  function render() {
+    const shown = ERAS.filter((e) => era === "all" || e.id === era);
+    $("tl-eras").innerHTML = shown.map((e) => {
+      const items = EVENTS.filter((t) => t.era === e.id);
+      return `<section class="tl-era" aria-labelledby="era-${e.id}">
+        <h3 class="tl-era-title" id="era-${e.id}"><span class="tl-era-seal" aria-hidden="true">${ERA_SEAL[e.id] || "忍"}</span>${esc(e.label)}
+          <small>${items.length} event${items.length === 1 ? "" : "s"}</small></h3>
+        <ol class="tl-list">${items.map((t) => `
+          <li class="tl-event" id="${esc(t.id)}">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <article class="tl-card">
+              <p class="tl-when">${esc(t.when)}</p>
+              <h4 class="tl-title"><a href="#${esc(t.id)}" class="tl-anchor">${esc(t.title)}</a></h4>
+              <p class="tl-summary">${esc(t.summary)}</p>
+              <div class="tl-chips">${chipsHtml(t)}</div>
+            </article>
+          </li>`).join("")}</ol>
+      </section>`;
+    }).join("");
+    loadThumbs();
+  }
+
+  function loadThumbs() {
+    if (!PV || !(PV.findThumb || PV.findImage)) return;
+    const find = PV.findThumb || PV.findImage;
+    document.querySelectorAll("img[data-thumb]").forEach((img) => {
+      const c = charById.get(img.dataset.thumb);
+      if (!c) return;
+      find(c, "characters").then((src) => {
+        if (!src || !img.isConnected) return;
+        img.onload = () => { img.hidden = false; img.parentElement.classList.add("has-img"); };
+        img.src = src;
+      });
+    });
+  }
+
+  function renderFilters() {
+    const btns = [{ id: "all", label: "All eras" }, ...ERAS];
+    $("tl-filters").innerHTML = btns.map((e) =>
+      `<button type="button" class="tl-filter" data-era="${e.id}" aria-pressed="${e.id === era}">${esc(e.label)}</button>`).join("");
+  }
+
+  function setEra(id) {
+    era = id;
+    renderFilters();
+    render();
+  }
+
+  function goToHash() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    const t = EVENTS.find((x) => x.id === id);
+    if (!t) return;
+    if (era !== "all" && era !== t.era) setEra("all");
+    const el = document.getElementById(id);
+    if (!el) return;
+    document.querySelectorAll(".tl-event.is-target").forEach((x) => x.classList.remove("is-target"));
+    el.classList.add("is-target");
+    el.scrollIntoView({ behavior: smooth(), block: "center" });
+  }
+
+  $("tl-filters").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-era]");
+    if (b) setEra(b.dataset.era);
+  });
+  $("tl-eras").addEventListener("click", (e) => {
+    const chip = e.target.closest("[data-char]");
+    if (chip && PV) { const c = charById.get(chip.dataset.char); if (c) PV.open(c); }
+  });
+  window.addEventListener("hashchange", goToHash);
+
+  /* "Read Chronicle" in the preview: show that shinobi on the Lineage Scroll */
+  if (PV && PV.onChronicle) {
+    PV.onChronicle((c) => {
+      const url = c.isWeapon ? `scroll.html?weapon=${c.id}` : c.isBijuu ? `scroll.html?bijuu=${c.id}`
+        : c.relicKind ? (c.users && c.users[0] ? `scroll.html?focus=${c.users[0]}` : "scroll.html") : `scroll.html?focus=${c.id}`;
+      location.href = url;
+    });
+  }
+
+  renderFilters();
+  render();
+  if (location.hash) requestAnimationFrame(goToHash);
+})();

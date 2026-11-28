@@ -23,6 +23,7 @@
   <!-- styles.css carries the theme tokens + full-screen preview; home.css the website layout -->
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/home.css" />
+  <link rel="stylesheet" href="css/palette.css" />
 </head>
 <body class="site">
   <a class="skip-link" href="#archive">Skip to the archive</a>
@@ -42,6 +43,7 @@
         <a href="#archive" data-tab-link="colossi">Colossi</a>
         <a href="#archive" data-tab-link="kekkei">Kekkei Genkai</a>
       </nav>
+      <button type="button" class="ink-btn pal-btn" data-palette-open title="Search everything (Ctrl K)" aria-label="Search everything (Ctrl K)"><span aria-hidden="true">⌕</span><span class="pal-lbl"> Search</span></button>
       <a class="ink-btn hub-link" href="https://rith-1437.github.io/anime-verse/" title="Back to Anime Verse" aria-label="Back to Anime Verse"><span aria-hidden="true">←</span><span class="hub-lbl"> Anime Verse</span></a>
       <a class="ink-btn accent nav-scroll" href="html/scroll.html"><span aria-hidden="true">巻</span> <span class="ns-long">Lineage </span>Scroll <span aria-hidden="true">→</span></a>
     </div>
@@ -60,6 +62,7 @@
           <div class="hero-cta">
             <a class="ink-btn accent big" href="#archive">Browse the Shinobi</a>
             <a class="ink-btn big" href="html/scroll.html">Open the Lineage Scroll</a>
+            <a class="ink-btn big" href="html/timeline.html"><span aria-hidden="true">年</span> Timeline</a>
             <button type="button" class="ink-btn big" id="surprise" title="Summon a random shinobi"><span aria-hidden="true">🎲</span> Surprise me</button>
           </div>
           <dl class="hero-stats" id="hero-stats"></dl>
@@ -163,6 +166,8 @@
   <script src="js/data.js"></script>
   <script src="js/media-index.js"></script>
   <script src="js/preview.js"></script>
+  <script src="js/timeline-data.js"></script>
+  <script src="js/palette.js"></script>
   <script src="js/home.js"></script>
 </body>
 </html>

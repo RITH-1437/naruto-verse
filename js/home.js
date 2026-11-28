@@ -421,8 +421,26 @@
     }
   }
 
+  /* Open one entry by kind + id: used by the command palette (Ctrl K) and by
+     links like index.html?open=char:naruto from the timeline page. */
+  const KIND_TAB = { char: "characters", bijuu: "bijuu", weapon: "weapons", eyes: "eyes", colossi: "colossi", kekkei: "kekkei" };
+  function openItem(kind, id) {
+    const tab = KIND_TAB[kind];
+    const it = tab && COLLECTIONS[tab].items.find((x) => x.id === id);
+    if (!it || !PV) return false;
+    if (state.tab !== tab) setTab(tab);
+    PV.open(COLLECTIONS[tab].preview(it));
+    return true;
+  }
+  if (window.SCPalette && window.SCPalette.setHandler) window.SCPalette.setHandler(openItem);
+
+  const openParam = new URLSearchParams(location.search).get("open");   // read before setTab() rewrites the URL
   bind();
   const fromHash = readHash();
   setTab(state.tab, false, state.page);
+  if (openParam) {
+    const [kind, id] = openParam.split(":");
+    if (openItem(kind, id)) history.replaceState(null, "", location.pathname + location.hash);
+  }
   if (fromHash) requestAnimationFrame(() => $("archive").scrollIntoView({ block: "start" }));
 })();

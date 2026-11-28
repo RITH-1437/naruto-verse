@@ -1,0 +1,251 @@
+/* ==========================================================================
+   SHINOBI CHRONICLES: Ctrl+K command palette
+   --------------------------------------------------------------------------
+   One search box for everything on the site: shinobi, Tailed Beasts, weapons,
+   Dōjutsu, Colossi, Kekkei Genkai and (when js/timeline-data.js is loaded)
+   the timeline. Opens with Ctrl+K / Cmd+K or any [data-palette-open] element.
+
+   API (window.SCPalette):
+     open(query?)        open the palette (optionally pre-filled)
+     close()             close it
+     setHandler(fn)      fn(kind, id) -> true if the page handled the selection;
+                         otherwise the palette navigates (see go()).
+     onSelect(kind, id)  what a selection runs (handler first, then navigation)
+   kinds: "char", "bijuu", "weapon", "eyes", "colossi", "kekkei", "timeline"
+   ========================================================================== */
+
+(() => {
+  "use strict";
+
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const norm = (s) => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase().replace(/[^a-z0-9぀-ヿ㐀-鿿]+/g, " ").trim();
+  const MAX_PER_GROUP = 8;
+
+  /* ------------------------------------------------------------- the index */
+  const GROUPS = [
+    { kind: "char", label: "Shinobi", folder: "characters" },
+    { kind: "bijuu", label: "Tailed Beasts", folder: "tail-beast" },
+    { kind: "weapon", label: "Weapons", folder: "weapons" },
+    { kind: "eyes", label: "Dōjutsu", folder: "eyes" },
+    { kind: "colossi", label: "Colossi", folder: "colossi" },
+    { kind: "kekkei", label: "Kekkei Genkai", folder: "kekkei-genkai" },
+    { kind: "timeline", label: "Timeline", folder: null }
+  ];
+  const GLYPH = { char: "忍", bijuu: "尾", weapon: "武", eyes: "眼", colossi: "巨", kekkei: "血", timeline: "暦" };
+
+  let INDEX = null;
+  function buildIndex() {
+    // data.js / timeline-data.js declare top-level consts, which are not window properties
+    const W = (typeof WORLD !== "undefined" && WORLD) || window.WORLD || {};
+    const TL = (typeof TIMELINE !== "undefined" && TIMELINE) || window.TIMELINE || [];
+    const nameOf = (id) => ((W.characters || []).find((c) => c.id === id) || { name: id }).name;
+    const rows = [];
+    const add = (kind, item, name, sub, extra, color) => rows.push({
+      kind, id: item.id, item, name, sub, color,
+      n: norm(name), hay: norm([name, ...extra].join(" "))
+    });
+    (W.characters || []).forEach((c) => add("char", c, c.name, [c.title, c.clan !== "Other" ? c.clan : ""].filter(Boolean).join(" · "),
+      [c.jp, c.clan, c.title, ...(c.jutsu || []).map((j) => j[0])], (W.auraColors || {})[c.aura]));
+    (W.bijuu || []).forEach((b) => add("bijuu", b, b.name, `${b.tails}-Tails · ${b.nature}`,
+      [b.jp, b.nature, ...(b.abilities || []), ...(b.jinchuriki || []).map(nameOf)], b.color));
+    (W.weapons || []).forEach((w) => add("weapon", w, w.name, w.type,
+      [w.jp, w.type, w.ability, ...(w.owners || []).map(nameOf)], "#5A5A66"));
+    [["eyes", "Dōjutsu"], ["colossi", "Colossi"], ["kekkei", "Kekkei Genkai"]].forEach(([k, label]) =>
+      (W[k] || []).forEach((e) => add(k, e, e.name, [e.type, ...(e.natures || [])].filter(Boolean).join(" · "),
+        [e.jp, e.type, e.clan, label, ...(e.natures || []), ...(e.abilities || []).map((a) => a[0]),
+          ...(e.users || []).map(nameOf), ...(e.others || [])], e.color)));
+    TL.forEach((t) => add("timeline", t, t.title, [t.when, t.era].filter(Boolean).join(" · "),
+      [t.era, t.when, t.summary, ...(t.characters || []).map(nameOf)], "#8C6F3F"));
+    return rows;
+  }
+
+  /* prefix of the name > a word of the name starts with it > anywhere in the name > anywhere at all */
+  function score(row, terms) {
+    let total = 0;
+    for (const t of terms) {
+      if (row.n.startsWith(t)) total += 100;
+      else if ((" " + row.n).includes(" " + t)) total += 60;
+      else if (row.n.includes(t)) total += 35;
+      else if ((" " + row.hay).includes(" " + t)) total += 15;
+      else if (row.hay.includes(t)) total += 8;
+      else return 0;
+    }
+    return total - row.name.length * 0.05;
+  }
+  function search(q) {
+    if (!INDEX) INDEX = buildIndex();
+    const terms = norm(q).split(" ").filter(Boolean);
+    if (!terms.length) return [];
+    const hits = INDEX.map((r) => [r, score(r, terms)]).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]);
+    return GROUPS.map((g) => ({ ...g, rows: hits.filter(([r]) => r.kind === g.kind).slice(0, MAX_PER_GROUP).map(([r]) => r) }))
+      .filter((g) => g.rows.length)
+      .sort((a, b) => score(b.rows[0], terms) - score(a.rows[0], terms));
+  }
+
+  /* ------------------------------------------------------------- selection */
+  let handler = null;
+  function go(kind, id) {
+    const root = document.documentElement.dataset.root || "";
+    location.href = kind === "timeline" ? `${root}html/timeline.html#${encodeURIComponent(id)}`
+      : `${root}index.html?open=${kind}:${encodeURIComponent(id)}`;
+  }
+  function onSelect(kind, id) {
+    close();
+    if (handler && handler(kind, id) === true) return;
+    go(kind, id);
+  }
+
+  /* -------------------------------------------------------------------- UI */
+  let el, input, list, status, lastFocus, results = [], flat = [], active = -1;
+
+  function build() {
+    el = document.createElement("div");
+    el.className = "pal";
+    el.hidden = true;
+    el.innerHTML = `
+      <div class="pal-backdrop" data-pal-close></div>
+      <div class="pal-panel" role="dialog" aria-modal="true" aria-label="Search the archive">
+        <div class="pal-field">
+          <span class="pal-ico" aria-hidden="true">⌕</span>
+          <input class="pal-input" type="text" role="combobox" aria-expanded="false" aria-controls="pal-list"
+            aria-autocomplete="list" autocomplete="off" spellcheck="false"
+            placeholder="Search shinobi, beasts, jutsu, Dōjutsu…" aria-label="Search the archive">
+          <button type="button" class="pal-esc" data-pal-close aria-label="Close search">Esc</button>
+        </div>
+        <div class="pal-list" id="pal-list" role="listbox" aria-label="Results"></div>
+        <div class="pal-foot" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> close</span></div>
+        <p class="pal-status" role="status" aria-live="polite"></p>
+      </div>`;
+    document.body.appendChild(el);
+    input = el.querySelector(".pal-input");
+    list = el.querySelector(".pal-list");
+    status = el.querySelector(".pal-status");
+
+    let t;
+    input.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 60); });
+    input.addEventListener("keydown", (e) => {
+      const n = flat.length;
+      if (e.key === "ArrowDown") { e.preventDefault(); if (n) setActive((active + 1) % n); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); if (n) setActive((active - 1 + n) % n); }
+      else if (e.key === "Home" && n && e.ctrlKey) { e.preventDefault(); setActive(0); }
+      else if (e.key === "End" && n && e.ctrlKey) { e.preventDefault(); setActive(n - 1); }
+      else if (e.key === "Enter") { e.preventDefault(); const r = flat[active]; if (r) onSelect(r.kind, r.id); }
+    });
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); return; }
+      if (e.key === "Tab") {                     // focus stays inside the dialog
+        const f = [input, el.querySelector(".pal-esc")];
+        e.preventDefault();
+        f[(f.indexOf(document.activeElement) + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+      }
+    });
+    el.addEventListener("click", (e) => {
+      if (e.target.closest("[data-pal-close]")) { close(); return; }
+      const opt = e.target.closest(".pal-opt");
+      if (opt) { const r = flat[Number(opt.dataset.i)]; if (r) onSelect(r.kind, r.id); }
+    });
+    list.addEventListener("mousemove", (e) => {
+      const opt = e.target.closest(".pal-opt");
+      if (opt && Number(opt.dataset.i) !== active) setActive(Number(opt.dataset.i), false);
+    });
+  }
+
+  function render() {
+    const q = input.value;
+    results = search(q);
+    flat = results.flatMap((g) => g.rows);
+    let i = 0;
+    if (!q.trim()) {
+      list.innerHTML = `<p class="pal-empty">Type a name, clan, jutsu or ability. Try <em>Itachi</em>, <em>Rasengan</em> or <em>Sharingan</em>.</p>`;
+    } else if (!flat.length) {
+      list.innerHTML = `<p class="pal-empty">Nothing found for “${esc(q)}”.</p>`;
+    } else {
+      list.innerHTML = results.map((g) => `
+        <div class="pal-group" role="group" aria-label="${esc(g.label)}">
+          <div class="pal-head" aria-hidden="true">${esc(g.label)}</div>
+          ${g.rows.map((r) => `
+            <div class="pal-opt" id="pal-opt-${i}" role="option" aria-selected="false" data-i="${i++}" style="--c:${r.color || "#6B5B45"}">
+              <span class="pal-thumb" aria-hidden="true"><span>${GLYPH[r.kind]}</span><img alt="" data-kind="${r.kind}" hidden></span>
+              <span class="pal-txt"><span class="pal-name">${esc(r.name)}</span>${r.sub ? `<span class="pal-sub">${esc(r.sub)}</span>` : ""}</span>
+              <span class="pal-kind" aria-hidden="true">${esc(g.label)}</span>
+            </div>`).join("")}
+        </div>`).join("");
+      loadThumbs();
+    }
+    input.setAttribute("aria-expanded", String(!!flat.length));
+    status.textContent = q.trim() ? `${flat.length} result${flat.length === 1 ? "" : "s"}` : "";
+    setActive(flat.length ? 0 : -1);
+  }
+
+  function loadThumbs() {
+    const PV = window.CharacterPreview;
+    if (!PV || !(PV.findThumb || PV.findImage)) return;
+    list.querySelectorAll(".pal-opt").forEach((opt) => {
+      const r = flat[Number(opt.dataset.i)];
+      const g = GROUPS.find((x) => x.kind === r.kind);
+      if (!g || !g.folder) return;
+      (PV.findThumb || PV.findImage)(r.item, g.folder).then((src) => {
+        if (!src || !opt.isConnected) return;
+        const img = opt.querySelector("img");
+        img.onload = () => { img.hidden = false; opt.querySelector(".pal-thumb").classList.add("has-img"); };
+        img.src = src;
+      }).catch(() => {});
+    });
+  }
+
+  function setActive(i, scroll = true) {
+    list.querySelectorAll('.pal-opt[aria-selected="true"]').forEach((o) => o.setAttribute("aria-selected", "false"));
+    active = i;
+    const opt = i >= 0 ? list.querySelector(`#pal-opt-${i}`) : null;
+    if (opt) {
+      opt.setAttribute("aria-selected", "true");
+      input.setAttribute("aria-activedescendant", opt.id);
+      if (scroll) opt.scrollIntoView({ block: "nearest" });
+    } else input.removeAttribute("aria-activedescendant");
+  }
+
+  function open(q) {
+    if (!el) build();
+    const PV = window.CharacterPreview;
+    if (PV && PV.isOpen && PV.isOpen()) PV.close();            // never stack on top of the preview
+    if (el.hidden) lastFocus = document.activeElement;
+    INDEX = null;                                               // pick up data added since last time (e.g. TIMELINE)
+    el.hidden = false;
+    document.documentElement.classList.add("pal-active");
+    requestAnimationFrame(() => el.classList.add("open"));
+    if (typeof q === "string") input.value = q;
+    render();
+    input.focus({ preventScroll: true });
+    input.select();
+  }
+  function close() {
+    if (!el || el.hidden) return;
+    el.classList.remove("open");
+    input.blur();
+    el.hidden = true;
+    document.documentElement.classList.remove("pal-active");
+    if (lastFocus && lastFocus.focus && lastFocus.isConnected) lastFocus.focus({ preventScroll: true });
+  }
+  const isOpen = () => !!el && !el.hidden;
+
+  function init() {
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === "k") {
+        e.preventDefault(); e.stopPropagation();
+        isOpen() ? close() : open();
+      }
+    }, true);
+    document.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-palette-open]");
+      if (b) { e.preventDefault(); open(); }
+    });
+  }
+
+  window.SCPalette = {
+    open, close, isOpen, onSelect, go, search,
+    setHandler: (fn) => { handler = typeof fn === "function" ? fn : null; }
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+})();

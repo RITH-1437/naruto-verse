@@ -25,10 +25,28 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
-PAGES = {"index.html": "js/home.js", "html/scroll.html": "js/scroll.js"}   # only index.html lives at the root
+PAGES = {"index.html": ["js/timeline-data.js", "js/palette.js", "js/home.js"],
+         "html/scroll.html": ["js/timeline-data.js", "js/palette.js", "js/scroll.js"],
+         "html/timeline.html": ["js/timeline-data.js", "js/timeline.js", "js/palette.js"]}   # only index.html lives at the root
 CORE = ["js/data.js", "js/media-index.js", "js/preview.js"]
 MEDIA_FOLDERS = ["assets/characters", "assets/tail-beast", "assets/eyes", "assets/colossi", "assets/kekkei-genkai", "assets/weapons", "assets/videos", "assets/thumbs"]
 MEDIA_EXTS = {".webp", ".png", ".jpg", ".jpeg", ".gif", ".mp4", ".webm"}
+
+TIMELINE_CHECK = r"""
+const W = require(process.argv[1]), T = require(process.argv[2]), out = [];
+const chars = new Set(W.characters.map((c) => c.id)), beasts = new Set(W.bijuu.map((b) => b.id));
+const eras = new Set(W.eras.map((e) => e.id)), seen = new Set();
+for (const t of T) {
+  if (!t.id || !/^[a-z0-9_]+$/.test(t.id)) out.push(`bad id "${t.id}"`);
+  if (seen.has(t.id)) out.push(`duplicate id "${t.id}"`);
+  seen.add(t.id);
+  if (!eras.has(t.era) || t.era === "all") out.push(`${t.id}: unknown era "${t.era}"`);
+  for (const k of ["title", "when", "summary"]) if (!t[k]) out.push(`${t.id}: missing ${k}`);
+  (t.characters || []).forEach((c) => { if (!chars.has(c)) out.push(`${t.id}: unknown character "${c}"`); });
+  (t.bijuu || []).forEach((b) => { if (!beasts.has(b)) out.push(`${t.id}: unknown bijuu "${b}"`); });
+}
+console.log(JSON.stringify(out));
+"""
 
 NODE_CHECK = r"""
 const W = require(process.argv[1]);
@@ -166,8 +184,8 @@ def main():
                 errors.append(f"{page}: links to {ref}, which is not a site page")
         scripts = [(here / s).resolve().relative_to(ROOT.resolve()).as_posix()
                    for s in re.findall(r'<script[^>]*\ssrc="([^"]+)"', html)]
-        if scripts != CORE + [own]:
-            errors.append(f"{page}: scripts {scripts} should be {CORE + [own]}")
+        if scripts != CORE + own:
+            errors.append(f"{page}: scripts {scripts} should be {CORE + own}")
         # media paths are root-relative; pages in sub-folders say how to reach the root
         depth = page.count("/")
         m = re.search(r'<html[^>]*\sdata-root="([^"]*)"', html)
@@ -179,9 +197,12 @@ def main():
     if stray:
         errors.append(f"only index.html belongs at the root; move {', '.join(stray)} into html/")
     # deep links built in JS (home "Read Chronicle") must target real pages
+    # a page script's links resolve from the folder of the page that loads it
+    base_of = {f"js/{s.split('/')[-1]}": (ROOT / page).parent for page, own in PAGES.items() for s in own}
     for js in sorted((ROOT / "js").glob("*.js")):
+        base = base_of.get(f"js/{js.name}", ROOT)
         for ref in re.findall(r'["`]((?:html/)?[a-z-]+\.html)', js.read_text(encoding="utf-8")):
-            if not (ROOT / ref).exists():
+            if not (base / ref).exists():
                 errors.append(f"js/{js.name}: link to missing page {ref}")
     for css in sorted((ROOT / "css").glob("*.css")):
         for ref in local_refs(css.read_text(encoding="utf-8"), r'url\(\s*["\']?([^"\')]+)["\']?\s*\)'):
@@ -209,6 +230,12 @@ def main():
     node = shutil.which("node")
     info = None
     if node:
+        tl = subprocess.run([node, "-e", TIMELINE_CHECK, str(ROOT / "js" / "data.js"), str(ROOT / "js" / "timeline-data.js")],
+                            capture_output=True, text=True, encoding="utf-8")
+        if tl.returncode:
+            errors.append("node timeline check failed: " + tl.stderr.strip())
+        else:
+            errors += [f"timeline: {p}" for p in json.loads(tl.stdout.strip().splitlines()[-1])]
         res = subprocess.run([node, "-e", NODE_CHECK, str(ROOT / "js" / "data.js")],
                              capture_output=True, text=True, encoding="utf-8")
         if res.returncode:

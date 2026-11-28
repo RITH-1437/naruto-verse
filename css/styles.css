@@ -841,3 +841,9 @@ a.ink-btn.home-link { color: var(--ink); }
   .header-titles h1 { font-size: 15px; }
 }
 @media (max-width: 1180px) { .header-right .era-ribbon { display: none; } }
+
+/* Header search (opens the Ctrl K palette) and Timeline buttons */
+.pal-btn, .tl-link { white-space: nowrap; text-decoration: none; }
+.pal-btn { cursor: pointer; font: inherit; }
+@media (max-width: 1180px) { .pal-lbl { display: none; } }
+@media (max-width: 900px) { .tl-lbl { display: none; } }
