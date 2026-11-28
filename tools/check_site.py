@@ -184,7 +184,7 @@ def main():
                 errors.append(f"{page}: links to {ref}, which is not a site page")
         scripts = [(here / s).resolve().relative_to(ROOT.resolve()).as_posix()
                    for s in re.findall(r'<script[^>]*\ssrc="([^"]+)"', html)]
-        if scripts != CORE + own:
+        if [re.sub(r'\.min\.js$', '.js', s) for s in scripts] != CORE + own:
             errors.append(f"{page}: scripts {scripts} should be {CORE + own}")
         # media paths are root-relative; pages in sub-folders say how to reach the root
         depth = page.count("/")
@@ -200,7 +200,7 @@ def main():
     # a page script's links resolve from the folder of the page that loads it
     base_of = {f"js/{s.split('/')[-1]}": (ROOT / page).parent for page, own in PAGES.items() for s in own}
     for js in sorted((ROOT / "js").glob("*.js")):
-        base = base_of.get(f"js/{js.name}", ROOT)
+        base = base_of.get(f"js/{re.sub(r'\.min\.js$', '.js', js.name)}", ROOT)
         for ref in re.findall(r'["`]((?:html/)?[a-z-]+\.html)', js.read_text(encoding="utf-8")):
             if not (base / ref).exists():
                 errors.append(f"js/{js.name}: link to missing page {ref}")
