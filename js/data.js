@@ -935,14 +935,14 @@ const WORLD = {
       users: ["chino"], others: [],
       abilities: [["Genjutsu Casting", "Yin-Yang"], ["Blood Iron Control", "All"]],
       lore: "The blood-red eye of the Chinoike clan, feared and driven into exile for its power. Chino wields it to cast genjutsu and to turn the iron in an enemy's blood against them." },
-    { id: "kokugan", name: "Kokugan", jp: "コクガン", type: "Dōjutsu", clan: "Unknown", color: "#D9B300",
-      users: [], others: [],
-      abilities: [],
-      lore: "A golden eye marked with eight black spokes around a blazing white pupil. Its wielder and powers are not yet recorded in this archive." },
-    { id: "senrigan", name: "Senrigan", jp: "千里眼", type: "Dōjutsu", clan: "Unknown", color: "#2F7FD8",
-      users: [], others: [],
-      abilities: [],
-      lore: "The \"thousand-league eye\": a deep blue eye with a pale crescent around a shining pupil. Its name means clairvoyance; its wielder and powers are not yet recorded in this archive." }
+    { id: "kokugan", name: "Kokugan", jp: "黒眼", type: "Dōjutsu", clan: "Ōtsutsuki", color: "#D9B300",
+      users: ["kawaki"], others: ["Isshiki Ōtsutsuki"],
+      abilities: [["Sukunahikona", "All"]],
+      lore: "The \"Black Eye\" of Isshiki Ōtsutsuki. Through Sukunahikona it can instantly shrink objects within sight, or return them to full size. Kawaki gained it in his left eye through Isshiki's Kāma; the eye was only given its name in an official Boruto database entry in 2024." },
+    { id: "senrigan", name: "Senrigan", jp: "千里眼", type: "Dōjutsu", clan: "Ōtsutsuki", color: "#2F7FD8",
+      users: [], others: ["Eida"],
+      abilities: [["Clairvoyance", "All"]],
+      lore: "The \"thousand-league eye\", awakened by some members of the Ōtsutsuki clan. Its only known wielder, Eida, can see and hear anything happening anywhere in the world, and even look into the past as far back as her own birth." }
   ],
 
   /* Colossi: giant constructs and summoned titans. Same fields as eyes:
@@ -959,6 +959,10 @@ const WORLD = {
       abilities: [["Phantom Nine Dragons Sealing", "Yin-Yang"], ["Chakra Absorption", "All"], ["Ten-Tails Revival", "All"]],
       lore: "The Demonic Statue of the Outer Path, the empty husk of the Ten-Tails, summoned with the Rinnegan. Akatsuki sealed the captured Tailed Beasts into it to revive the Ten-Tails." }
 ,
+    { id: "divine_tree", name: "Divine Tree", jp: "神樹", type: "God Tree", clan: "Ōtsutsuki", color: "#7E4A7A",
+      users: ["kaguya", "obito", "madara"],
+      abilities: [["Chakra Fruit", "All"], ["Chakra-Draining Roots", "All"], ["Infinite Tsukuyomi", "Yin-Yang"]],
+      lore: "The Shinju, the ancient God Tree that drew chakra from the earth. Kaguya Ōtsutsuki ate its forbidden fruit to become the first wielder of chakra, and the tree later took form as the Ten-Tails. In the Fourth Shinobi World War the Ten-Tails' jinchūriki made it sprout again, and under the Infinite Tsukuyomi its roots bound the world's sleepers in cocoons." },
     { id: "gamabunta", name: "Gamabunta", jp: "ガマブン太", type: "Summoning", clan: "Mount Myōboku", color: "#B5543A",
       users: ["jiraiya", "minato", "naruto"],
       abilities: [["Water Gun", "Water"], ["Toad Oil Flame Bullet", "Fire"], ["Blade Slash", "Weapon"]],

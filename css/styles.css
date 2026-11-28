@@ -640,6 +640,8 @@ html.pv-active, html.pv-active body { overflow: hidden; }   /* page stays put be
 }
 span.chip-avatar.weapon-glyph { font-size: 12px; }
 .weapon-chip { border-color: #5A5A66; }
+.relic-chip { border-color: #8A6D3B; }
+.relic-chip:hover { background: #8A6D3B; color: var(--paper); }
 .weapon-chip:hover { background: #3E3E48; color: var(--paper); }
 .weapon-orb { background: none; overflow: hidden; padding: 0; }
 .weapon-orb-inner { width: 100%; height: 100%; font-size: 16px; }

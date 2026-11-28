@@ -179,7 +179,7 @@
     const sub = C.title2 ? C.title2(it) : it.title;
     const clips = clipCount(it);
     const src = INDEX ? indexedArt(it) : null;
-    return `<button type="button" class="s-card" data-id="${esc(it.id)}"
+    return `<button type="button" class="s-card${["bijuu", "colossi", "kekkei"].includes(state.tab) ? " is-wide" : ""}" data-id="${esc(it.id)}"
         style="--c:${C.color(it)};--i:${i}" aria-label="${esc(it.name)}: open full-screen preview">
       <span class="s-art${src ? " loading" : ""}">
         <span class="s-glyph" aria-hidden="true">${esc(C.glyph(it))}</span>

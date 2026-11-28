@@ -286,6 +286,24 @@
       : `<span class="${cls}" aria-hidden="true">${WEAPON_GLYPH[w.type] || "武"}</span>`;
   }
 
+  /* Dōjutsu, Colossi and Kekkei Genkai this character wields (shared "relic" collections). */
+  const RELIC_SECTIONS = [["eyes", "Dōjutsu"], ["colossi", "Colossi"], ["kekkei", "Kekkei Genkai"]];
+  function relicChips(id) {
+    const PV = window.CharacterPreview;
+    return RELIC_SECTIONS.flatMap(([kind, label]) => (WORLD[kind] || []).filter((e) => (e.users || []).includes(id)).map((e) => {
+      const r = PV && PV.relics && PV.relics[kind];
+      // findThumb is async: show the glyph now, swap in the thumbnail when it resolves
+      if (PV && r) Promise.resolve(PV.findThumb(e, r.folder)).then((src) => {
+        if (!src) return;
+        document.querySelectorAll(`[data-relic-go="${kind}:${e.id}"] .chip-avatar`).forEach((g) => {
+          const img = document.createElement("img"); img.className = "chip-avatar"; img.alt = ""; img.src = src; g.replaceWith(img);
+        });
+      }).catch(() => {});
+      const icon = `<span class="chip-avatar weapon-glyph" aria-hidden="true">${r ? r.glyph : "術"}</span>`;
+      return `<button class="rel-chip relic-chip has-avatar" data-relic-go="${kind}:${e.id}" title="${label}">${icon}${escapeHtml(e.name)}</button>`;
+    })).join("");
+  }
+
   function weaponChip(w) {
     return `<button class="rel-chip weapon-chip has-avatar" data-weapon-go="${w.id}">${weaponIcon(w, "chip-avatar weapon-glyph")}${escapeHtml(w.name)}</button>`;
   }
@@ -344,6 +362,7 @@
         ${jutsu || '<p class="drawer-bio">No techniques recorded.</p>'}
       </div>
       ${weaponsOf(c.id).length ? `<div class="drawer-section"><h3>Special Weapons</h3><div class="chip-group">${weaponsOf(c.id).map(weaponChip).join("")}</div></div>` : ""}
+      ${relicChips(c.id) ? `<div class="drawer-section"><h3>Powers</h3><div class="chip-group">${relicChips(c.id)}</div></div>` : ""}
       ${bijuuChips ? `<div class="drawer-section"><h3>Tailed Beast Bond</h3><div class="chip-group">${bijuuChips}</div></div>` : ""}
       <div class="drawer-section">
         <h3>Relationships</h3>
@@ -931,6 +950,13 @@
       if (wc) { openWeapon(wc.dataset.weapon); previewWeapon(wc.dataset.weapon); return; }
       const wf = e.target.closest("[data-weapon-full]");
       if (wf) { previewWeapon(wf.dataset.weaponFull); return; }
+      const rg = e.target.closest("[data-relic-go]");
+      if (rg) {
+        const [kind, rid] = rg.dataset.relicGo.split(":");
+        const it = (WORLD[kind] || []).find((x) => x.id === rid);
+        if (it && window.CharacterPreview) window.CharacterPreview.open(window.CharacterPreview.relic(kind, it));
+        return;
+      }
       const bg = e.target.closest("[data-bijuu-go]");
       if (bg) { openBijuu(bg.dataset.bijuuGo, true); return; }
       const card = e.target.closest("[data-bijuu]");
