@@ -58,7 +58,7 @@
      (users = ids on the tree, others = plain names). A character's preview links
      to everything it wields, and each entry links back to its wielders. */
   const RELICS = {
-    eyes: { flag: "isEye", folder: "eyes", glyph: "眼", cast: "Activate Eye" },
+    eyes: { flag: "isEye", folder: "eyes", glyph: "眼", cast: "Activate Dōjutsu" },
     colossi: { flag: "isColossus", folder: "colossi", glyph: "巨", cast: "Unleash" },
     kekkei: { flag: "isKekkei", folder: "kekkei-genkai", glyph: "血", cast: "Perform Jutsu" }
   };

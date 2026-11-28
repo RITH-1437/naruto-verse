@@ -823,3 +823,21 @@ a.ink-btn.home-link { color: var(--ink); }
   html { scroll-behavior: auto; }
   .flow-lines .fl, .pv-flame, .pv-spark, .pv-dust circle { animation: none !important; }
 }
+@media (max-width: 620px) { .header-right .hub-lbl { display: none; } .header-right { gap: 8px; } }
+
+/* Scroll-page header on phones: the title shrinks (then ellipsizes) so it never
+   runs under the Anime Verse / Home buttons */
+.header-titles { min-width: 0; }
+.header-titles h1 { overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 430px) {
+  .app-header { gap: 8px; padding: 8px 12px; }
+  .header-left { gap: 8px; }
+  .seal { width: 34px; height: 34px; flex-basis: 34px; font-size: 19px; }
+  .header-titles h1 { font-size: 17px; letter-spacing: 0; }
+  .header-right { gap: 6px; flex: none; }
+}
+@media (max-width: 360px) {
+  .seal { width: 30px; height: 30px; flex-basis: 30px; font-size: 17px; }
+  .header-titles h1 { font-size: 15px; }
+}
+@media (max-width: 1180px) { .header-right .era-ribbon { display: none; } }

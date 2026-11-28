@@ -263,3 +263,35 @@ kbd {
 @media (max-width: 360px) {
   .brand-text { font-size: 16px; }
 }
+
+/* Back-to-hub button */
+.hub-link { white-space: nowrap; text-decoration: none; }
+@media (max-width: 900px) { .hub-link { margin-left: auto; } .nav-scroll { margin-left: 0; } }
+@media (max-width: 520px) { .hub-link { padding: 7px 10px; font-size: 12px; } .hub-lbl { display: none; } }
+@media (max-width: 440px) {
+  .brand { gap: 8px; }
+  .brand .seal { width: 32px; height: 32px; flex-basis: 32px; font-size: 18px; }
+  .brand-text { font-size: 15px; letter-spacing: 0; }
+}
+
+/* Header fit: mid-width desktops (nav links + hub + scroll buttons) and small phones */
+.nav-links a { white-space: nowrap; }
+@media (max-width: 1180px) and (min-width: 901px) {
+  .nav-inner { gap: 12px; }
+  .nav-links { gap: 0; }
+  .nav-links a { padding: 8px 7px; font-size: 13.5px; }
+  .ns-long, .hub-lbl { display: none; }   /* "← " and "Scroll →" keep their titles/aria-labels */
+}
+@media (max-width: 360px) {
+  .nav-inner { gap: 6px; }
+  .brand .seal { width: 28px; height: 28px; flex-basis: 28px; font-size: 16px; }
+  .brand-text { font-size: 13px; }
+  .hub-link, .nav-scroll { padding: 6px 8px; }
+}
+@media (max-width: 340px) {
+  .brand-text em { display: none; }   /* "Shinobi" only on the narrowest phones */
+}
+@media (max-width: 1000px) and (min-width: 901px) {
+  .brand-text { font-size: 20px; }
+  .nav-links a { padding: 8px 5px; font-size: 13px; }
+}

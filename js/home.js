@@ -108,8 +108,8 @@
       title2: (w) => w.ability,
       preview: weaponAsCharacter
     },
-    eyes: relicCollection("eyes", "Eyes",
-      "The Dōjutsu: visual powers of the Uchiha, Hyūga and Ōtsutsuki, and those who carry them.", "眼", (e) => e.type),
+    eyes: relicCollection("eyes", "Dōjutsu",
+      "Eye techniques of the Uchiha, Hyūga and Ōtsutsuki, and those who carry them.", "眼", (e) => e.type),
     colossi: relicCollection("colossi", "Colossi",
       "Giant constructs, Susanoo and summoned titans that tower over the battlefield.", "巨", (e) => e.type),
     kekkei: relicCollection("kekkei", "Kekkei Genkai",
@@ -290,7 +290,7 @@
     $("era-group").hidden = $("clan-group").hidden = tab !== "characters";
     $("q").placeholder = tab === "characters" ? "Search name, clan, jutsu…"
       : tab === "bijuu" ? "Search beast, host, ability…"
-      : tab === "eyes" ? "Search eye, clan, user, ability…"
+      : tab === "eyes" ? "Search Dōjutsu, clan, user, ability…"
       : tab === "colossi" ? "Search colossus, summoner, ability…"
       : tab === "kekkei" ? "Search nature, clan, user, jutsu…" : "Search weapon, wielder, power…";
     render(scroll);
@@ -319,7 +319,7 @@
   function bind() {
     $("hero-stats").innerHTML = [
       ["Shinobi", CHARS.length], ["Tailed Beasts", BIJUU.length],
-      ["Weapons", WEAPONS.length], ["Eyes", EYES.length], ["Colossi", COLOSSI.length], ["Kekkei Genkai", KEKKEI.length], ["Relationships", (WORLD.links || []).length]
+      ["Weapons", WEAPONS.length], ["Dōjutsu", EYES.length], ["Colossi", COLOSSI.length], ["Kekkei Genkai", KEKKEI.length], ["Relationships", (WORLD.links || []).length]
     ].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
 
     $("era-chips").innerHTML = WORLD.eras.map((e) =>
